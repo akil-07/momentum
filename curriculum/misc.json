@@ -1,0 +1,2731 @@
+{
+ "area": "misc",
+ "topics": [
+  {
+   "id": "geometry",
+   "name": "Geometry",
+   "cfTags": [
+    "geometry"
+   ],
+   "subtopics": [
+    {
+     "id": "geo-points-vectors",
+     "name": "Points, vectors & distances",
+     "tier": 1000,
+     "order": 1,
+     "prereq": [],
+     "summary": "Representing points and vectors with integer coordinates, computing Euclidean and squared distances, dot products and basic vector arithmetic. Appears in easy problems about distances, circles around the origin and moving on the plane; recognise it whenever coordinates are given and comparisons of lengths are needed.",
+     "learn": [
+      "Store points as pair<long long,long long> or a small struct with +, -, scalar * operators (or std::complex as in CPH 29.1)",
+      "Compare distances using squared lengths (dx*dx+dy*dy) to stay in exact integer arithmetic; take sqrt only for the final output",
+      "Dot product a.x*b.x+a.y*b.y: zero means perpendicular, sign tells acute/obtuse angle",
+      "Watch overflow: coordinates up to 1e9 give squared distances up to ~8e18, use long long (or __int128)",
+      "Print floating answers with enough digits (setprecision(10)) and use long double when precision matters",
+      "Translate the problem so one point is the origin to simplify formulas",
+      "Vector identities: ABCD is a parallelogram iff the diagonals share a midpoint (A+C = B+D); a polygon is centrally symmetric iff p_i + p_{i+n/2} is constant",
+      "The same tools work in 3D: squared distances and dot products identify cubes, right angles and equal edges"
+     ],
+     "resources": [
+      {
+       "title": "Complex numbers / points as vectors",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.1 (p. 266)",
+       "minutes": 20
+      },
+      {
+       "title": "Geometry Primitives",
+       "url": "https://usaco.guide/plat/geo-pri",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "Basic Geometry",
+       "url": "https://cp-algorithms.com/geometry/basic-geometry.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1047B",
+       "src": "cf",
+       "name": "Cover Points",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1620B",
+       "src": "cf",
+       "name": "Triangles on a Rectangle",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1199B",
+       "src": "cf",
+       "name": "Water Lily",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1886B",
+       "src": "cf",
+       "name": "Fear of the Dark",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "2002C",
+       "src": "cf",
+       "name": "Black Circles",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1495A",
+       "src": "cf",
+       "name": "Diamond Miner",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1307B",
+       "src": "cf",
+       "name": "Cow and Friend",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "507B",
+       "src": "cf",
+       "name": "Amr and Pins",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "18A",
+       "src": "cf",
+       "name": "Triangle",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "407A",
+       "src": "cf",
+       "name": "Triangle",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1299B",
+       "src": "cf",
+       "name": "Aerodynamic",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "660D",
+       "src": "cf",
+       "name": "Number of Parallelograms",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "464B",
+       "src": "cf",
+       "name": "Restore Cube ",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1477C",
+       "src": "cf",
+       "name": "Nezzar and Nice Beatmap",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-rectangles",
+     "name": "Rectangle geometry",
+     "tier": 1000,
+     "order": 2,
+     "prereq": [
+      "geo-points-vectors"
+     ],
+     "summary": "Axis-aligned rectangles: area, intersection, union of two or three rectangles and coverage checks. Very common in Div 3/4 and early Div 2 problems; recognise it when shapes are given by lower-left and upper-right corners.",
+     "learn": [
+      "Intersection of [x1,x2]x[y1,y2] and [x3,x4]x[y3,y4] is [max(x1,x3),min(x2,x4)] x [max(y1,y3),min(y2,y4)], empty if any side is negative",
+      "Area of union of two rectangles = A + B - intersection (inclusion-exclusion)",
+      "To test if a rectangle is fully covered, subtract covered parts and check what remains",
+      "Prefix/suffix intersections let you drop one rectangle in O(1) (intersection of all but one)",
+      "Compress coordinates when many rectangles are involved, then sweep or use 2D difference arrays"
+     ],
+     "resources": [
+      {
+       "title": "Rectangle Geometry",
+       "url": "https://usaco.guide/bronze/rect-geo",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 30
+      },
+      {
+       "title": "Points and lines (basics)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.2 (p. 268)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1622A",
+       "src": "cf",
+       "name": "Construct a Rectangle",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "2027A",
+       "src": "cf",
+       "name": "Rectangle Arrangement",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1555B",
+       "src": "cf",
+       "name": "Two Tables",
+       "rating": 1300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1028C",
+       "src": "cf",
+       "name": "Rectangles",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "993A",
+       "src": "cf",
+       "name": "Two Squares",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "135B",
+       "src": "cf",
+       "name": "Rectangle and Square",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1216C",
+       "src": "cf",
+       "name": "White Sheet",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "581D",
+       "src": "cf",
+       "name": "Three Logos",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "14C",
+       "src": "cf",
+       "name": "Four Segments",
+       "rating": 1700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-manhattan",
+     "name": "Manhattan & Chebyshev distance",
+     "tier": 1500,
+     "order": 3,
+     "prereq": [
+      "geo-points-vectors"
+     ],
+     "summary": "Manhattan distance |dx|+|dy| separates into coordinates and becomes Chebyshev distance after rotating by 45 degrees (u=x+y, v=x-y). Recognise it in grid-walking problems, sums of pairwise distances and farthest-pair queries.",
+     "learn": [
+      "Sum of |xi-xj| over all pairs: sort and use prefix sums, independently for x and y",
+      "Rotation trick: |dx|+|dy| = max(|du|,|dv|) with u=x+y, v=x-y; max Manhattan distance = max over the four sign combinations",
+      "Chebyshev distance max(|dx|,|dy|) is king moves on a grid; convert back with the inverse rotation",
+      "Manhattan circles are diamonds; diamonds become axis-aligned squares after rotation",
+      "Points with equal Manhattan and Euclidean distance share x or y (count with maps and subtract duplicates)",
+      "Terms like max(0, p - |x - j|) are tents; the rotation (j+x, j-x) turns \"is every point covered\" into two prefix-max checks",
+      "Short Manhattan tours: sort points in vertical strips of width ~sqrt(C), alternating direction (Mo-style ordering)"
+     ],
+     "resources": [
+      {
+       "title": "Distance functions",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.4 (p. 272)",
+       "minutes": 15
+      },
+      {
+       "title": "Manhattan Distance",
+       "url": "https://cp-algorithms.com/geometry/manhattan-distance.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1450B",
+       "src": "cf",
+       "name": "Balls of Steel",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1869B",
+       "src": "cf",
+       "name": "2D Traveling",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1648A",
+       "src": "cf",
+       "name": "Weird Sum",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1550C",
+       "src": "cf",
+       "name": "Manhattan Subarrays",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2122C",
+       "src": "cf",
+       "name": "Manhattan Pairs",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1689D",
+       "src": "cf",
+       "name": "Lena and Matrix",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1032D",
+       "src": "cf",
+       "name": "Barcelonian Distance",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1710B",
+       "src": "cf",
+       "name": "Rain",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "576C",
+       "src": "cf",
+       "name": "Points on Plane",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1044C",
+       "src": "cf",
+       "name": "Optimal Polygon Perimeter",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1979E",
+       "src": "cf",
+       "name": "Manhattan Triangle",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1455E",
+       "src": "cf",
+       "name": "Four Points",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "85E",
+       "src": "cf",
+       "name": "Guard Towers",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-cross-product",
+     "name": "Cross product & orientation",
+     "tier": 1600,
+     "order": 4,
+     "prereq": [
+      "geo-points-vectors"
+     ],
+     "summary": "The cross product a.x*b.y-a.y*b.x gives twice the signed area of a triangle and tells whether a turn is left, right or collinear. It is the core primitive of almost all computational geometry; recognise it whenever you must decide on which side of a line a point lies.",
+     "learn": [
+      "cross(b-a, c-a) > 0: counter-clockwise (left turn), < 0: clockwise, = 0: collinear",
+      "Keep everything in integers (long long / __int128) so orientation tests are exact",
+      "|cross| / 2 is the triangle area; non-degenerate triangle iff cross != 0",
+      "Collinearity of many points: fix one point and normalise direction vectors (divide by gcd, fix sign) to group them",
+      "Dot product decides angle type; cross product decides side - combine them to sort or classify",
+      "Interactive problems may ask only for orientation signs: build convex order from sign queries"
+     ],
+     "resources": [
+      {
+       "title": "Points and lines",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.2 (p. 268)",
+       "minutes": 25
+      },
+      {
+       "title": "Geometry Primitives",
+       "url": "https://usaco.guide/plat/geo-pri",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "Oriented area of a triangle",
+       "url": "https://cp-algorithms.com/geometry/oriented-triangle-area.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2189",
+       "src": "cses",
+       "name": "Point Location Test",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "659D",
+       "src": "cf",
+       "name": "Bicycle Race",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1616C",
+       "src": "cf",
+       "name": "Representative Edges",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "618C",
+       "src": "cf",
+       "name": "Constellation",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1030D",
+       "src": "cf",
+       "name": "Vasya and Triangle",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "552D",
+       "src": "cf",
+       "name": "Vanya and Triangles",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "961D",
+       "src": "cf",
+       "name": "Pair Of Lines",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "340B",
+       "src": "cf",
+       "name": "Maximal Area Quadrilateral",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1254C",
+       "src": "cf",
+       "name": "Point Ordering",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-lines",
+     "name": "Lines: representation & intersection",
+     "tier": 1800,
+     "order": 5,
+     "prereq": [
+      "geo-cross-product"
+     ],
+     "summary": "Representing lines as ax+by=c or point+direction, normalising them for hashing, checking parallelism and computing intersection points. Recognise it in counting problems about lines through pairs of points or intersection counts.",
+     "learn": [
+      "Line through p,q: a=q.y-p.y, b=p.x-q.x, c=a*p.x+b*p.y; normalise (divide by gcd, make first non-zero positive) to store in a set/map",
+      "Two lines are parallel iff a1*b2-a2*b1=0; intersection uses Cramer's rule with that determinant",
+      "Number of intersecting pairs = total pairs minus pairs within each parallel class",
+      "Normalised direction vectors (dx/g, dy/g) identify slopes exactly without floating point",
+      "Use exact rational comparisons (cross-multiplication) instead of comparing slopes as doubles",
+      "Distance from point P to line AB = |cross(B-A, P-A)| / |B-A|; it bounds how far a convex vertex can move before the polygon stops being convex"
+     ],
+     "resources": [
+      {
+       "title": "Intersection Point of Lines",
+       "url": "https://cp-algorithms.com/geometry/lines-intersection.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "Points and lines",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.2 (p. 268)",
+       "minutes": 20
+      },
+      {
+       "title": "Basic Geometry (lines)",
+       "url": "https://cp-algorithms.com/geometry/basic-geometry.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1248A",
+       "src": "cf",
+       "name": "Integer Points",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "593B",
+       "src": "cf",
+       "name": "Anton and Lines",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "849B",
+       "src": "cf",
+       "name": "Tell Your World",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1468F",
+       "src": "cf",
+       "name": "Full Turn",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "772B",
+       "src": "cf",
+       "name": "Volatile Kite",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1163C1",
+       "src": "cf",
+       "name": "Power Transmission (Easy Edition)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1163C2",
+       "src": "cf",
+       "name": "Power Transmission (Hard Edition)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1016E",
+       "src": "cf",
+       "name": "Rest In The Shades",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-segment-intersection",
+     "name": "Segment intersection",
+     "tier": 1900,
+     "order": 6,
+     "prereq": [
+      "geo-cross-product"
+     ],
+     "summary": "Deciding whether two segments intersect using orientation tests, including collinear-overlap edge cases, and computing the intersection point. Recognise it when segments, fences, chords or paths must not cross.",
+     "learn": [
+      "Proper intersection: orientations of (a,b,c) and (a,b,d) differ AND orientations of (c,d,a) and (c,d,b) differ",
+      "Collinear case: all four orientations are zero, then check overlap of bounding boxes/projections",
+      "Point on segment: cross = 0 and the point lies within the bounding box",
+      "Chords of a circle intersect iff their endpoints interleave around the circle",
+      "Lattice points on a segment: gcd(|dx|,|dy|)+1 (useful for counting covered integer points)",
+      "Test edge cases: shared endpoints, zero-length segments, vertical segments"
+     ],
+     "resources": [
+      {
+       "title": "Points and lines (segment intersection)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.2 (p. 268)",
+       "minutes": 20
+      },
+      {
+       "title": "Check if two segments intersect",
+       "url": "https://cp-algorithms.com/geometry/check-segments-intersection.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "Finding intersection of two segments",
+       "url": "https://cp-algorithms.com/geometry/segments-intersection.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "Geometry Primitives",
+       "url": "https://usaco.guide/plat/geo-pri",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2190",
+       "src": "cses",
+       "name": "Line Segment Intersection",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1552C",
+       "src": "cf",
+       "name": "Maximize the Intersections",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1036E",
+       "src": "cf",
+       "name": "Covered Points",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1468G",
+       "src": "cf",
+       "name": "Hobbits",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "598F",
+       "src": "cf",
+       "name": "Cut Length",
+       "rating": 2900,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "geo-polygon-area",
+     "name": "Polygon area & point in polygon",
+     "tier": 1800,
+     "order": 7,
+     "prereq": [
+      "geo-cross-product"
+     ],
+     "summary": "Shoelace formula for the area of a simple polygon and ray casting / winding tests for point-in-polygon, plus O(log n) point-in-convex-polygon by binary search. Recognise it whenever a polygon is given as a vertex list.",
+     "learn": [
+      "Shoelace: 2*Area = |sum cross(p_i, p_{i+1})|; keep twice the area as an integer",
+      "Sign of the sum gives orientation (CCW positive)",
+      "Ray casting: count crossings of a horizontal ray; handle points on the boundary separately",
+      "Convex polygon: binary search the fan of triangles from vertex 0 for O(log n) queries",
+      "Triangulation and area-based DP: split polygon by diagonals, check diagonal validity with cross products",
+      "Area of triangle/quadrilateral maximisation: fix a diagonal, take best point on each side",
+      "Counting triangles of polygon vertices that contain a point: count the complement (triangles lying in a half-plane through the point) with two pointers"
+     ],
+     "resources": [
+      {
+       "title": "Polygon area",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.3 (p. 271)",
+       "minutes": 15
+      },
+      {
+       "title": "Geometry Primitives",
+       "url": "https://usaco.guide/plat/geo-pri",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "Finding area of simple polygon",
+       "url": "https://cp-algorithms.com/geometry/area-of-simple-polygon.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "Check if point belongs to the convex polygon",
+       "url": "https://cp-algorithms.com/geometry/point-in-convex-polygon.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2191",
+       "src": "cses",
+       "name": "Polygon Area",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2192",
+       "src": "cses",
+       "name": "Point in Polygon",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "559A",
+       "src": "cf",
+       "name": "Gerald's Hexagon",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "166B",
+       "src": "cf",
+       "name": "Polygons",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "55E",
+       "src": "cf",
+       "name": "Very simple problem",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "437E",
+       "src": "cf",
+       "name": "The Child and Polygon",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "13D",
+       "src": "cf",
+       "name": "Triangles",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-picks-lattice",
+     "name": "Pick's theorem & lattice points",
+     "tier": 1900,
+     "order": 8,
+     "prereq": [
+      "geo-polygon-area"
+     ],
+     "summary": "Pick's theorem A = i + b/2 - 1 relates area, interior and boundary lattice points of a lattice polygon; boundary points on an edge are gcd(|dx|,|dy|). Recognise it when counting integer points inside/on a polygon or constructing lattice triangles of given area.",
+     "learn": [
+      "Boundary points b = sum over edges gcd(|dx|,|dy|)",
+      "Interior points i = A - b/2 + 1 with A from the shoelace formula (use 2A to stay integer)",
+      "Lattice triangle area is always a multiple of 1/2: 2A must be an integer, which gives feasibility conditions",
+      "Lattice points inside a circle/annulus: loop over x and compute the y-range with integer sqrt",
+      "Lattice points under a line: floor-sum style counting (see number theory area)",
+      "Parity tricks: with Pick, the parity of interior points depends only on coordinates mod 4 and gcds mod 4, so classify points into residue classes and count"
+     ],
+     "resources": [
+      {
+       "title": "Pick's Theorem",
+       "url": "https://cp-algorithms.com/geometry/picks-theorem.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "Lattice points inside non-lattice polygon",
+       "url": "https://cp-algorithms.com/geometry/lattice-points.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "Geometry Primitives (Pick)",
+       "url": "https://usaco.guide/plat/geo-pri",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2193",
+       "src": "cses",
+       "name": "Polygon Lattice Points",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1971F",
+       "src": "cf",
+       "name": "Circle Perimeter",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1030D",
+       "src": "cf",
+       "name": "Vasya and Triangle",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1548D1",
+       "src": "cf",
+       "name": "Gregor and the Odd Cows (Easy)",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1036E",
+       "src": "cf",
+       "name": "Covered Points",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-precision-circles",
+     "name": "Floating point, circles & numeric geometry",
+     "tier": 1700,
+     "order": 9,
+     "prereq": [
+      "geo-points-vectors"
+     ],
+     "summary": "Problems involving circles, angles, trigonometry and continuous optimisation where answers are real numbers. Recognise them from \"absolute or relative error 1e-6\" outputs; they often combine geometry with binary or ternary search on the answer.",
+     "learn": [
+      "Use long double, compare with an epsilon, and avoid subtracting nearly equal numbers",
+      "acos/asin need arguments clamped to [-1,1]",
+      "Circle-circle and circle-line intersections: derive with distances and the cosine rule",
+      "Distance from point to segment: project with the dot product, clamp to the segment",
+      "Tangent circles: centres of touching circles of radii r1,r2 are r1+r2 apart; solve for the unknown coordinate with Pythagoras",
+      "Binary search the answer (radius, time) when a monotone feasibility check exists; ternary search for unimodal functions",
+      "Regular polygons: central angle 2*pi/n; inscribed/circumscribed radius formulas"
+     ],
+     "resources": [
+      {
+       "title": "Circle-Line Intersection",
+       "url": "https://cp-algorithms.com/geometry/circle-line-intersection.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "Circle-Circle Intersection",
+       "url": "https://cp-algorithms.com/geometry/circle-circle-intersection.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "Basic Geometry",
+       "url": "https://cp-algorithms.com/geometry/basic-geometry.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      },
+      {
+       "title": "Complex numbers (angles, rotation)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.1 (p. 266)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1354C1",
+       "src": "cf",
+       "name": "Simple Polygon Embedding",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "908C",
+       "src": "cf",
+       "name": "New Year and Curling",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1096C",
+       "src": "cf",
+       "name": "Polygon for the Angle",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "935C",
+       "src": "cf",
+       "name": "Fifa and Fafa",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "140A",
+       "src": "cf",
+       "name": "New Year Table",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "613A",
+       "src": "cf",
+       "name": "Peter and Snow Blower",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "342C",
+       "src": "cf",
+       "name": "Cupboard and Balloons",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "600D",
+       "src": "cf",
+       "name": "Area of Two Circles' Intersection",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1354C2",
+       "src": "cf",
+       "name": "Not So Simple Polygon Embedding",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1C",
+       "src": "cf",
+       "name": "Ancient Berland Circus",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "630P",
+       "src": "cf",
+       "name": "Area of a Star",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1059D",
+       "src": "cf",
+       "name": "Nature Reserve",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-polar-sort",
+     "name": "Angular (polar) sort",
+     "tier": 2000,
+     "order": 10,
+     "prereq": [
+      "geo-cross-product"
+     ],
+     "summary": "Sorting vectors by angle around a point using half-plane classification plus cross product, avoiding atan2 precision issues. Recognise it when you need consecutive directions, angle gaps, rotating sweeps or counting triangles/configurations around a pivot.",
+     "learn": [
+      "Split vectors into upper half (y>0 or y=0,x>0) and lower half, then compare by cross product inside each half",
+      "atan2 with long double works for moderate coordinates but can fail for nearly parallel vectors",
+      "Minimum angle between vectors: sort and check adjacent pairs including the wrap-around",
+      "Angular sweep around each point gives O(n^2 log n) algorithms for counting triangles/quadrilaterals",
+      "Normalised directions (gcd) group identical rays exactly"
+     ],
+     "resources": [
+      {
+       "title": "Basic Geometry (angles)",
+       "url": "https://cp-algorithms.com/geometry/basic-geometry.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      },
+      {
+       "title": "Complex numbers (arg / polar form)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 29.1 (p. 266)",
+       "minutes": 15
+      },
+      {
+       "title": "Geometry Primitives",
+       "url": "https://usaco.guide/plat/geo-pri",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "257C",
+       "src": "cf",
+       "name": "View Angle",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "598C",
+       "src": "cf",
+       "name": "Nearest vectors",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1284E",
+       "src": "cf",
+       "name": "New Year and Castle Construction",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1019D",
+       "src": "cf",
+       "name": "Large Triangle",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "1025F",
+       "src": "cf",
+       "name": "Disjoint Triangles",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-convex-hull",
+     "name": "Convex hull",
+     "tier": 2000,
+     "order": 11,
+     "prereq": [
+      "geo-cross-product",
+      "geo-polygon-area"
+     ],
+     "summary": "Computing the convex hull of a point set with Andrew's monotone chain (or Graham scan) in O(n log n), and using hull properties for extreme-point queries. Recognise it when only the \"outer\" points matter, when maximising a linear function or when lower/upper envelopes of prefix sums appear.",
+     "learn": [
+      "Monotone chain: sort by (x,y), build lower and upper hulls with a stack popping non-left turns",
+      "Decide whether collinear points on edges are kept (<= vs < in the pop condition)",
+      "Lower hull of points (i, prefix_i) gives optimal averages/greedy merges (Water Balance pattern)",
+      "Transform the problem (e.g. y -> y - x^2) to turn parabolas into lines and use the upper hull",
+      "Farthest pair / largest triangle use the hull plus rotating calipers",
+      "Point-in-convex-polygon and tangents by binary search on the hull"
+     ],
+     "resources": [
+      {
+       "title": "Convex hull problem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 30.3 (p. 278)",
+       "minutes": 15
+      },
+      {
+       "title": "Convex Hull",
+       "url": "https://usaco.guide/plat/convex-hull",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "Convex Hull construction",
+       "url": "https://cp-algorithms.com/geometry/convex-hull.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2195",
+       "src": "cses",
+       "name": "Convex Hull",
+       "from": "curated"
+      },
+      {
+       "id": "166B",
+       "src": "cf",
+       "name": "Polygons",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1299C",
+       "src": "cf",
+       "name": "Water Balance",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1142C",
+       "src": "cf",
+       "name": "U2",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "605C",
+       "src": "cf",
+       "name": "Freelancer's Dreams",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "682E",
+       "src": "cf",
+       "name": "Alyona and Triangles",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-sweep-line",
+     "name": "Sweep line in geometry",
+     "tier": 2100,
+     "order": 12,
+     "prereq": [
+      "geo-rectangles",
+      "geo-segment-intersection"
+     ],
+     "summary": "Process events (segment endpoints, rectangle edges) sorted by x while maintaining an active set ordered by y in a data structure. Recognise it when counting intersections of horizontal/vertical segments, union area/perimeter of rectangles or covered points.",
+     "learn": [
+      "Events: (x, type, data); choose the tie-break order of start/end events carefully",
+      "Horizontal/vertical segment intersections: add/remove horizontals at endpoints, query a Fenwick tree for verticals",
+      "Union area of rectangles: segment tree over compressed y storing cover count and covered length",
+      "Pieces of a square cut by segments = 1 + segments spanning full side + intersections (Euler formula)",
+      "Use coordinate compression and 64-bit counts"
+     ],
+     "resources": [
+      {
+       "title": "Sweep line algorithms: intersection points",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 30.1 (p. 276)",
+       "minutes": 15
+      },
+      {
+       "title": "Sweep Line",
+       "url": "https://usaco.guide/plat/sweep-line",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "Range Queries with Sweep Line",
+       "url": "https://usaco.guide/plat/range-sweep",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "Search for a pair of intersecting segments",
+       "url": "https://cp-algorithms.com/geometry/intersecting_segments.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1740",
+       "src": "cses",
+       "name": "Intersection Points",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1742",
+       "src": "cses",
+       "name": "Robot Path",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1194E",
+       "src": "cf",
+       "name": "Count The Rectangles",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "610D",
+       "src": "cf",
+       "name": "Vika and Segments",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1401E",
+       "src": "cf",
+       "name": "Divide Square",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1402B",
+       "src": "cf",
+       "name": "Roads",
+       "rating": 2900,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "geo-closest-pair",
+     "name": "Closest pair of points",
+     "tier": 2100,
+     "order": 13,
+     "prereq": [
+      "geo-sweep-line",
+      "dc-merge-sort-inversions"
+     ],
+     "summary": "Find the two closest points in O(n log n) by sweeping with a set ordered by y (CPH) or by divide and conquer on x. Recognise it when minimising a distance-like expression over pairs, sometimes after rewriting it as a point distance (e.g. prefix sums).",
+     "learn": [
+      "Sweep: keep points with x within d of the current point in a set ordered by y; only O(1) candidates per point",
+      "Divide and conquer: split by median x, merge strips sorted by y, check next ~7 points",
+      "Rewrite pair expressions like (i-j)^2 + (pre_i - pre_j)^2 as squared distance between (i, pre_i) points",
+      "Keep distances squared in long long; randomised grid hashing is an alternative expected O(n) method"
+     ],
+     "resources": [
+      {
+       "title": "Closest pair problem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 30.2 (p. 277)",
+       "minutes": 15
+      },
+      {
+       "title": "Finding the nearest pair of points",
+       "url": "https://cp-algorithms.com/geometry/nearest_points.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "Sweep Line (closest pair)",
+       "url": "https://usaco.guide/plat/sweep-line",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2194",
+       "src": "cses",
+       "name": "Minimum Euclidean Distance",
+       "from": "curated"
+      },
+      {
+       "id": "120J",
+       "src": "cf",
+       "name": "Minimum Sum",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "429D",
+       "src": "cf",
+       "name": "Tricky Function",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "geo-advanced",
+     "name": "Minkowski sum, half-planes & rotating calipers",
+     "tier": 2500,
+     "order": 14,
+     "prereq": [
+      "geo-convex-hull",
+      "geo-polar-sort"
+     ],
+     "summary": "Advanced convex geometry: Minkowski sum of convex polygons by merging edges in angular order, half-plane intersection with a deque, and rotating calipers for diameters/widths. Rare below 2400 but standard in harder geometry problems.",
+     "learn": [
+      "Minkowski sum of convex polygons: start at the lowest point of each and merge edge vectors by polar angle; result has <= n+m vertices",
+      "Number of distinct edge directions = number of vertices of a Minkowski sum (Geometers Anonymous)",
+      "Half-plane intersection: sort by angle, maintain a deque, pop while the last intersection is outside",
+      "Rotating calipers: two pointers on the hull for diameter, width, max-area triangle",
+      "Point in Minkowski sum = can be represented as a sum of points from each polygon"
+     ],
+     "resources": [
+      {
+       "title": "Minkowski sum of convex polygons",
+       "url": "https://cp-algorithms.com/geometry/minkowski.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "Half-plane intersection",
+       "url": "https://cp-algorithms.com/geometry/halfplane-intersection.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      },
+      {
+       "title": "Convex Hull (extensions)",
+       "url": "https://usaco.guide/plat/convex-hull",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1195F",
+       "src": "cf",
+       "name": "Geometers Anonymous Club",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "87E",
+       "src": "cf",
+       "name": "Mogohu-Rea Idol",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "682E",
+       "src": "cf",
+       "name": "Alyona and Triangles",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "randomized",
+   "name": "Randomized algorithms & hashing tricks",
+   "cfTags": [
+    "probabilities"
+   ],
+   "subtopics": [
+    {
+     "id": "rand-rng-antihash",
+     "name": "Good RNG & hashing custom keys",
+     "tier": 1400,
+     "order": 1,
+     "prereq": [
+      "@ds-hashmap"
+     ],
+     "summary": "Use mt19937 seeded by time instead of rand(), and protect unordered_map / hashing against anti-hash tests with a randomised custom hash (splitmix64). Turn mathematical objects into canonical keys (reduced fractions, transformed values) so they can be counted in a hash map. Matters on Codeforces because open hacking targets predictable hashes.",
+     "learn": [
+      "mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count()); uniform_int_distribution for ranges; shuffle(v.begin(), v.end(), rng)",
+      "rand() has RAND_MAX 32767 on some judges and is predictable",
+      "unordered_map can be blown up to O(n) per operation by crafted tests; use a splitmix64 hash with a random offset, or map",
+      "Polynomial hashing: random base, mod 2^61-1 or two moduli to avoid anti-hash tests",
+      "Use canonical keys (normalised fractions with sign fixed, prime-signature vectors) when hashing mathematical objects",
+      "Algebraic rewriting into a key: (a+b)(a^2+b^2) = k  <=>  a^4 - k*a = b^4 - k*b (mod p) after multiplying by (a-b)"
+     ],
+     "resources": [
+      {
+       "title": "Don't use rand(): a guide to random number generators in C++",
+       "url": "https://codeforces.com/blog/entry/61587",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      },
+      {
+       "title": "Blowing up unordered_map, and how to stop getting hacked on it",
+       "url": "https://codeforces.com/blog/entry/62393",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      },
+      {
+       "title": "Hash Maps",
+       "url": "https://usaco.guide/gold/hashmaps",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "String Hashing",
+       "url": "https://usaco.guide/gold/hashing",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      }
+     ],
+     "problems": [
+      {
+       "id": "988C",
+       "src": "cf",
+       "name": "Equal Sums",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1133D",
+       "src": "cf",
+       "name": "Zero Quantity Maximization",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1225D",
+       "src": "cf",
+       "name": "Power Products",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1188B",
+       "src": "cf",
+       "name": "Count Pairs",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "rand-random-input",
+     "name": "Random input, expected behaviour & birthday paradox",
+     "tier": 1700,
+     "order": 2,
+     "prereq": [
+      "rand-rng-antihash"
+     ],
+     "summary": "Some problems promise random tests or contain a random process; then the answer has a provable typical shape (first 1 bit appears early, few prefix maxima, small depth) or a pigeonhole/birthday argument bounds the brute force. Recognise statements that say \"tests are generated randomly\", or when values are bounded so a collision must appear quickly.",
+     "learn": [
+      "Random binary string: the first 1 and the first 0 after it appear within O(log n) positions with high probability, so \"try only a few shifts\" is enough",
+      "Random permutations: expected number of prefix maxima is O(log n); a random swap changes inversion parity, so parity identifies the number of swaps",
+      "Birthday/pigeonhole: if pair sums lie in [1, 2V], among more than 2V pairs two must collide, so brute force over pairs stops after O(V) steps",
+      "Randomised algorithms with expected guarantees: random shuffle before incremental algorithms (min enclosing circle), random pivot in quicksort/quickselect",
+      "Random binary trees and random walks have O(log n) / O(sqrt n) typical sizes; exploit them only when the statement guarantees randomness",
+      "Always analyse failure probability across all tests (union bound) before relying on luck"
+     ],
+     "resources": [
+      {
+       "title": "Randomized algorithms (Monte Carlo / Las Vegas)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.5 (p. 231)",
+       "minutes": 15
+      },
+      {
+       "title": "Randomized Algorithms",
+       "url": "https://usaco.guide/adv/random",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "Randomized Algorithms and Online Judges",
+       "url": "https://codeforces.com/blog/entry/84215",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1743D",
+       "src": "cf",
+       "name": "Problem with Random Tests",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "986B",
+       "src": "cf",
+       "name": "Petr and Permutations",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1500A",
+       "src": "cf",
+       "name": "Going Home",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1773B",
+       "src": "cf",
+       "name": "BinCoin",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "rand-algorithms",
+     "name": "Random sampling (frequent elements, Monte Carlo)",
+     "tier": 2000,
+     "order": 3,
+     "prereq": [
+      "rand-rng-antihash",
+      "@prob-randomized"
+     ],
+     "summary": "Monte Carlo sampling: if the answer is determined by an element that occupies at least a 1/k fraction of the data (majority, half of the array, every friend likes the currency), pick random elements and verify each candidate. Recognise \"at least half / more than a third / at least n/2 elements\" conditions where a deterministic solution looks much harder.",
+     "learn": [
+      "If an element appears in >= 1/k of positions, ~20-30*k random picks find it with failure probability (1-1/k)^tries",
+      "Range majority: sample random positions in [l, r] and count occurrences with binary search on per-value position lists",
+      "Ghd / gcd of at least half: a random element is in the optimal half with probability 1/2; test all its divisors",
+      "Kuroni-style: with cost <= n, at least half of the elements change by <= 1, so try prime factors of a_i - 1, a_i, a_i + 1 for random i",
+      "Love-Hate: fix a random person in the answer and run SOS DP over the <= 15 currencies they like",
+      "Deterministic alternatives exist (Boyer-Moore voting on a segment tree, persistent tree); choose by implementation time"
+     ],
+     "resources": [
+      {
+       "title": "Randomized algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.5 (p. 231)",
+       "minutes": 15
+      },
+      {
+       "title": "Randomized Algorithms",
+       "url": "https://usaco.guide/adv/random",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "Randomized algorithms lecture, part 1 & 2",
+       "url": "https://codeforces.com/blog/entry/71097",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1514D",
+       "src": "cf",
+       "name": "Cut and Stick",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "2149G",
+       "src": "cf",
+       "name": "Buratsuta 3",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1523D",
+       "src": "cf",
+       "name": "Love-Hate",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1305F",
+       "src": "cf",
+       "name": "Kuroni and the Punishment",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "840D",
+       "src": "cf",
+       "name": "Destiny",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "364D",
+       "src": "cf",
+       "name": "Ghd",
+       "rating": 2900,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "rand-interactive",
+     "name": "Randomization in interactive problems",
+     "tier": 2100,
+     "order": 4,
+     "prereq": [
+      "rand-algorithms",
+      "@inter-binary-search"
+     ],
+     "summary": "Interactive problems with a query limit often need randomness: random probes to estimate an unknown size, random pivots to sort with comparison-like queries, or random choices to defeat an adaptive-looking interactor. Recognise a query budget like 2n, 40n or 60n where the deterministic worst case is too slow but the expected cost fits.",
+     "learn": [
+      "Sample random positions to land close to the target, then finish with a deterministic walk or binary search",
+      "Random pivots (quicksort-style) give expected O(n log n) queries for sorting/reconstruction problems",
+      "Random large jumps estimate an unknown cycle length (max seen label), then baby-step giant-step finishes it",
+      "If the interactor answers randomly, repeat queries and use the answers that cannot both be wrong",
+      "Shrink a candidate region by querying a random point inside it: expected O(log n) rounds",
+      "Use a fixed-seed-free RNG (time-seeded mt19937) so hacks cannot target your choices"
+     ],
+     "resources": [
+      {
+       "title": "Randomized Algorithms",
+       "url": "https://usaco.guide/adv/random",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "Randomized algorithms lecture, part 1 & 2",
+       "url": "https://codeforces.com/blog/entry/71097",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 40
+      },
+      {
+       "title": "Randomized algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.5 (p. 231)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "2074E",
+       "src": "cf",
+       "name": "Empty Triangle",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1729E",
+       "src": "cf",
+       "name": "Guess the Cycle Size",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "843B",
+       "src": "cf",
+       "name": "Interactive LowerBound",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1039B",
+       "src": "cf",
+       "name": "Subway Pursuit",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1114E",
+       "src": "cf",
+       "name": "Arithmetic Progression",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1918E",
+       "src": "cf",
+       "name": "ace5 and Task Order",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1840G1",
+       "src": "cf",
+       "name": "In Search of Truth (Easy Version)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1061F",
+       "src": "cf",
+       "name": "Lost Root",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bitset",
+   "name": "Bitset optimisation",
+   "cfTags": [
+    "bitmasks"
+   ],
+   "subtopics": [
+    {
+     "id": "bitset-basics",
+     "name": "Bitset optimisation (graphs, matrices, sets)",
+     "tier": 1900,
+     "order": 1,
+     "prereq": [],
+     "summary": "std::bitset packs booleans into 64-bit words so AND/OR/XOR/shift/popcount run n/64 times faster. Recognise it when an O(n^2) or O(n^3) boolean computation is just slightly too slow (n around 1e4-5e4).",
+     "learn": [
+      "bitset<N> needs a compile-time N; use the maximum constraint",
+      "count(), _Find_first(), _Find_next(i) iterate set bits quickly",
+      "Common uses: popcount of intersections (common neighbours, counting corner rectangles), reachability in DAGs (reach[v] |= reach[u])",
+      "Complexity becomes O(n^2 / w) or O(n^3 / w) with w = 64",
+      "Process DAG reachability in reverse topological order; for memory, process vertices in blocks",
+      "Precompute per-element bitsets and answer queries with XOR/AND + count",
+      "Pattern matching with wildcards/updates: keep one bitset of positions per letter, AND shifted letter bitsets (shift-and); O(n*m/64)",
+      "Pairs/triangles: for each point keep a bitset of points farther than d and test pairs with (a & b).any() while scanning edges in decreasing length"
+     ],
+     "resources": [
+      {
+       "title": "Bit optimizations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.4 (p. 100)",
+       "minutes": 15
+      },
+      {
+       "title": "Bitsets",
+       "url": "https://usaco.guide/plat/bitsets",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "Vectorization in C++",
+       "url": "https://usaco.guide/adv/vectorization",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2136",
+       "src": "cses",
+       "name": "Hamming Distance",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2137",
+       "src": "cses",
+       "name": "Corner Subgrid Count",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2138",
+       "src": "cses",
+       "name": "Reachable Nodes",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2143",
+       "src": "cses",
+       "name": "Reachability Queries",
+       "from": "curated"
+      },
+      {
+       "id": "33D",
+       "src": "cf",
+       "name": "Knights",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "981E",
+       "src": "cf",
+       "name": "Addition on Segments",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1194E",
+       "src": "cf",
+       "name": "Count The Rectangles",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1097F",
+       "src": "cf",
+       "name": "Alex and a TV Show",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "333E",
+       "src": "cf",
+       "name": "Summer Earnings",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "754E",
+       "src": "cf",
+       "name": "Dasha and cyclic table",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "576D",
+       "src": "cf",
+       "name": "Flights for Regular Customers",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "914F",
+       "src": "cf",
+       "name": "Substrings in a String",
+       "rating": 3000,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "divide-and-conquer",
+   "name": "Divide and conquer",
+   "cfTags": [
+    "divide and conquer"
+   ],
+   "subtopics": [
+    {
+     "id": "dc-recursion",
+     "name": "Divide & conquer basics",
+     "tier": 1200,
+     "order": 1,
+     "prereq": [],
+     "summary": "Solve a problem by splitting the input into halves (or around the minimum/maximum), solving recursively and combining. Recognise it when the structure is self-similar (strings of length 2^k, building a tree from a max, splitting a range at its minimum).",
+     "learn": [
+      "Write solve(l, r) and identify the combine step and the base case",
+      "Split at the maximum/minimum to build Cartesian-tree-like recursions",
+      "Recursion depth: halving gives O(log n); splitting at extremes can be O(n), consider an explicit stack",
+      "Complexity via the master theorem: T(n)=2T(n/2)+O(n) = O(n log n)",
+      "Enumerate all reachable values of a split process with recursion + set"
+     ],
+     "resources": [
+      {
+       "title": "Sorting theory (merge sort as divide & conquer)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 3.1 (p. 25)",
+       "minutes": 15
+      },
+      {
+       "title": "Segment Tree, part 1 (recursive range splitting)",
+       "url": "https://codeforces.com/edu/course/2/lesson/4",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU: Segment Tree, part 1",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1461D",
+       "src": "cf",
+       "name": "Divide and Summarize",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "768B",
+       "src": "cf",
+       "name": "Code For 1",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "559B",
+       "src": "cf",
+       "name": "Equivalent Strings",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1111C",
+       "src": "cf",
+       "name": "Creative Snap",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "873D",
+       "src": "cf",
+       "name": "Merge Sort",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "448C",
+       "src": "cf",
+       "name": "Painting Fence",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1696D",
+       "src": "cf",
+       "name": "Permutation Graph",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1400E",
+       "src": "cf",
+       "name": "Clear the Multiset",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dc-merge-sort-inversions",
+     "name": "Merge sort & counting inversions",
+     "tier": 1500,
+     "order": 2,
+     "prereq": [
+      "dc-recursion"
+     ],
+     "summary": "Count pairs i<j with a_i > a_j (inversions) in O(n log n) during merge sort or with a Fenwick tree; parity of inversions decides reachability by swaps. Recognise it whenever crossing pairs, adjacent swaps or \"number of pairs with prefix condition\" appear.",
+     "learn": [
+      "During merge, when taking from the right half add the number of remaining left elements",
+      "Minimum adjacent swaps to sort = number of inversions",
+      "A swap changes the inversion parity; a permutation's parity = (n - cycles) mod 2",
+      "Generalise: count pairs (i<j) with pre_j - pre_i < t by merge-sorting prefix sums",
+      "Bitwise variants: count inversions per bit level on a trie / recursive split"
+     ],
+     "resources": [
+      {
+       "title": "Sorting theory (inversions, merge sort)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 3.1 (p. 25)",
+       "minutes": 20
+      },
+      {
+       "title": "Introduction to Sorting",
+       "url": "https://usaco.guide/bronze/intro-sorting",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      },
+      {
+       "title": "Segment tree part 1 (inversions problems)",
+       "url": "https://codeforces.com/edu/course/2/lesson/4",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU: Segment Tree, part 1",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "1918B",
+       "src": "cf",
+       "name": "Minimize Inversions",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1760E",
+       "src": "cf",
+       "name": "Binary Inversions",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1983D",
+       "src": "cf",
+       "name": "Swap Dilemma",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "911D",
+       "src": "cf",
+       "name": "Inversion Counting",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "986B",
+       "src": "cf",
+       "name": "Petr and Permutations",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "540E",
+       "src": "cf",
+       "name": "Infinite Inversions",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1917D",
+       "src": "cf",
+       "name": "Yet Another Inversions Problem",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "220E",
+       "src": "cf",
+       "name": "Little Elephant and Inversions",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dc-on-array",
+     "name": "D&C over the midpoint (static)",
+     "tier": 2200,
+     "order": 3,
+     "prereq": [
+      "dc-recursion",
+      "@ds-sparse-table"
+     ],
+     "summary": "Answer counting questions over all subarrays by recursing on halves and handling subarrays that cross the midpoint in O(len), or answer offline range queries by splitting at the midpoint (divide-and-conquer static range queries). Recognise it when a property of subarrays is easy to evaluate for those containing a fixed position.",
+     "learn": [
+      "Count crossing subarrays: precompute suffix info of the left half and prefix info of the right half, combine with two pointers or maps",
+      "Static range queries: queries crossing mid are answered with precomputed left/right aggregates; others recurse",
+      "Split at the maximum and iterate over the smaller side gives O(n log n) (small-to-large)",
+      "Total complexity O(n log n) or O(n log^2 n)",
+      "Closest pair is a classic instance"
+     ],
+     "resources": [
+      {
+       "title": "Divide & Conquer - SRQ",
+       "url": "https://usaco.guide/plat/DC-SRQ",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "Closest pair problem (D&C alternative)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 30.2 (p. 277)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1647",
+       "src": "cses",
+       "name": "Static Range Minimum Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1691D",
+       "src": "cf",
+       "name": "Max GEQ Sum",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1156E",
+       "src": "cf",
+       "name": "Special Segments of Permutation",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1793F",
+       "src": "cf",
+       "name": "Rebrending",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1730E",
+       "src": "cf",
+       "name": "Maximums and Minimums",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "549F",
+       "src": "cf",
+       "name": "Yura and Developers",
+       "rating": 2800,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dc-cdq",
+     "name": "CDQ divide & conquer (offline)",
+     "tier": 2400,
+     "order": 4,
+     "prereq": [
+      "dc-merge-sort-inversions",
+      "@ds-fenwick"
+     ],
+     "summary": "CDQ divide and conquer solves offline problems where each update affects later queries (3D partial order, dynamic 2D counting) by recursing on time and letting the left half's updates answer the right half's queries with a sweep + Fenwick tree. Recognise it when a 2D data structure seems necessary but everything is offline.",
+     "learn": [
+      "Sort by first key, recurse on halves, then contribute left-half updates to right-half queries sorted by the second key with a BIT on the third",
+      "Complexity O(n log^2 n) with small memory compared to 2D structures",
+      "Works for dynamic point-add / rectangle-query by treating time as a dimension",
+      "Clear BIT changes by undoing exactly the updates you did",
+      "Alternatives: offline 2D BIT, BIT of sorted vectors, wavelet trees"
+     ],
+     "resources": [
+      {
+       "title": "CDQ Divide and Conquer",
+       "url": "https://robert1003.github.io/2020/01/31/cdq-divide-and-conquer.html",
+       "kind": "other",
+       "where": "Article linked from USACO Guide Platinum 2D Range Queries",
+       "minutes": 30
+      },
+      {
+       "title": "2D Range Queries",
+       "url": "https://usaco.guide/plat/2DRQ",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1739",
+       "src": "cses",
+       "name": "Forest Queries II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "641E",
+       "src": "cf",
+       "name": "Little Artem and Time Machine",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "762E",
+       "src": "cf",
+       "name": "Radio stations",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1045G",
+       "src": "cf",
+       "name": "AI robots",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1093E",
+       "src": "cf",
+       "name": "Intersection of Permutations",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "848C",
+       "src": "cf",
+       "name": "Goodbye Souvenir",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "expression-parsing",
+   "name": "Expression parsing",
+   "cfTags": [
+    "expression parsing"
+   ],
+   "subtopics": [
+    {
+     "id": "parse-brackets",
+     "name": "Stack parsing of nested structures",
+     "tier": 1400,
+     "order": 1,
+     "prereq": [
+      "@str-brackets"
+     ],
+     "summary": "Check and repair bracket sequences, match nested structures and simulate nesting with a stack (loops, comments, try/catch blocks). Recognise it from nested input formats or anything with opening/closing tokens.",
+     "learn": [
+      "Balance counter: never negative and ends at 0 for a regular sequence",
+      "Stack of positions gives the matching bracket of each closer and the longest regular substring",
+      "Multiple bracket types: push the opener, check the type on close",
+      "Greedy fixes: count moves/replacements from the minimum prefix balance",
+      "Nested multiplications/loops: keep a stack of multipliers and cap values to avoid overflow"
+     ],
+     "resources": [
+      {
+       "title": "Stacks",
+       "url": "https://usaco.guide/gold/stacks",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "Balanced bracket sequences",
+       "url": "https://cp-algorithms.com/combinatorics/bracket_sequences.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1175B",
+       "src": "cf",
+       "name": "Catch Overflow!",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "223A",
+       "src": "cf",
+       "name": "Bracket Sequence",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1153C",
+       "src": "cf",
+       "name": "Serval and Parenthesis Sequence",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "747E",
+       "src": "cf",
+       "name": "Comments",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "195C",
+       "src": "cf",
+       "name": "Try and Catch",
+       "rating": 1800,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "parse-expressions",
+     "name": "Expression parsing & evaluation",
+     "tier": 1800,
+     "order": 2,
+     "prereq": [
+      "parse-brackets"
+     ],
+     "summary": "Evaluate or transform arithmetic/logical expressions with operator precedence using recursive descent or the shunting-yard (two stacks) algorithm, and build expression trees. Recognise it in problems that give formulas, macro definitions or \"insert brackets/operators\" tasks.",
+     "learn": [
+      "Recursive descent: expr -> term {(+|-) term}, term -> factor {(*|/) factor}, factor -> number | (expr)",
+      "Shunting-yard: operator stack + value stack, pop while top has higher/equal precedence (left-assoc)",
+      "Unary minus and right-associative operators need special handling",
+      "Build an expression tree to evaluate many assignments or run DP over it",
+      "Try all bracket placements only where they matter (around + segments between *)",
+      "Parse tokens first (numbers, identifiers, operators) to keep the grammar code simple"
+     ],
+     "resources": [
+      {
+       "title": "Expression parsing",
+       "url": "https://cp-algorithms.com/string/expression_parsing.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "778B",
+       "src": "cf",
+       "name": "Bitwise Formula",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "2052E",
+       "src": "cf",
+       "name": "Expression Correction",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "39A",
+       "src": "cf",
+       "name": "C*++ Calculations",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "552E",
+       "src": "cf",
+       "name": "Vanya and Brackets",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "7E",
+       "src": "cf",
+       "name": "Defining Macros",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "217C",
+       "src": "cf",
+       "name": "Formurosa",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "115D",
+       "src": "cf",
+       "name": "Unambiguous Arithmetic Expression",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sqrt-heuristics",
+   "name": "Square-root heuristics",
+   "cfTags": [
+    "brute force",
+    "data structures"
+   ],
+   "subtopics": [
+    {
+     "id": "sqrt-heuristics",
+     "name": "Advanced sqrt heuristics (rebuild, heavy sets, distinct sizes)",
+     "tier": 2200,
+     "order": 1,
+     "prereq": [
+      "@ds-sqrt-decomposition"
+     ],
+     "summary": "Beyond plain block decomposition: rebuild a static structure every sqrt(q) updates and handle the buffer by brute force, split sets/vertices into heavy (size > sqrt) and light, and use that a total size n gives only O(sqrt n) distinct sizes. Recognise it when two naive approaches are fast in opposite regimes.",
+     "learn": [
+      "Rebuild every B updates (e.g. multi-source BFS) and answer queries with static data + O(B) buffered updates",
+      "Heavy/light sets: at most n/B heavy sets; heavy-heavy and heavy-light pairs are checked differently",
+      "Sum of sizes n => at most O(sqrt n) distinct sizes: group equal sizes (binary splitting) for knapsack",
+      "Block jump pointers: store where you exit a block and how many steps it takes",
+      "Balance B = sqrt(n * cost_a / cost_b); try a few values when constant factors are large",
+      "Value thresholds: small values/ratios are enumerated directly, large ones force few candidates (e.g. geometric triples a, ab, ab^2 with b > cube root)"
+     ],
+     "resources": [
+      {
+       "title": "Combining algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 27.1 (p. 252)",
+       "minutes": 15
+      },
+      {
+       "title": "Integer partitions",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 27.2 (p. 254)",
+       "minutes": 10
+      },
+      {
+       "title": "Square Root Decomposition",
+       "url": "https://usaco.guide/plat/sqrt",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "Applications of Square Root Decomposition",
+       "url": "https://codeforces.com/blog/entry/83248",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      },
+      {
+       "title": "SQRT decomposition for beginners",
+       "url": "https://codeforces.com/blog/entry/54133",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1822G2",
+       "src": "cf",
+       "name": "Magic Triples (Hard Version)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1468M",
+       "src": "cf",
+       "name": "Similar Sets",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "342E",
+       "src": "cf",
+       "name": "Xenia and Tree",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1619H",
+       "src": "cf",
+       "name": "Permutation and Queries",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "95E",
+       "src": "cf",
+       "name": "Lucky Country",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "455D",
+       "src": "cf",
+       "name": "Serega and Fun",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "simulation",
+   "name": "Simulation & schedules",
+   "cfTags": [
+    "schedules",
+    "implementation"
+   ],
+   "subtopics": [
+    {
+     "id": "sim-timeline",
+     "name": "Timeline simulation & schedules",
+     "tier": 1300,
+     "order": 1,
+     "prereq": [
+      "@impl-simulation",
+      "@sort-compress-events"
+     ],
+     "summary": "Simulate processes that evolve over time - queues, servers, machines, traffic lights, robots following programs - by jumping from event to event instead of tick by tick, or by finding the period of the process. Recognise it from statements describing who does what at which moment.",
+     "learn": [
+      "Represent the state at event times only; jump time forward to the next event (next arrival, next finish)",
+      "Use a queue for FIFO waiting lines and a priority_queue / set of (finish time, id) for servers",
+      "If the state space is small, the process is eventually periodic: detect the repeat and skip k mod period steps",
+      "Cyclic schedules (lights, repeated programs): work modulo the cycle length and double the string to handle wrap-around",
+      "Binary search on the finishing time when tasks can be redistributed (schedule feasibility check)",
+      "Be careful with ties: same-time events must follow the statement order",
+      "x -> f(x) mod m processes: find the first hit time t0 and the cycle length c (at most m steps each), then solve t0 + k*c for both processes"
+     ],
+     "resources": [
+      {
+       "title": "Simulation",
+       "url": "https://usaco.guide/bronze/simulation",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 25
+      },
+      {
+       "title": "Scheduling",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 6.2 (p. 58)",
+       "minutes": 10
+      },
+      {
+       "title": "Sweep Line (event processing)",
+       "url": "https://usaco.guide/plat/sweep-line",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1607B",
+       "src": "cf",
+       "name": "Odd Grasshopper",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1059A",
+       "src": "cf",
+       "name": "Cashier",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1744C",
+       "src": "cf",
+       "name": "Traffic Light",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "2070B",
+       "src": "cf",
+       "name": "Robot Program",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "920B",
+       "src": "cf",
+       "name": "Tea Queue",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1941D",
+       "src": "cf",
+       "name": "Rudolf and the Ball Game",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "747C",
+       "src": "cf",
+       "name": "Servers",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "982B",
+       "src": "cf",
+       "name": "Bus of Characters",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1701C",
+       "src": "cf",
+       "name": "Schedule Management",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1840E",
+       "src": "cf",
+       "name": "Character Blocking",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "547A",
+       "src": "cf",
+       "name": "Mike and Frog",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "practice-skills",
+   "name": "Practice skills (non-graded)",
+   "graded": false,
+   "cfTags": [
+    "*special"
+   ],
+   "subtopics": [
+    {
+     "id": "skill-reading",
+     "name": "Reading problems & constraints",
+     "tier": 800,
+     "order": 1,
+     "prereq": [
+      "@impl-complexity"
+     ],
+     "summary": "Read the whole statement, the constraints and the samples before coding; derive the target complexity from n. Most early wrong answers come from misreading.",
+     "learn": [
+      "n <= 1e5..2e5: O(n log n); n <= 5000: O(n^2); n <= 20: O(2^n * n); n <= 1e18: O(log n) or formula",
+      "Re-read the output format and edge cases (n = 1, all equal, negative values)",
+      "Work through the samples by hand and invent a small extra test",
+      "Check the sum-of-n guarantee over test cases"
+     ],
+     "resources": [
+      {
+       "title": "Estimating efficiency",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 2.3 (p. 21)",
+       "minutes": 10
+      },
+      {
+       "title": "Expected Knowledge",
+       "url": "https://usaco.guide/general/expected-knowledge",
+       "kind": "usaco",
+       "where": "USACO Guide General",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "546A",
+       "src": "cf",
+       "name": "Soldier and Bananas",
+       "rating": 800,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "skill-debugging",
+     "name": "Debugging techniques",
+     "tier": 1000,
+     "order": 2,
+     "prereq": [
+      "skill-reading"
+     ],
+     "summary": "A systematic checklist for wrong answers and runtime errors: overflow, uninitialised data, off-by-one, resetting between test cases, and compiler flags/sanitisers.",
+     "learn": [
+      "Compile with -Wall -Wextra -fsanitize=address,undefined -D_GLIBCXX_DEBUG while testing",
+      "Check overflow (int vs long long), array bounds, multitest resets",
+      "Print intermediate values with a debug macro that is disabled on submit",
+      "Re-derive the algorithm on the failing small case by hand"
+     ],
+     "resources": [
+      {
+       "title": "How to Debug",
+       "url": "https://usaco.guide/general/debugging-checklist",
+       "kind": "usaco",
+       "where": "USACO Guide General",
+       "minutes": 15
+      },
+      {
+       "title": "Debugging C++",
+       "url": "https://usaco.guide/general/debugging-cpp",
+       "kind": "usaco",
+       "where": "USACO Guide General",
+       "minutes": 25
+      }
+     ],
+     "problems": []
+    },
+    {
+     "id": "skill-stress-testing",
+     "name": "Stress testing",
+     "tier": 1300,
+     "order": 3,
+     "prereq": [
+      "skill-debugging"
+     ],
+     "summary": "Write a brute-force solution and a random test generator, then compare outputs in a loop to find a small failing test. The fastest way out of \"WA on test 2\" when you cannot see the bug.",
+     "learn": [
+      "Generator with a seed argument and small parameters (n <= 6) so counterexamples are readable",
+      "Brute force that is obviously correct (try all subsets/permutations)",
+      "Script: loop { gen > in; sol < in > a; brute < in > b; diff a b || break }",
+      "Also stress for time limits with maximum-size tests"
+     ],
+     "resources": [
+      {
+       "title": "Basic Debugging (stress testing)",
+       "url": "https://usaco.guide/general/basic-debugging",
+       "kind": "usaco",
+       "where": "USACO Guide General",
+       "minutes": 25
+      }
+     ],
+     "problems": []
+    },
+    {
+     "id": "skill-contest-strategy",
+     "name": "Contest strategy & time management",
+     "tier": 1200,
+     "order": 4,
+     "prereq": [
+      "skill-reading"
+     ],
+     "summary": "How to allocate time in a 2-hour Codeforces round: read the next problem when stuck, check standings, avoid penalty from careless submissions, and upsolve afterwards.",
+     "learn": [
+      "Solve in order but read one problem ahead; switch if stuck for ~20-30 minutes",
+      "Test on samples and an edge case before submitting: each WA costs penalty",
+      "Look at the standings to see which problems are being solved",
+      "Upsolve 1-2 problems above your level after every contest and read the editorial"
+     ],
+     "resources": [
+      {
+       "title": "Contest Strategy",
+       "url": "https://usaco.guide/general/contest-strategy",
+       "kind": "usaco",
+       "where": "USACO Guide General",
+       "minutes": 15
+      },
+      {
+       "title": "How to Practice",
+       "url": "https://usaco.guide/general/practicing",
+       "kind": "usaco",
+       "where": "USACO Guide General",
+       "minutes": 20
+      },
+      {
+       "title": "Contests and resources",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 1.6 (p. 15)",
+       "minutes": 5
+      }
+     ],
+     "problems": []
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,4303 @@
+{
+ "area": "graphs",
+ "topics": [
+  {
+   "id": "graph-fundamentals",
+   "name": "Graph Fundamentals & Traversal",
+   "cfTags": [
+    "graphs",
+    "dfs and similar"
+   ],
+   "subtopics": [
+    {
+     "id": "graph-representation",
+     "name": "Graph basics & representation",
+     "tier": 800,
+     "order": 1,
+     "prereq": [],
+     "summary": "Vertices, edges, degrees, directed vs undirected, weighted graphs, trees, and how to store them (adjacency list, adjacency matrix, edge list). Many easy CF problems are pure reasoning about degrees, edge counts and simple structure once you model the input as a graph.",
+     "learn": [
+      "Terminology: path, cycle, simple graph, connected, tree (n-1 edges, connected, acyclic), forest, complete graph, DAG",
+      "Handshake lemma: sum of degrees = 2m; number of odd-degree vertices is even",
+      "Adjacency list (vector<vector<int>>) is the default: O(n+m) memory; matrix only when n <= ~5000 or you need O(1) edge lookup",
+      "Edge list (u,v,w) is what Kruskal / Bellman-Ford iterate over; store edge indices when you must mark edges as used",
+      "Read input carefully: 1-indexed vs 0-indexed, multi-edges and self-loops, multiple test cases (reset adjacency lists, sum of n bounded)",
+      "Model hidden graphs: grid cells, numbers connected by an operation, permutations (i -> p_i) are all graphs"
+     ],
+     "resources": [
+      {
+       "title": "CPH 11.1 Graph terminology",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 11.1 (p. 109)",
+       "minutes": 20
+      },
+      {
+       "title": "CPH 11.2 Graph representation",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 11.2 (p. 113)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Introduction to Graphs",
+       "url": "https://usaco.guide/bronze/intro-graphs",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1944A",
+       "src": "cf",
+       "name": "Destroying Bridges",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1255B",
+       "src": "cf",
+       "name": "Fridge Lockers",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1559C",
+       "src": "cf",
+       "name": "Mocha and Hiking",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1581B",
+       "src": "cf",
+       "name": "Diameter of Graph",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1711B",
+       "src": "cf",
+       "name": "Party",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1829F",
+       "src": "cf",
+       "name": "Forever Winter",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1065B",
+       "src": "cf",
+       "name": "Vasya and Isolated Vertices",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1548A",
+       "src": "cf",
+       "name": "Web of Lies",
+       "rating": 1400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "graph-dfs-bfs",
+     "name": "DFS & BFS traversal",
+     "tier": 1100,
+     "order": 2,
+     "prereq": [
+      "graph-representation"
+     ],
+     "summary": "Depth-first and breadth-first search visit every vertex reachable from a source in O(n+m). They are the building block of nearly every other graph algorithm: reachability, components, trees, orderings, and layered distances.",
+     "learn": [
+      "Recursive DFS with a visited array; iterative DFS with an explicit stack when depth can reach 1e5-1e6 (stack overflow risk)",
+      "BFS with a queue processes vertices in non-decreasing distance order (layers)",
+      "DFS on trees: pass parent instead of visited; compute subtree sizes, depths, entry/exit times on the way",
+      "Peeling / layered BFS from leaves (Kahn-style) answers \"remove all leaves k times\" problems",
+      "Reachability on directed graphs: DFS from s in G and in the reversed graph",
+      "Always reset per-test-case arrays only for the n vertices used (sum of n constraints)"
+     ],
+     "resources": [
+      {
+       "title": "CPH 12.1 Depth-first search",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 12.1 (p. 117)",
+       "minutes": 15
+      },
+      {
+       "title": "CPH 12.2 Breadth-first search",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 12.2 (p. 119)",
+       "minutes": 15
+      },
+      {
+       "title": "CPH 12.3 Applications",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 12.3 (p. 121)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Graph Traversal",
+       "url": "https://usaco.guide/silver/graph-traversal",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Depth First Search",
+       "url": "https://cp-algorithms.com/graph/depth-first-search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Breadth First Search",
+       "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1676G",
+       "src": "cf",
+       "name": "White-Black Balanced Subtrees",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1675D",
+       "src": "cf",
+       "name": "Vertical Paths",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1830A",
+       "src": "cf",
+       "name": "Copil Copac Draws Trees",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1106D",
+       "src": "cf",
+       "name": "Lunar New Year and a Wander",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1593E",
+       "src": "cf",
+       "name": "Gardener and Tree",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1037D",
+       "src": "cf",
+       "name": "Valid BFS?",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1760G",
+       "src": "cf",
+       "name": "SlavicG's Favorite Problem",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1328E",
+       "src": "cf",
+       "name": "Tree Queries",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1682",
+       "src": "cses",
+       "name": "Flight Routes Check",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "graph-components",
+     "name": "Connected components",
+     "tier": 1100,
+     "order": 3,
+     "prereq": [
+      "graph-dfs-bfs"
+     ],
+     "summary": "Split an undirected graph into maximal connected pieces with DFS/BFS (or DSU). Problems ask for the number/size of components, the minimum number of edges to connect everything (components - 1), or a per-component aggregate.",
+     "learn": [
+      "Label each vertex with a component id via repeated DFS; count sizes in the same pass",
+      "Edges needed to connect c components = c - 1",
+      "Per-component aggregates (min, max, sum, min/max index) solve many greedy problems",
+      "Components of an \"equivalence\" relation (same letter, same group) -> graph or DSU",
+      "Build the graph implicitly (e.g. via shared letters/values using extra nodes) to avoid O(n^2) edges",
+      "DSU is an alternative when edges arrive online",
+      "Planar graphs: Euler's formula V - E + F = 1 + C counts regions/faces (USACO Guide Advanced: Euler's Formula)"
+     ],
+     "resources": [
+      {
+       "title": "CPH 12.3 Applications - connectivity check",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 12.3 (p. 121)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Graph Traversal - connected components",
+       "url": "https://usaco.guide/silver/graph-traversal",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Search for connected components",
+       "url": "https://cp-algorithms.com/graph/search-for-connected-components.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Euler's Formula",
+       "url": "https://usaco.guide/adv/eulers-formula",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1534C",
+       "src": "cf",
+       "name": "Little Alawn's Puzzle",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1167C",
+       "src": "cf",
+       "name": "News Distribution",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1559D1",
+       "src": "cf",
+       "name": "Mocha and Diana (Easy Version)",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1263D",
+       "src": "cf",
+       "name": "Secret Passwords",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "2060E",
+       "src": "cf",
+       "name": "Graph Composition",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "731C",
+       "src": "cf",
+       "name": "Socks",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "500B",
+       "src": "cf",
+       "name": "New Year Permutation",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1833E",
+       "src": "cf",
+       "name": "Round Dance",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1253D",
+       "src": "cf",
+       "name": "Harmonious Graph",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1666",
+       "src": "cses",
+       "name": "Building Roads",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "graph-flood-fill",
+     "name": "Flood fill on grids",
+     "tier": 1100,
+     "order": 4,
+     "prereq": [
+      "graph-dfs-bfs"
+     ],
+     "summary": "Treat each grid cell as a vertex adjacent to its 4 (or 8) neighbours and run DFS/BFS to find regions. Typical tasks: count rooms/lakes, region sizes, whether a cell can reach the border, or blocking cells to separate regions.",
+     "learn": [
+      "Use dx/dy arrays and a bounds check helper; mark visited when pushing, not when popping",
+      "Iterative BFS/stack avoids recursion depth issues on 1e6-cell grids",
+      "Regions touching the border are special (e.g. lakes vs ocean): start a flood fill from all border cells first",
+      "Pre-compute region id + size for each cell to answer \"what if I open this cell\" in O(4) per query",
+      "Greedy blocking: surround bad cells with walls, then verify with one flood fill"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Flood Fill",
+       "url": "https://usaco.guide/silver/flood-fill",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 30
+      },
+      {
+       "title": "CPH 12.3 Applications",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 12.3 (p. 121)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1829E",
+       "src": "cf",
+       "name": "The Lakes",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "2034C",
+       "src": "cf",
+       "name": "Trapped in the Witch's Labyrinth",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "377A",
+       "src": "cf",
+       "name": "Maze",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "616C",
+       "src": "cf",
+       "name": "The Labyrinth",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "723D",
+       "src": "cf",
+       "name": "Lakes in Berland",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1365D",
+       "src": "cf",
+       "name": "Solve The Maze",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1985H1",
+       "src": "cf",
+       "name": "Maximize the Largest Component (Easy Version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "598D",
+       "src": "cf",
+       "name": "Igor In the Museum",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1192",
+       "src": "cses",
+       "name": "Counting Rooms",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "graph-bipartite",
+     "name": "Bipartite check / 2-colouring",
+     "tier": 1300,
+     "order": 5,
+     "prereq": [
+      "graph-dfs-bfs"
+     ],
+     "summary": "A graph is bipartite iff it has no odd cycle iff its vertices can be 2-coloured so every edge joins different colours. Recognise it in problems about splitting into two teams/sets with \"must differ\" constraints, or orienting edges so no path has length 2.",
+     "learn": [
+      "BFS/DFS colouring: colour[v] = colour[u] ^ 1; conflict => odd cycle => not bipartite",
+      "Each connected component can be flipped independently -> choose the smaller side, or count 2^(components) colourings",
+      "Trees are always bipartite (colour by depth parity)",
+      "Odd cycle certificate: reconstruct from the conflict edge using parent pointers",
+      "Max number of edges you can add while staying bipartite = |L|*|R| - m (tree case)",
+      "Parity constraints (x_u xor x_v = c) generalise this -> weighted DSU / 2-SAT"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Graph Traversal - graph two-coloring",
+       "url": "https://usaco.guide/silver/graph-traversal",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 45
+      },
+      {
+       "title": "CPH 12.3 Applications - bipartiteness check",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 12.3 (p. 121)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Check whether a graph is bipartite",
+       "url": "https://cp-algorithms.com/graph/bipartite-check.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "862B",
+       "src": "cf",
+       "name": "Mahmoud and Ehab and the bipartiteness",
+       "rating": 1300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "687A",
+       "src": "cf",
+       "name": "NP-Hard Problem",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1702E",
+       "src": "cf",
+       "name": "Split Into Two Sets",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1093D",
+       "src": "cf",
+       "name": "Beautiful Graph",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1144F",
+       "src": "cf",
+       "name": "Graph Without Long Directed Paths",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1176E",
+       "src": "cf",
+       "name": "Cover it!",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1949I",
+       "src": "cf",
+       "name": "Disks",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1991E",
+       "src": "cf",
+       "name": "Coloring Game",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2154D",
+       "src": "cf",
+       "name": "Catshock",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1354E",
+       "src": "cf",
+       "name": "Graph Coloring",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1668",
+       "src": "cses",
+       "name": "Building Teams",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "graph-cycle-detection",
+     "name": "Cycle detection & finding",
+     "tier": 1500,
+     "order": 6,
+     "prereq": [
+      "graph-dfs-bfs"
+     ],
+     "summary": "Detect and output a cycle in an undirected graph (a back edge to a non-parent) or a directed graph (an edge to a vertex currently on the recursion stack, 3-colour DFS). Shows up in \"is it a tree/cactus\", \"find any cycle\", and unicyclic-graph problems.",
+     "learn": [
+      "Undirected: DFS, an edge to a visited vertex other than the parent closes a cycle (careful with multi-edges)",
+      "Directed: colours white/grey/black; an edge into a grey vertex = cycle; recover it with parent pointers",
+      "Connected + n edges = exactly one cycle (unicyclic / pseudotree); trees hanging off the cycle",
+      "A component is a simple cycle iff every vertex has degree 2",
+      "Shortest cycle (girth) in unweighted graphs: BFS from every vertex, O(nm)",
+      "DSU detects the first edge that creates a cycle in an undirected graph"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Checking a graph for acyclicity and finding a cycle",
+       "url": "https://cp-algorithms.com/graph/finding-cycle.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "CPH 16.4 Cycle detection",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 16.4 (p. 155)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH 12.3 Applications - cycle detection",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 12.3 (p. 121)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "103B",
+       "src": "cf",
+       "name": "Cthulhu",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "977E",
+       "src": "cf",
+       "name": "Cyclic Components",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1411C",
+       "src": "cf",
+       "name": "Peaceful Rooks",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1873H",
+       "src": "cf",
+       "name": "Mad City",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1817B",
+       "src": "cf",
+       "name": "Fish Graph",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1454E",
+       "src": "cf",
+       "name": "Number of Simple Paths",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1669",
+       "src": "cses",
+       "name": "Round Trip",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1678",
+       "src": "cses",
+       "name": "Round Trip II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1707",
+       "src": "cses",
+       "name": "Graph Girth",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "graph-dfs-tree",
+     "name": "DFS tree, back edges & constructive DFS",
+     "tier": 1900,
+     "order": 7,
+     "prereq": [
+      "graph-cycle-detection"
+     ],
+     "summary": "In an undirected DFS every non-tree edge is a back edge connecting a vertex to its ancestor. This structure gives short proofs for \"find a long path or a big independent set / short cycle\" constructive problems and is the foundation for bridges and articulation points.",
+     "learn": [
+      "Undirected DFS has no cross edges: non-tree edges always go ancestor <-> descendant",
+      "Long path in the DFS tree (depth >= k) or many back edges => long cycle; otherwise a deep-level independent set",
+      "Use depth[] of endpoints of back edges to measure cycle lengths",
+      "Spanning-tree + back-edge view is how low-link values (bridges, cut vertices) are derived",
+      "Pick the vertex with the deepest back edge to find a cycle of bounded length",
+      "Ramsey/pigeonhole style arguments (\"either A or B exists\") are typical for this pattern"
+     ],
+     "resources": [
+      {
+       "title": "[Tutorial] The DFS tree and its applications (Radewoosh)",
+       "url": "https://codeforces.com/blog/entry/68138",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Depth First Search - classification of edges",
+       "url": "https://cp-algorithms.com/graph/depth-first-search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "263D",
+       "src": "cf",
+       "name": "Cycle in Graph",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1364D",
+       "src": "cf",
+       "name": "Ehab's Last Corollary",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "858F",
+       "src": "cf",
+       "name": "Wizard's Tour",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1325F",
+       "src": "cf",
+       "name": "Ehab's Last Theorem",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1391E",
+       "src": "cf",
+       "name": "Pairs of Pairs",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1103C",
+       "src": "cf",
+       "name": "Johnny Solving",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "shortest-paths",
+   "name": "Shortest Paths",
+   "cfTags": [
+    "shortest paths",
+    "graphs"
+   ],
+   "subtopics": [
+    {
+     "id": "sp-bfs",
+     "name": "BFS shortest paths (unweighted)",
+     "tier": 1300,
+     "order": 1,
+     "prereq": [
+      "graph-dfs-bfs"
+     ],
+     "summary": "In an unweighted graph BFS gives the distance from a source to every vertex in O(n+m). Recognise it whenever moves have equal cost: grid mazes, button presses, transforming numbers/states by operations.",
+     "learn": [
+      "dist[] initialised to -1/INF; set dist when pushing to the queue",
+      "Path reconstruction: store parent[] and walk back from the target",
+      "Distances from both endpoints (dist_s, dist_t) let you test whether an edge/vertex lies on some shortest path: ds[u]+1+dt[v]==ds[t]",
+      "Shortest-path DAG: edges with dist[v]==dist[u]+1; count shortest paths with DP in BFS order",
+      "Implicit graphs: states are numbers/strings; generate neighbours on the fly",
+      "Graph girth / shortest cycle with BFS from each vertex"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Unweighted Shortest Paths",
+       "url": "https://usaco.guide/gold/unweighted-shortest-paths",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "CPH 12.2 Breadth-first search",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 12.2 (p. 119)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Breadth First Search",
+       "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1661B",
+       "src": "cf",
+       "name": "Getting Zero",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "520B",
+       "src": "cf",
+       "name": "Two Buttons",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "954D",
+       "src": "cf",
+       "name": "Fight Against Traffic",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1320B",
+       "src": "cf",
+       "name": "Navigation System",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1307D",
+       "src": "cf",
+       "name": "Cow and Fields",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "2109D",
+       "src": "cf",
+       "name": "D/D/D",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1343E",
+       "src": "cf",
+       "name": "Weights Distributing",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "877D",
+       "src": "cf",
+       "name": "Olya and Energy Drinks",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1650G",
+       "src": "cf",
+       "name": "Counting Shortcuts",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1667",
+       "src": "cses",
+       "name": "Message Route",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1193",
+       "src": "cses",
+       "name": "Labyrinth",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "sp-multisource-bfs",
+     "name": "Multi-source BFS",
+     "tier": 1600,
+     "order": 2,
+     "prereq": [
+      "sp-bfs"
+     ],
+     "summary": "Push all sources into the queue at distance 0 to get, for every vertex, the distance to the nearest source. Used for spreading/infection processes, \"distance to nearest X\", and races between two groups (monsters vs player).",
+     "learn": [
+      "Initialise the queue with every source; BFS layers = simultaneous spreading time",
+      "Reverse the edges to compute \"distance from each vertex to the nearest vertex with property P\"",
+      "Race problems: BFS from enemies first, then BFS for the player only through cells reached strictly earlier",
+      "Tag each vertex with which source reached it (Voronoi regions) to find nearest pairs between groups",
+      "Multi-player expansion with speeds: process players round by round, each with its own queue"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Unweighted Shortest Paths - multi-source",
+       "url": "https://usaco.guide/gold/unweighted-shortest-paths",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "cp-algorithms: Breadth First Search",
+       "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "986A",
+       "src": "cf",
+       "name": "Fair",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1611E1",
+       "src": "cf",
+       "name": "Escape The Maze (easy version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1579F",
+       "src": "cf",
+       "name": "Array Stabilization (AND version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1283D",
+       "src": "cf",
+       "name": "Christmas Trees",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1272E",
+       "src": "cf",
+       "name": "Nearest Opposite Parity",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1105D",
+       "src": "cf",
+       "name": "Kilani and the Game",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1651D",
+       "src": "cf",
+       "name": "Nearest Excluded Points",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1611E2",
+       "src": "cf",
+       "name": "Escape The Maze (hard version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1349C",
+       "src": "cf",
+       "name": "Orac and Game of Life",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1227E",
+       "src": "cf",
+       "name": "Arson In Berland Forest",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1194",
+       "src": "cses",
+       "name": "Monsters",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "sp-01-bfs",
+     "name": "0-1 BFS",
+     "tier": 1800,
+     "order": 3,
+     "prereq": [
+      "sp-bfs"
+     ],
+     "summary": "When edge weights are only 0 or 1, a deque replaces Dijkstra: push 0-edges to the front and 1-edges to the back, giving O(n+m). Typical: grids where moving in some directions or through some cells is free, or \"minimum number of changes/walls to break\".",
+     "learn": [
+      "Deque: relax 0-edge -> push_front, 1-edge -> push_back; a vertex may be popped more than once, skip stale entries",
+      "Generalises to weights 0..k with k+1 buckets (Dial's algorithm)",
+      "Model \"cost = number of turns/changes/opened walls\" as 0/1 edges",
+      "Multiple sources with 0-1 BFS: compute distance from each of a few groups and combine at a meeting cell",
+      "Layered states (time mod g, direction) + 0-1 BFS for harder grid tasks"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: 0-1 BFS",
+       "url": "https://cp-algorithms.com/graph/01_bfs.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "0-1 BFS [Tutorial]",
+       "url": "https://codeforces.com/blog/entry/22276",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Unweighted Shortest Paths - 0/1 BFS",
+       "url": "https://usaco.guide/gold/unweighted-shortest-paths",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      }
+     ],
+     "problems": [
+      {
+       "id": "793B",
+       "src": "cf",
+       "name": "Igor and his way to work",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1063B",
+       "src": "cf",
+       "name": "Labyrinth",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "173B",
+       "src": "cf",
+       "name": "Chamber of Secrets",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "590C",
+       "src": "cf",
+       "name": "Three States",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "821D",
+       "src": "cf",
+       "name": "Okabe and City",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1340C",
+       "src": "cf",
+       "name": "Nastya and Unexpected Guest",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "sp-dijkstra",
+     "name": "Dijkstra's algorithm",
+     "tier": 1600,
+     "order": 4,
+     "prereq": [
+      "sp-bfs"
+     ],
+     "summary": "Single-source shortest paths with non-negative weights in O((n+m) log n) using a priority queue. Recognise weighted distances, \"minimum time/cost to reach\", shortest path trees and counting shortest paths.",
+     "learn": [
+      "priority_queue of (dist, v) with greater<>; skip entries where d != dist[v]",
+      "Use long long distances and an INF like 1e18; never use Dijkstra with negative edges",
+      "Shortest-path tree / DAG: keep parent edges; count paths, min/max edges among shortest paths with DP in Dijkstra order (CSES Investigation)",
+      "Run from s and t (or reversed graph) to decide which edges lie on a shortest path",
+      "O(n^2) Dijkstra without a heap for dense graphs",
+      "K-th shortest walks: allow each vertex to be popped k times"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Shortest Paths with Non-Negative Edge Weights",
+       "url": "https://usaco.guide/gold/shortest-paths",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 45
+      },
+      {
+       "title": "CPH 13.2 Dijkstra's algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 13.2 (p. 126)",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Dijkstra on sparse graphs",
+       "url": "https://cp-algorithms.com/graph/dijkstra_sparse.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Dijkstra Algorithm",
+       "url": "https://cp-algorithms.com/graph/dijkstra.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "229B",
+       "src": "cf",
+       "name": "Planets",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2023B",
+       "src": "cf",
+       "name": "Skipping",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1076D",
+       "src": "cf",
+       "name": "Edge Deletion",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "20C",
+       "src": "cf",
+       "name": "Dijkstra?",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "144D",
+       "src": "cf",
+       "name": "Missile Silos",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1887B",
+       "src": "cf",
+       "name": "Time Travel",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "545E",
+       "src": "cf",
+       "name": "Paths and Trees",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "449B",
+       "src": "cf",
+       "name": "Jzzhu and Cities",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "938D",
+       "src": "cf",
+       "name": "Buy a Ticket",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1433G",
+       "src": "cf",
+       "name": "Reducing Delivery Cost",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "2000G",
+       "src": "cf",
+       "name": "Call During the Journey",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "715B",
+       "src": "cf",
+       "name": "Complete The Graph",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1671",
+       "src": "cses",
+       "name": "Shortest Routes I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1202",
+       "src": "cses",
+       "name": "Investigation",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1196",
+       "src": "cses",
+       "name": "Flight Routes",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "sp-bellman-ford",
+     "name": "Bellman-Ford, negative cycles & difference constraints",
+     "tier": 1900,
+     "order": 5,
+     "prereq": [
+      "sp-dijkstra"
+     ],
+     "summary": "Bellman-Ford relaxes all edges n-1 times, handling negative weights in O(nm); a relaxation in round n proves a negative cycle. Systems of inequalities x_v - x_u <= w become shortest paths (difference constraints).",
+     "learn": [
+      "n-1 rounds of relaxing every edge; early exit when nothing changes",
+      "Negative cycle detection: any update in round n; to output it, walk parent pointers n steps then loop",
+      "Only cycles reachable from the source (and that reach the target) matter for \"arbitrarily large score\" questions (CSES High Score)",
+      "Difference constraints: x_v <= x_u + w => edge u->v with weight w; infeasible iff negative cycle",
+      "SPFA is a queue-based heuristic; worst case is still O(nm) and can be hacked",
+      "Johnson's re-weighting lets Dijkstra run after one Bellman-Ford pass"
+     ],
+     "resources": [
+      {
+       "title": "CPH 13.1 Bellman-Ford algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 13.1 (p. 123)",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Shortest Paths with Negative Edge Weights",
+       "url": "https://usaco.guide/adv/sp-neg",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Bellman-Ford Algorithm",
+       "url": "https://cp-algorithms.com/graph/bellman_ford.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Finding a negative cycle in the graph",
+       "url": "https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "241E",
+       "src": "cf",
+       "name": "Flights",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1450E",
+       "src": "cf",
+       "name": "Capitalism",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1673",
+       "src": "cses",
+       "name": "High Score",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1197",
+       "src": "cses",
+       "name": "Cycle Finding",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "sp-floyd-warshall",
+     "name": "Floyd-Warshall (all pairs)",
+     "tier": 1700,
+     "order": 6,
+     "prereq": [
+      "sp-dijkstra"
+     ],
+     "summary": "All-pairs shortest paths in O(n^3) with the k-i-j triple loop; fine for n <= ~500. Also handles transitive closure, minimax paths, incremental edge additions and reversed vertex-insertion orders.",
+     "learn": [
+      "dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]) with k as the OUTER loop",
+      "Adding one edge (a,b,w) updates all pairs in O(n^2): dist[i][j] = min(dist[i][a]+w+dist[b][j], ...)",
+      "Insert vertices in reverse deletion order and sum distances among inserted vertices only (Greg and Graph)",
+      "Transitive closure with bitsets: reach[i] |= reach[k] if reach[i][k]",
+      "Minimum-weight cycle: undirected - before using k as an intermediate, try dist[i][j] + w(j,k) + w(k,i) for all i,j < k; directed - run Floyd and take min dist[i][i] (initialise dist[i][i] = INF)",
+      "Negative cycle exists iff some dist[i][i] < 0 at the end"
+     ],
+     "resources": [
+      {
+       "title": "CPH 13.3 Floyd-Warshall algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 13.3 (p. 129)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Shortest Paths - Floyd-Warshall",
+       "url": "https://usaco.guide/gold/shortest-paths",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Floyd-Warshall Algorithm",
+       "url": "https://cp-algorithms.com/graph/all-pair-shortest-path-floyd-warshall.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "505B",
+       "src": "cf",
+       "name": "Mr. Kitayuta's Colorful Graph",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "295B",
+       "src": "cf",
+       "name": "Greg and Graph",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1204C",
+       "src": "cf",
+       "name": "Anna, Svyatoslav and Maps",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "33B",
+       "src": "cf",
+       "name": "String Problem",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "25C",
+       "src": "cf",
+       "name": "Roads in Berland",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1205B",
+       "src": "cf",
+       "name": "Shortest Cycle",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "2057E1",
+       "src": "cf",
+       "name": "Another Exercise on Graphs (Easy Version)",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "21D",
+       "src": "cf",
+       "name": "Traveling Graph",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1672",
+       "src": "cses",
+       "name": "Shortest Routes II",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dag",
+   "name": "Topological Sort & DAGs",
+   "cfTags": [
+    "graphs",
+    "dfs and similar",
+    "dp"
+   ],
+   "subtopics": [
+    {
+     "id": "dag-toposort",
+     "name": "Topological sort",
+     "tier": 1500,
+     "order": 1,
+     "prereq": [
+      "graph-dfs-bfs",
+      "graph-cycle-detection"
+     ],
+     "summary": "Order the vertices of a directed acyclic graph so every edge goes forward, using Kahn's algorithm (repeatedly remove in-degree 0) or reversed DFS finishing times. Appears in dependency/ordering problems (\"A must come before B\") and as the first step of any DAG DP.",
+     "learn": [
+      "Kahn's BFS: queue of in-degree-0 vertices; if fewer than n vertices are output there is a cycle",
+      "DFS post-order reversed is also a topological order",
+      "Lexicographically smallest order: use a min-heap instead of a queue; \"smallest label first\" variants may need reversing the graph (Minimal Labels)",
+      "Derive the constraint graph from input (adjacent words, screenshots, comparisons) then toposort",
+      "Orient undirected edges along a topological order of the directed ones to keep the graph acyclic",
+      "Equalities + inequalities: merge equal items with DSU, then toposort the quotient graph"
+     ],
+     "resources": [
+      {
+       "title": "CPH 16.1 Topological sorting",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 16.1 (p. 149)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Topological Sort",
+       "url": "https://usaco.guide/gold/toposort",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Topological Sorting",
+       "url": "https://cp-algorithms.com/graph/topological-sort.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "510C",
+       "src": "cf",
+       "name": "Fox And Names",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1931F",
+       "src": "cf",
+       "name": "Chat Screenshots",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "645D",
+       "src": "cf",
+       "name": "Robot Rapping Results Report",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "909E",
+       "src": "cf",
+       "name": "Coprocessor",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1385E",
+       "src": "cf",
+       "name": "Directing Edges",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1131D",
+       "src": "cf",
+       "name": "Gourmet choice",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1100E",
+       "src": "cf",
+       "name": "Andrew and Taxi",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1765H",
+       "src": "cf",
+       "name": "Hospital Queue",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "825E",
+       "src": "cf",
+       "name": "Minimal Labels",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1476E",
+       "src": "cf",
+       "name": "Pattern Matching",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1679",
+       "src": "cses",
+       "name": "Course Schedule",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1757",
+       "src": "cses",
+       "name": "Course Schedule II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dag-dp",
+     "name": "DP on DAGs",
+     "tier": 1700,
+     "order": 2,
+     "prereq": [
+      "dag-toposort",
+      "@dp-intro"
+     ],
+     "summary": "Any DP whose dependency graph is acyclic can be evaluated in topological order: longest/shortest path, number of paths, best path value. Recognise it when states have a directed \"move\" relation without cycles, or when a problem's graph is explicitly a DAG.",
+     "learn": [
+      "Process vertices in topological order (or memoised DFS) and relax dp[v] from dp[u] over edges u->v",
+      "Longest path in a DAG is easy (unlike general graphs); count paths mod p the same way",
+      "Combine with binary search on the answer (check \"path of length k using values <= X\" on the sub-DAG)",
+      "Detect cycle => answer infinite / -1 before doing DP",
+      "Memoised DFS with an \"in progress\" state doubles as cycle detection",
+      "For graphs with cycles, condense SCCs first (see scc-condensation)",
+      "The same pattern is studied from the DP side in @dp-dag; here the focus is building the graph and the topological order"
+     ],
+     "resources": [
+      {
+       "title": "CPH 16.2 Dynamic programming on DAGs",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 16.2 (p. 151)",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Topological Sort - dynamic programming",
+       "url": "https://usaco.guide/gold/toposort",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1851E",
+       "src": "cf",
+       "name": "Nastya and Potions",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "919D",
+       "src": "cf",
+       "name": "Substring",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "721C",
+       "src": "cf",
+       "name": "Journey",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1572A",
+       "src": "cf",
+       "name": "Book",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1679D",
+       "src": "cf",
+       "name": "Toss a Coin to Your Graph...",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1472G",
+       "src": "cf",
+       "name": "Moving to the Capital",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2003D2",
+       "src": "cf",
+       "name": "Turtle and a MEX Problem (Hard Version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1627E",
+       "src": "cf",
+       "name": "Not Escaping",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1680",
+       "src": "cses",
+       "name": "Longest Flight Route",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1681",
+       "src": "cses",
+       "name": "Game Routes",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "graph-games",
+     "name": "Games on graphs (retrograde analysis)",
+     "tier": 2000,
+     "order": 3,
+     "prereq": [
+      "dag-dp",
+      "sp-multisource-bfs",
+      "@game-states-dp"
+     ],
+     "summary": "Two players move a token along the edges of a (state) graph. On a DAG, win/lose is a DP in reverse topological order; with cycles, positions can be draws, and the right tool is retrograde analysis: a BFS backwards from terminal positions that fixes a state as soon as its result is forced. Recognise 'who wins with optimal play, or does the game last forever' on a graph or on (position, whose turn) states.",
+     "learn": [
+      "State = (vertex, player to move, extra info); losing terminal states seed the queue",
+      "Retrograde BFS: a state is WIN if some move reaches a LOSE state; LOSE once all its moves (count down an out-degree counter) reach WIN states; states never fixed are DRAW",
+      "On a DAG simple memoised DFS / reverse topological DP suffices (no draws)",
+      "Parity games (who makes the last move, odd/even path length): state (v, parity) and BFS/DFS on the doubled graph; a reachable cycle gives a draw (Sleepy Game)",
+      "Grid variant: force a robot to a target by marking cells with at most one free non-forced neighbour, BFS outward from the target (Crazy Robot)",
+      "Detect infinite play: a cycle reachable among undecided states; longest game length via DP on the decided DAG part",
+      "Impartial games that split into independent parts need Sprague-Grundy instead (see @game-sprague-grundy)"
+     ],
+     "resources": [
+      {
+       "title": "CPH 25.1 Game states",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 25.1 (p. 235)",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Games on arbitrary graphs",
+       "url": "https://cp-algorithms.com/game_theory/games_on_graphs.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: Game Theory",
+       "url": "https://usaco.guide/adv/game-theory",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1613E",
+       "src": "cf",
+       "name": "Crazy Robot",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "786A",
+       "src": "cf",
+       "name": "Berzerk",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "936B",
+       "src": "cf",
+       "name": "Sleepy Game",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "48E",
+       "src": "cf",
+       "name": "Ivan the Fool VS Gorynych the Dragon",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "2137G",
+       "src": "cf",
+       "name": "Cry Me a River",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "919F",
+       "src": "cf",
+       "name": "A Game With Numbers",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dsu",
+   "name": "Disjoint Set Union",
+   "cfTags": [
+    "dsu"
+   ],
+   "subtopics": [
+    {
+     "id": "dsu-basics",
+     "name": "DSU: union by size & path compression",
+     "tier": 1300,
+     "order": 1,
+     "prereq": [
+      "graph-components"
+     ],
+     "summary": "Union-find maintains a partition of elements under merges with near-constant time find/union. Use it whenever components only grow: dynamic connectivity with edge additions, grouping equivalent items, checking whether an edge closes a cycle.",
+     "learn": [
+      "find with path compression + union by size/rank -> O(alpha(n)) amortised",
+      "Keep extra per-root data (size, min, max, sum, count of edges) and merge it in unite()",
+      "unite returns false if already connected -> cycle detection / redundant edge",
+      "Number of components = n - successful unions",
+      "Small-to-large merging of sets/maps stored at roots for richer per-component info",
+      "Iterative find avoids deep recursion"
+     ],
+     "resources": [
+      {
+       "title": "CPH 15.2 Union-find structure",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 15.2 (p. 145)",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Disjoint Set Union",
+       "url": "https://usaco.guide/gold/dsu",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "cp-algorithms: Disjoint Set Union",
+       "url": "https://cp-algorithms.com/data_structures/disjoint_set_union.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "Codeforces EDU: Disjoint Sets Union (steps 1-2)",
+       "url": "https://codeforces.com/edu/course/2/lesson/7",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU course 2, lesson 7",
+       "minutes": 90
+      }
+     ],
+     "problems": [
+      {
+       "id": "1638C",
+       "src": "cf",
+       "name": "Inversion Graph",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1139C",
+       "src": "cf",
+       "name": "Edgy Trees",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1800E2",
+       "src": "cf",
+       "name": "Unforgivable Curse (hard version)",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1609D",
+       "src": "cf",
+       "name": "Social Network",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1383A",
+       "src": "cf",
+       "name": "String Transformation 1",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1971G",
+       "src": "cf",
+       "name": "XOUR",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "691D",
+       "src": "cf",
+       "name": "Swaps in Permutation",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2020D",
+       "src": "cf",
+       "name": "Connect the Dots",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "25D",
+       "src": "cf",
+       "name": "Roads not only in Berland",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1027F",
+       "src": "cf",
+       "name": "Session in BSU",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1676",
+       "src": "cses",
+       "name": "Road Construction",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dsu-offline",
+     "name": "DSU offline tricks (reverse deletions, sorted processing)",
+     "tier": 1700,
+     "order": 2,
+     "prereq": [
+      "dsu-basics"
+     ],
+     "summary": "DSU cannot delete, so process deletions in reverse as insertions, or sort edges/queries by weight and answer queries while merging. Also the \"next free pointer\" DSU skips already-processed cells in O(alpha).",
+     "learn": [
+      "Reverse time: removals become unions; record answers backwards",
+      "Sort edges by weight and queries by threshold; answer \"connected using edges <= w\" offline",
+      "Count pairs inside merged components: when merging sizes a and b, add a*b",
+      "DSU \"next pointer\": parent[i] = i+1 after painting i to jump over finished positions",
+      "Bitwise greedy with DSU: try to keep bit k off, test connectivity using only allowed edges",
+      "Value-replacement queries (replace all x by y): DSU on values/positions"
+     ],
+     "resources": [
+      {
+       "title": "Codeforces EDU: Disjoint Sets Union (steps 1-2)",
+       "url": "https://codeforces.com/edu/course/2/lesson/7",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU course 2, lesson 7",
+       "minutes": 90
+      },
+      {
+       "title": "USACO Guide: Disjoint Set Union",
+       "url": "https://usaco.guide/gold/dsu",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "cp-algorithms: Disjoint Set Union - applications",
+       "url": "https://cp-algorithms.com/data_structures/disjoint_set_union.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "722C",
+       "src": "cf",
+       "name": "Destroying Array",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1131F",
+       "src": "cf",
+       "name": "Asya And Kittens",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1213G",
+       "src": "cf",
+       "name": "Path Queries",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1081D",
+       "src": "cf",
+       "name": "Maximum Distance",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1620E",
+       "src": "cf",
+       "name": "Replace the Numbers",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1851G",
+       "src": "cf",
+       "name": "Vlad and the Mountains",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2101",
+       "src": "cses",
+       "name": "New Roads Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dsu-weighted",
+     "name": "Weighted / parity DSU",
+     "tier": 1800,
+     "order": 3,
+     "prereq": [
+      "dsu-basics",
+      "graph-bipartite"
+     ],
+     "summary": "Store at each node its offset (potential, parity, xor) relative to its root, so relations like x_u - x_v = d or x_u xor x_v = c can be merged and checked for contradictions online. Used for liar/truth-teller puzzles, relative positions, and bipartiteness with merges.",
+     "learn": [
+      "find returns (root, offset to root); update offsets during path compression",
+      "When merging u,v with required relation d, set offset[ru] so the relation holds; contradiction if already same root with different value",
+      "Parity DSU (2n nodes: x and not-x) is equivalent and easier to code",
+      "Per component, keep counts of each parity to choose the better colouring (min/max)",
+      "xor-constraints on tree paths reduce to parity DSU on prefix xors"
+     ],
+     "resources": [
+      {
+       "title": "Codeforces EDU: Disjoint Sets Union (steps 1-2)",
+       "url": "https://codeforces.com/edu/course/2/lesson/7",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU course 2, lesson 7",
+       "minutes": 90
+      },
+      {
+       "title": "cp-algorithms: DSU - support the parity of the path length / distance to representative",
+       "url": "https://cp-algorithms.com/data_structures/disjoint_set_union.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1850H",
+       "src": "cf",
+       "name": "The Third Letter",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1594D",
+       "src": "cf",
+       "name": "The Number of Imposters",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "766D",
+       "src": "cf",
+       "name": "Mahmoud and a Dictionary",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1387A",
+       "src": "cf",
+       "name": "Graph",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1615D",
+       "src": "cf",
+       "name": "X(or)-mas Tree",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1290C",
+       "src": "cf",
+       "name": "Prefix Enlightenment",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dsu-rollback",
+     "name": "DSU with rollbacks & offline dynamic connectivity",
+     "tier": 2300,
+     "order": 4,
+     "prereq": [
+      "dsu-offline"
+     ],
+     "summary": "Union by size without path compression has O(log n) finds and every union can be undone from a stack. Combined with a segment tree over time (each edge alive on an interval), this solves offline add/remove-edge connectivity and bipartiteness queries in O(q log q log n).",
+     "learn": [
+      "No path compression; push (child root, old size) on a stack, pop to undo",
+      "Segment tree over query time: insert each edge into O(log q) nodes covering its lifetime, DFS the tree applying/undoing unions",
+      "Parity DSU with rollback answers dynamic bipartiteness",
+      "Grouping edges by weight then testing each query's edges with rollback (Envy)",
+      "Divide and conquer on queries + rollback replaces deletions"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Offline Deletion",
+       "url": "https://usaco.guide/adv/offline-del",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Deleting from a data structure in O(T(n) log n)",
+       "url": "https://cp-algorithms.com/data_structures/deleting_in_log_n.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "891C",
+       "src": "cf",
+       "name": "Envy",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "813F",
+       "src": "cf",
+       "name": "Bipartite Checking",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1140F",
+       "src": "cf",
+       "name": "Extending Set of Points",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1217F",
+       "src": "cf",
+       "name": "Forced Online Queries Problem",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1386C",
+       "src": "cf",
+       "name": "Joker",
+       "rating": 2800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2133",
+       "src": "cses",
+       "name": "Dynamic Connectivity",
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "mst",
+   "name": "Minimum Spanning Trees",
+   "cfTags": [
+    "graphs",
+    "dsu",
+    "greedy",
+    "trees"
+   ],
+   "subtopics": [
+    {
+     "id": "mst-kruskal-prim",
+     "name": "MST: Kruskal & Prim",
+     "tier": 1600,
+     "order": 1,
+     "prereq": [
+      "dsu-basics"
+     ],
+     "summary": "A minimum spanning tree connects all vertices with minimum total weight. Kruskal sorts edges and adds those joining different DSU components; Prim grows one tree with a priority queue (O(n^2) version for dense/complete graphs).",
+     "learn": [
+      "Kruskal: sort edges, unite if find(u)!=find(v); O(m log m)",
+      "Prim with a heap for sparse graphs; O(n^2) array Prim for complete graphs with implicit weights",
+      "Virtual source vertex: \"build a station at v for c_v\" = edge (0,v,c_v)",
+      "Reduce candidate edges: in special graphs only O(n) edges can be in the MST (e.g. connect to the global min)",
+      "Maximum spanning tree / minimax path: sort descending",
+      "Bitwise objectives (OR/AND of weights): greedy bit by bit with connectivity checks"
+     ],
+     "resources": [
+      {
+       "title": "CPH 15.1 Kruskal's algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 15.1 (p. 142)",
+       "minutes": 20
+      },
+      {
+       "title": "CPH 15.3 Prim's algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 15.3 (p. 147)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Minimum Spanning Trees",
+       "url": "https://usaco.guide/gold/mst",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Kruskal with DSU",
+       "url": "https://cp-algorithms.com/graph/mst_kruskal_with_dsu.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Prim's Algorithm",
+       "url": "https://cp-algorithms.com/graph/mst_prim.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1468J",
+       "src": "cf",
+       "name": "Road Reform",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1095F",
+       "src": "cf",
+       "name": "Make It Connected",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1245D",
+       "src": "cf",
+       "name": "Shichikuji and Power Grid",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "472D",
+       "src": "cf",
+       "name": "Design Tutorial: Inverse the Problem",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2117G",
+       "src": "cf",
+       "name": "Omg Graph",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1624G",
+       "src": "cf",
+       "name": "MinOr Tree",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1927F",
+       "src": "cf",
+       "name": "Microcycle",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1675",
+       "src": "cses",
+       "name": "Road Reparation",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "mst-properties",
+     "name": "MST properties: cut/cycle, uniqueness, per-edge MST",
+     "tier": 2000,
+     "order": 2,
+     "prereq": [
+      "mst-kruskal-prim",
+      "@trees-lca"
+     ],
+     "summary": "Cut property: the lightest edge across any cut is in some MST; cycle property: the heaviest edge on a cycle is in none. These answer whether an edge is in all/some/no MSTs, the MST forced to contain an edge, making the MST unique, and second-best MST.",
+     "learn": [
+      "Process equal-weight groups together in Kruskal to classify edges as \"any\", \"at least one\", \"none\"",
+      "MST containing edge (u,v,w) = MST - max edge on the tree path u..v + w (binary lifting max / LCA)",
+      "Second-best MST via the same max-on-path query",
+      "Unique MST iff no non-tree edge has weight equal to the max on its tree path",
+      "Bridges inside a weight group (on the component graph) identify edges in every MST"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Second Best Minimum Spanning Tree",
+       "url": "https://cp-algorithms.com/graph/second_best_mst.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Minimum spanning tree - Kruskal",
+       "url": "https://cp-algorithms.com/graph/mst_kruskal.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Minimum Spanning Trees",
+       "url": "https://usaco.guide/gold/mst",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1857G",
+       "src": "cf",
+       "name": "Counting Graphs",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1108F",
+       "src": "cf",
+       "name": "MST Unification",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "609E",
+       "src": "cf",
+       "name": "Minimum spanning tree for each edge",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "76A",
+       "src": "cf",
+       "name": "Gift",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "160D",
+       "src": "cf",
+       "name": "Edges in MST",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1707C",
+       "src": "cf",
+       "name": "DFS Trees",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1023F",
+       "src": "cf",
+       "name": "Mobile Phone Network",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "827D",
+       "src": "cf",
+       "name": "Best Edge Weight",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "mst-special",
+     "name": "Special MSTs: Boruvka, implicit & complete graphs",
+     "tier": 2300,
+     "order": 3,
+     "prereq": [
+      "mst-kruskal-prim"
+     ],
+     "summary": "When the graph is complete or defined implicitly (weights from xor, gcd, distances), you cannot list all edges. Boruvka's algorithm (each component picks its cheapest outgoing edge per round, log n rounds) plus a data structure (trie, segment tree) finds those edges fast.",
+     "learn": [
+      "Boruvka: O(log n) rounds; in each, find for every component its min outgoing edge",
+      "Xor-MST: divide and conquer on a binary trie, merging subtrees with the min xor pair",
+      "Complement graphs: unlisted edges have weight 0/1 -> BFS over the complement with a set of unvisited vertices",
+      "Cheapest outgoing edge often = nearest value in a sorted set excluding own component",
+      "Prove only O(n) or O(n log n) candidate edges matter, then run Kruskal"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Minimum Spanning Trees",
+       "url": "https://usaco.guide/gold/mst",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Prim - dense graphs",
+       "url": "https://cp-algorithms.com/graph/mst_prim.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1513D",
+       "src": "cf",
+       "name": "GCD and MST",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "888G",
+       "src": "cf",
+       "name": "Xor-MST",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1633E",
+       "src": "cf",
+       "name": "Spanning Tree Queries",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "125E",
+       "src": "cf",
+       "name": "MST Company",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1508C",
+       "src": "cf",
+       "name": "Complete the MST",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1120D",
+       "src": "cf",
+       "name": "Power Tree",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1550F",
+       "src": "cf",
+       "name": "Jumping Around",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "mst-kruskal-tree",
+     "name": "Kruskal reconstruction tree (DSU tree)",
+     "tier": 2300,
+     "order": 4,
+     "prereq": [
+      "mst-kruskal-prim",
+      "@trees-lca"
+     ],
+     "summary": "While running Kruskal, create a new node for each union whose children are the two merged roots and whose value is the edge weight. Then \"the minimal max-edge on a path between u and v\" is the value at their LCA, and \"vertices reachable using edges <= x\" is a subtree.",
+     "learn": [
+      "Each union creates node n+k with weight w; leaves are original vertices; tree has 2n-1 nodes",
+      "Bottleneck (minimax) distance between u,v = weight(LCA(u,v))",
+      "Reachable set under threshold x = subtree of the highest ancestor with weight <= x (binary lifting), contiguous in Euler tour",
+      "Combine with segment tree on Euler tour for \"max value in reachable set\" queries",
+      "For a range of vertices [l,r], answer = LCA of all, i.e. LCA of the dfs-order min and max"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Kruskal Reconstruction Tree",
+       "url": "https://usaco.guide/plat/kruskal-tree",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 35
+      },
+      {
+       "title": "[Tutorial] Reachability Tree / DSU-tree",
+       "url": "https://codeforces.com/blog/entry/85714",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1706E",
+       "src": "cf",
+       "name": "Qpwoeirut and Vertices",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1253F",
+       "src": "cf",
+       "name": "Cheap Robot",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1416D",
+       "src": "cf",
+       "name": "Graph and Queries",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1797F",
+       "src": "cf",
+       "name": "Li Hua and Path",
+       "rating": 3000,
+       "from": "curated"
+      },
+      {
+       "id": "1628E",
+       "src": "cf",
+       "name": "Groceries in Meteor Town",
+       "rating": 3100,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "connectivity",
+   "name": "Connectivity: SCC, Bridges, BCC, 2-SAT",
+   "cfTags": [
+    "dfs and similar",
+    "graphs",
+    "2-sat"
+   ],
+   "subtopics": [
+    {
+     "id": "scc",
+     "name": "Strongly connected components (Kosaraju / Tarjan)",
+     "tier": 1900,
+     "order": 1,
+     "prereq": [
+      "dag-toposort"
+     ],
+     "summary": "An SCC is a maximal set of vertices mutually reachable in a directed graph. Kosaraju (DFS order, then DFS on the reversed graph) or Tarjan (low-link) find all SCCs in O(n+m). Appears when cycles in a directed graph make vertices equivalent.",
+     "learn": [
+      "Kosaraju: DFS to get finish order, then DFS on reversed graph in decreasing finish time",
+      "Tarjan: tin/low with a stack; a root of an SCC has low == tin",
+      "Kosaraju outputs SCCs in topological order of the condensation",
+      "Min cost to cover all SCCs = per-SCC minimum (Checkposts); counts multiply",
+      "Edges to add to make the graph strongly connected = max(#sources, #sinks) in the condensation (if >1 SCC)",
+      "Number of SCCs with in-degree 0 = vertices needed to reach everything"
+     ],
+     "resources": [
+      {
+       "title": "CPH 17.1 Kosaraju's algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 17.1 (p. 158)",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Strongly Connected Components",
+       "url": "https://usaco.guide/adv/SCC",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Strongly connected components and condensation graph",
+       "url": "https://cp-algorithms.com/graph/strongly-connected-components.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "427C",
+       "src": "cf",
+       "name": "Checkposts",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "949C",
+       "src": "cf",
+       "name": "Data Center Maintenance",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "999E",
+       "src": "cf",
+       "name": "Reachability from the Capital",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "22E",
+       "src": "cf",
+       "name": "Scheme",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1239D",
+       "src": "cf",
+       "name": "Catowice City",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1683",
+       "src": "cses",
+       "name": "Planets and Kingdoms",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1685",
+       "src": "cses",
+       "name": "New Flight Routes",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "scc-condensation",
+     "name": "Condensation graph & DP over SCCs",
+     "tier": 2100,
+     "order": 2,
+     "prereq": [
+      "scc",
+      "dag-dp"
+     ],
+     "summary": "Contract each SCC to a single node to get a DAG (the condensation), then run DAG DP: maximum collectable value, reachability counts, longest path where a whole cycle can be taken for free. Recognise \"walk anywhere, revisits allowed, collect values\".",
+     "learn": [
+      "Weight of a condensed node = sum/aggregate of its vertices (or of its internal edges, e.g. repeated mushroom collection)",
+      "DP in topological order of the condensation (Kosaraju already gives it)",
+      "Infinite answers: any SCC with a cycle reachable on the path",
+      "Layered state graphs (vertex, day mod d) can be condensed too",
+      "Count \"number of paths\" classes: 0, 1, many, infinite via DP on the condensation"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Strongly Connected Components",
+       "url": "https://usaco.guide/adv/SCC",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Condensation graph",
+       "url": "https://cp-algorithms.com/graph/strongly-connected-components.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "894E",
+       "src": "cf",
+       "name": "Ralph and Mushrooms",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1547G",
+       "src": "cf",
+       "name": "How Many Paths?",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1900E",
+       "src": "cf",
+       "name": "Transitive Graph",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1213F",
+       "src": "cf",
+       "name": "Unstable String Sort",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1137C",
+       "src": "cf",
+       "name": "Museums Tour",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1534F2",
+       "src": "cf",
+       "name": "Falling Sand (Hard Version)",
+       "rating": 3000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1686",
+       "src": "cses",
+       "name": "Coin Collector",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "bridges-articulation",
+     "name": "Bridges & articulation points",
+     "tier": 2000,
+     "order": 3,
+     "prereq": [
+      "graph-dfs-tree"
+     ],
+     "summary": "A bridge is an edge whose removal disconnects the graph; an articulation (cut) vertex is a vertex whose removal does. Both are found with tin/low values in one DFS. Use them for \"critical roads/cities\", minimising pairs separated by deleting one edge, and strong orientations.",
+     "learn": [
+      "low[v] = min(tin[v], tin of back-edge targets, low of children)",
+      "Edge (p,v) is a bridge iff low[v] > tin[p]; vertex p is a cut vertex iff low[v] >= tin[p] for some child (root: >= 2 children)",
+      "Handle multi-edges by skipping the parent EDGE id, not the parent vertex",
+      "A graph without bridges can be oriented to be strongly connected (orient tree edges down, back edges up)",
+      "Removing a bridge splits into sizes s and n-s: pairs separated = s*(n-s)"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Finding bridges in a graph in O(N+M)",
+       "url": "https://cp-algorithms.com/graph/bridge-searching.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Finding articulation points in a graph in O(N+M)",
+       "url": "https://cp-algorithms.com/graph/cutpoints.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Biconnected Components",
+       "url": "https://usaco.guide/adv/BCC-2CC",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "[Tutorial] The DFS tree and its applications",
+       "url": "https://codeforces.com/blog/entry/68138",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1986F",
+       "src": "cf",
+       "name": "Non-academic Problem",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "118E",
+       "src": "cf",
+       "name": "Bertown roads",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1000E",
+       "src": "cf",
+       "name": "We Need More Bosses",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "732F",
+       "src": "cf",
+       "name": "Tourist Reform",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "700C",
+       "src": "cf",
+       "name": "Break Up",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2076",
+       "src": "cses",
+       "name": "Necessary Roads",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2077",
+       "src": "cses",
+       "name": "Necessary Cities",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "bcc",
+     "name": "2-edge-connected & biconnected components, block-cut tree",
+     "tier": 2300,
+     "order": 4,
+     "prereq": [
+      "bridges-articulation"
+     ],
+     "summary": "Removing all bridges splits the graph into 2-edge-connected components; contracting them gives the bridge tree. Vertex-biconnected components (blocks) form the block-cut tree. Both turn graph questions into tree questions (paths, LCA).",
+     "learn": [
+      "Bridge tree: contract 2ECCs, remaining edges (bridges) form a tree; longest path in it = max bridges on a path",
+      "Biconnected components via an edge stack in Tarjan; each cut vertex belongs to several blocks",
+      "Block-cut tree: nodes for blocks and cut vertices; \"must pass through vertex x\" queries become tree path queries",
+      "Cactus graphs: every edge in at most one cycle; contract cycles into nodes",
+      "A block with #edges == #vertices is a simple cycle"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Biconnected Components",
+       "url": "https://usaco.guide/adv/BCC-2CC",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Strong Orientation",
+       "url": "https://cp-algorithms.com/graph/strong-orientation.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Articulation points",
+       "url": "https://cp-algorithms.com/graph/cutpoints.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "231E",
+       "src": "cf",
+       "name": "Cactus",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "652E",
+       "src": "cf",
+       "name": "Pursuit For Artifacts",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "962F",
+       "src": "cf",
+       "name": "Simple Cycles Edges",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1763F",
+       "src": "cf",
+       "name": "Edge Queries",
+       "rating": 3000,
+       "from": "curated"
+      },
+      {
+       "id": "487E",
+       "src": "cf",
+       "name": "Tourists",
+       "rating": 3200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2177",
+       "src": "cses",
+       "name": "Strongly Connected Edges",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1705",
+       "src": "cses",
+       "name": "Forbidden Cities",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "two-sat",
+     "name": "2-SAT",
+     "tier": 2000,
+     "order": 5,
+     "prereq": [
+      "scc"
+     ],
+     "summary": "Satisfy a conjunction of clauses (a or b) over boolean variables by building the implication graph (not a -> b, not b -> a) and computing SCCs: unsatisfiable iff x and not x share an SCC. Recognise binary choices per item with pairwise conflicts (flip or not, swap or not, side A or B).",
+     "learn": [
+      "2n nodes: x and not x; each clause adds two implications",
+      "Unsat iff comp[x]==comp[not x]; assignment: x = true iff comp[x] comes after comp[not x] in topological order (Tarjan: comp[x] < comp[not x])",
+      "Encode \"exactly one\", \"equal\", \"different\", forced values (x -> not x)",
+      "Binary search on an answer + 2-SAT feasibility check",
+      "Prefix/suffix auxiliary variables encode \"at most one of a group\" in O(n) clauses",
+      "Parity-only constraints are easier with DSU; use 2-SAT when there are genuine ORs"
+     ],
+     "resources": [
+      {
+       "title": "CPH 17.2 2SAT problem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 17.2 (p. 160)",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: 2-SAT",
+       "url": "https://cp-algorithms.com/graph/2SAT.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Strongly Connected Components - 2-SAT",
+       "url": "https://usaco.guide/adv/SCC",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      }
+     ],
+     "problems": [
+      {
+       "id": "1475F",
+       "src": "cf",
+       "name": "Unusual Matrix",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "228E",
+       "src": "cf",
+       "name": "The Road to Berland is Paved With Good Intentions",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "780D",
+       "src": "cf",
+       "name": "Innokenty and a Football League",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "776D",
+       "src": "cf",
+       "name": "The Door Problem",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "468B",
+       "src": "cf",
+       "name": "Two Sets",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "875C",
+       "src": "cf",
+       "name": "National Property",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1971H",
+       "src": "cf",
+       "name": "±1",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "27D",
+       "src": "cf",
+       "name": "Ring Road 2",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1385G",
+       "src": "cf",
+       "name": "Columns Swaps",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1903F",
+       "src": "cf",
+       "name": "Babysitting",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1657F",
+       "src": "cf",
+       "name": "Words on Tree",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1215F",
+       "src": "cf",
+       "name": "Radio Stations",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1684",
+       "src": "cses",
+       "name": "Giant Pizza",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "euler-paths",
+   "name": "Euler Paths & Circuits",
+   "cfTags": [
+    "graphs",
+    "dfs and similar"
+   ],
+   "subtopics": [
+    {
+     "id": "euler-tours",
+     "name": "Eulerian paths & circuits (Hierholzer)",
+     "tier": 2000,
+     "order": 1,
+     "prereq": [
+      "graph-components"
+     ],
+     "summary": "An Eulerian path uses every edge exactly once. Existence is a degree condition plus connectivity; Hierholzer's algorithm builds it in O(n+m). Recognise \"use every edge/pair/domino exactly once\" or strings built from overlapping pieces (De Bruijn).",
+     "learn": [
+      "Undirected: circuit iff all degrees even; path iff exactly 0 or 2 odd vertices (all non-isolated vertices connected)",
+      "Directed: in==out everywhere for a circuit; one +1 start and one -1 end for a path",
+      "Hierholzer: iterative DFS with an edge pointer per vertex, append vertex on backtrack, reverse at the end",
+      "Mark used edges by id (undirected edges appear in two lists)",
+      "Model pieces as edges between \"states\" (overlaps of length k-1, value pairs) -> De Bruijn style",
+      "Hamiltonian paths (every vertex once) are NP-hard in general: bitmask DP (see @dp-bitmask)"
+     ],
+     "resources": [
+      {
+       "title": "CPH 19.1 Eulerian paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 19.1 (p. 173)",
+       "minutes": 20
+      },
+      {
+       "title": "CPH 19.3 De Bruijn sequences",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 19.3 (p. 178)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Eulerian Tours",
+       "url": "https://usaco.guide/adv/eulerian-tours",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Finding the Eulerian path in O(M)",
+       "url": "https://cp-algorithms.com/graph/euler_path.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1334D",
+       "src": "cf",
+       "name": "Minimum Euler Cycle",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "788B",
+       "src": "cf",
+       "name": "Weird journey",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "2110E",
+       "src": "cf",
+       "name": "Melody",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1152E",
+       "src": "cf",
+       "name": "Neko and Flashback",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1981D",
+       "src": "cf",
+       "name": "Turtle and Multiplication",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "508D",
+       "src": "cf",
+       "name": "Tanya and Password",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1361C",
+       "src": "cf",
+       "name": "Johnny and Megan's Necklace",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1691",
+       "src": "cses",
+       "name": "Mail Delivery",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1693",
+       "src": "cses",
+       "name": "Teleporters Path",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1692",
+       "src": "cses",
+       "name": "De Bruijn Sequence",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "euler-applications",
+     "name": "Euler tours for orientation & balancing",
+     "tier": 2300,
+     "order": 2,
+     "prereq": [
+      "euler-tours"
+     ],
+     "summary": "Adding a dummy vertex joined to all odd-degree vertices makes every degree even; an Euler circuit then orients edges so in/out degrees differ by at most 1, or alternately colours edges to balance counts. Used in constructive problems about directing roads or splitting edges evenly.",
+     "learn": [
+      "Pair odd-degree vertices through a virtual node, take an Euler circuit, orient edges along it",
+      "Alternating colours along an Euler circuit splits each vertex's edges almost evenly",
+      "Bipartite graphs (rows/columns, values/positions) + Euler circuit give balanced assignments",
+      "Delete every second edge along an Euler tour to halve degrees (rounding up)",
+      "Adding edges to make degrees even = (#odd vertices)/2 extra edges"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Eulerian Tours",
+       "url": "https://usaco.guide/adv/eulerian-tours",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Finding the Eulerian path in O(M)",
+       "url": "https://cp-algorithms.com/graph/euler_path.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "723E",
+       "src": "cf",
+       "name": "One-Way Reform",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1634E",
+       "src": "cf",
+       "name": "Fair Share",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1186F",
+       "src": "cf",
+       "name": "Vus the Cossack and a Graph",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "527E",
+       "src": "cf",
+       "name": "Data Center Drama",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "functional-graphs",
+   "name": "Functional / Successor Graphs",
+   "cfTags": [
+    "graphs",
+    "dfs and similar"
+   ],
+   "subtopics": [
+    {
+     "id": "func-graph-cycles",
+     "name": "Functional graphs & permutation cycles",
+     "tier": 1300,
+     "order": 1,
+     "prereq": [
+      "graph-dfs-bfs"
+     ],
+     "summary": "Every vertex has exactly one outgoing edge (i -> a_i): each component is one cycle with trees hanging into it. Permutations are the special case of disjoint cycles. Recognise arrays where \"i points to a_i\", repeated application of a function, or swaps that sort a permutation.",
+     "learn": [
+      "Find cycles with 3-colour iteration from every unvisited vertex; O(n)",
+      "Floyd's tortoise-and-hare finds a cycle with O(1) memory",
+      "Permutation: minimum swaps to sort = n - #cycles; cycle-dependent answers per element",
+      "Pick one vertex per cycle (e.g. minimum cost) for \"must cut each cycle\" questions",
+      "Tree parts hanging into cycles can be processed in Kahn order (in-degree peeling)",
+      "Distances to cycle and cycle lengths per vertex answer \"where am I after k steps\" for one query"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Functional Graphs",
+       "url": "https://usaco.guide/silver/func-graphs",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 35
+      },
+      {
+       "title": "CPH 16.3 Successor paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 16.3 (p. 154)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH 16.4 Cycle detection",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 16.4 (p. 155)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Floyd's Linked List Cycle Finding Algorithm",
+       "url": "https://cp-algorithms.com/others/tortoise_and_hare.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1020B",
+       "src": "cf",
+       "name": "Badge",
+       "rating": 1000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2008D",
+       "src": "cf",
+       "name": "Sakurako's Hobby",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1249B2",
+       "src": "cf",
+       "name": "Books Exchange (hard version)",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1027D",
+       "src": "cf",
+       "name": "Mouse Hunt",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2044G1",
+       "src": "cf",
+       "name": "Medium Demon Problem (easy version)",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1768D",
+       "src": "cf",
+       "name": "Lucky Permutation",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1867D",
+       "src": "cf",
+       "name": "Cyclic Operations",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1872F",
+       "src": "cf",
+       "name": "Selling a Menagerie",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "2044G2",
+       "src": "cf",
+       "name": "Medium Demon Problem (hard version)",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1607F",
+       "src": "cf",
+       "name": "Robot on the Board 2",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1137D",
+       "src": "cf",
+       "name": "Cooperative Game",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1751",
+       "src": "cses",
+       "name": "Planets Cycles",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "func-graph-lifting",
+     "name": "Binary lifting on successor graphs",
+     "tier": 1900,
+     "order": 2,
+     "prereq": [
+      "func-graph-cycles"
+     ],
+     "summary": "Precompute up[j][v] = vertex after 2^j steps (plus aggregated sums/mins) to answer \"where am I after k steps\" and path aggregates in O(log k) per query. Also used to compute the distance between two vertices in a functional graph via cycle positions.",
+     "learn": [
+      "up[0][v] = f(v); up[j][v] = up[j-1][up[j-1][v]]; memory n*log(k)",
+      "Carry sums/mins alongside jumps (sum[j][v], mn[j][v])",
+      "Decompose k into binary and jump; for k up to 1e18 use 60 levels",
+      "Distance u -> v: v on the tail path of u, or both reach the same cycle and positions on the cycle differ",
+      "Same idea on trees = LCA via binary lifting"
+     ],
+     "resources": [
+      {
+       "title": "CPH 16.3 Successor paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 16.3 (p. 154)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Functional Graphs",
+       "url": "https://usaco.guide/silver/func-graphs",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 35
+      },
+      {
+       "title": "cp-algorithms: LCA - binary lifting (same jump table idea)",
+       "url": "https://cp-algorithms.com/graph/lca_binary_lifting.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "702E",
+       "src": "cf",
+       "name": "Analysis of Pathes in Functional Graph",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1516D",
+       "src": "cf",
+       "name": "Cut",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1175E",
+       "src": "cf",
+       "name": "Minimal Segment Cover",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1335F",
+       "src": "cf",
+       "name": "Robots on a Grid",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1750",
+       "src": "cses",
+       "name": "Planets Queries I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1160",
+       "src": "cses",
+       "name": "Planets Queries II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1191",
+       "src": "cses",
+       "name": "Cyclic Array",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "flows",
+   "name": "Flows & Matchings",
+   "cfTags": [
+    "flows",
+    "graph matchings"
+   ],
+   "subtopics": [
+    {
+     "id": "flow-matching",
+     "name": "Bipartite matching, Konig & path covers",
+     "tier": 1900,
+     "order": 1,
+     "prereq": [
+      "graph-bipartite"
+     ],
+     "summary": "Maximum bipartite matching pairs left and right vertices along edges. Kuhn's augmenting paths run in O(VE), Hopcroft-Karp in O(E sqrt V). Konig's theorem: max matching = min vertex cover in bipartite graphs; min path cover in a DAG = n - matching.",
+     "learn": [
+      "Kuhn: for each left vertex try to find an augmenting path with a visited array; greedy initial matching speeds it up",
+      "Hopcroft-Karp or Dinic on a unit network for 1e5 edges",
+      "Konig: min vertex cover = max matching; max independent set = n - max matching (bipartite only)",
+      "Minimum path cover of a DAG (vertex-disjoint) = n - max matching on split graph; with transitive closure for non-disjoint",
+      "Binary search on the answer + matching feasibility (Valuable Paper)",
+      "Incremental matching: add left vertices in order and augment from each (Maximize Mex)",
+      "Hall's theorem for proving greedy matchings exist"
+     ],
+     "resources": [
+      {
+       "title": "CPH 20.3 Maximum matchings",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 20.3 (p. 187)",
+       "minutes": 20
+      },
+      {
+       "title": "CPH 20.4 Path covers",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 20.4 (p. 190)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Kuhn's Algorithm for Maximum Bipartite Matching",
+       "url": "https://cp-algorithms.com/graph/kuhn_maximum_bipartite_matching.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Maximum Flow - bipartite matching",
+       "url": "https://usaco.guide/adv/max-flow",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      }
+     ],
+     "problems": [
+      {
+       "id": "1423B",
+       "src": "cf",
+       "name": "Valuable Paper",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "498C",
+       "src": "cf",
+       "name": "Array and Operations",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "852D",
+       "src": "cf",
+       "name": "Exploration plan",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "387D",
+       "src": "cf",
+       "name": "George and Interesting Graph",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1139E",
+       "src": "cf",
+       "name": "Maximize Mex",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1783F",
+       "src": "cf",
+       "name": "Double Sort II",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1696",
+       "src": "cses",
+       "name": "School Dance",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "flow-maxflow",
+     "name": "Maximum flow (Ford-Fulkerson, Edmonds-Karp, Dinic)",
+     "tier": 2100,
+     "order": 2,
+     "prereq": [
+      "flow-matching"
+     ],
+     "summary": "Push as much flow as possible from s to t respecting edge capacities using augmenting paths in the residual graph. Dinic's algorithm (BFS levels + blocking flow DFS) is the contest standard. Recognise distribution/assignment problems with capacities and the modeling pattern source -> items -> resources -> sink.",
+     "learn": [
+      "Residual graph with paired reverse edges (store edge index, e and e^1)",
+      "Dinic: BFS level graph, DFS with current-arc pointers; O(V^2 E) in general, much faster in practice; O(E sqrt V) for bipartite matching (unit-capacity networks)",
+      "Split a vertex into in/out with capacity c to limit flow through a vertex",
+      "Edge-disjoint paths = max flow with unit capacities; reconstruct paths by following saturated edges",
+      "Binary search on time/capacity + max flow feasibility",
+      "Reconstructing per-edge flows from residual capacities gives the actual assignment"
+     ],
+     "resources": [
+      {
+       "title": "CPH 20.1 Ford-Fulkerson algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 20.1 (p. 182)",
+       "minutes": 25
+      },
+      {
+       "title": "CPH 20.2 Disjoint paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 20.2 (p. 186)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Maximum Flow",
+       "url": "https://usaco.guide/adv/max-flow",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 50
+      },
+      {
+       "title": "cp-algorithms: Maximum flow - Ford-Fulkerson and Edmonds-Karp",
+       "url": "https://cp-algorithms.com/graph/edmonds_karp.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Maximum flow - Dinic's algorithm",
+       "url": "https://cp-algorithms.com/graph/dinic.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1214D",
+       "src": "cf",
+       "name": "Treasure Island",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "546E",
+       "src": "cf",
+       "name": "Soldier and Traveling",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "269C",
+       "src": "cf",
+       "name": "Flawed Flow",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "653D",
+       "src": "cf",
+       "name": "Delivery Bears",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "510E",
+       "src": "cf",
+       "name": "Fox And Dinner",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1717F",
+       "src": "cf",
+       "name": "Madoka and The First Session",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1694",
+       "src": "cses",
+       "name": "Download Speed",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1711",
+       "src": "cses",
+       "name": "Distinct Routes",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "flow-mincut",
+     "name": "Minimum cut & project selection",
+     "tier": 2300,
+     "order": 3,
+     "prereq": [
+      "flow-maxflow"
+     ],
+     "summary": "Max-flow equals min s-t cut. Many optimisation problems (\"choose a subset maximising profit with dependencies/conflicts\") become min cut: the maximum closure / project selection pattern, where taking an item that requires another is an infinite edge.",
+     "learn": [
+      "Min cut edges: from vertices reachable from s in the final residual graph to unreachable ones",
+      "Project selection: profit p>0 -> edge s->v cap p; cost c -> edge v->t cap c; dependency u needs v -> u->v cap INF; answer = sum positive - maxflow",
+      "Separating two sets of vertices with min vertex/edge removals",
+      "Each variable with two choices + pairwise penalties = cut in a graph with s/t sides",
+      "Konig and min cut are the same idea in bipartite graphs"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Minimum Cut",
+       "url": "https://usaco.guide/adv/min-cut",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "CPH 20.1 Ford-Fulkerson algorithm - minimum cuts",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 20.1 (p. 182)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Maximum flow - Dinic's algorithm",
+       "url": "https://cp-algorithms.com/graph/dinic.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "965D",
+       "src": "cf",
+       "name": "Single-use Stones",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "311E",
+       "src": "cf",
+       "name": "Biologist",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1082G",
+       "src": "cf",
+       "name": "Petya and Graph",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "808F",
+       "src": "cf",
+       "name": "Card Game",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1404E",
+       "src": "cf",
+       "name": "Bricks",
+       "rating": 2800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "724E",
+       "src": "cf",
+       "name": "Goods transportation",
+       "rating": 2900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1695",
+       "src": "cses",
+       "name": "Police Chase",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "flow-matching-theory",
+     "name": "Konig, Hall & Dilworth (matching theory)",
+     "tier": 2400,
+     "order": 4,
+     "prereq": [
+      "flow-matching",
+      "flow-mincut"
+     ],
+     "summary": "Theorems that turn matching sizes into answers for other questions: Konig (bipartite min vertex cover = max matching, max independent set = n - matching), Hall's marriage condition (a perfect matching on the left exists iff every subset S has |N(S)| >= |S|), and Dilworth/minimum path cover (minimum chains covering a poset = maximum antichain = n - matching on the split graph). Recognise them when n is too large for an explicit flow but the condition can be checked with prefix sums, bitmasks or a segment tree.",
+     "learn": [
+      "Konig: in a bipartite graph min vertex cover = max matching; recover the cover from the residual graph (left side unreachable + right side reachable from s)",
+      "Max independent set in a bipartite graph = |V| - max matching; max weighted closure/independent set via min cut",
+      "Hall's theorem: left side saturable iff |N(S)| >= |S| for every subset S; often only 'interval' or 'mask' subsets need checking (2^k groups when the right side has k types)",
+      "Use Hall as a feasibility test inside a greedy: fix choices one by one and re-check Hall on bitmask counts (Allowed Letters)",
+      "Hall + binary search: on a line/circle the condition reduces to a max over windows (Round Marriage)",
+      "Dilworth: minimum chain cover of a DAG/poset = maximum antichain; vertex-disjoint path cover = n - matching on (out-copy, in-copy) split graph; non-disjoint paths need the transitive closure first",
+      "Grid row/column covering problems (cover all marked cells with lines) are min vertex cover = Konig",
+      "Tutte/general-graph matching (Blossom) is rarely needed; first check whether the graph is bipartite"
+     ],
+     "resources": [
+      {
+       "title": "CPH 20.3 Maximum matchings (Hall, Konig)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 20.3 (p. 187)",
+       "minutes": 25
+      },
+      {
+       "title": "CPH 20.4 Path covers (Dilworth)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 20.4 (p. 190)",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Kuhn's algorithm for bipartite matching",
+       "url": "https://cp-algorithms.com/graph/kuhn_maximum_bipartite_matching.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: Maximum Flow (matching & cuts)",
+       "url": "https://usaco.guide/adv/max-flow",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      }
+     ],
+     "problems": [
+      {
+       "id": "1009G",
+       "src": "cf",
+       "name": "Allowed Letters",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "2026E",
+       "src": "cf",
+       "name": "Best Subsequence",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "981F",
+       "src": "cf",
+       "name": "Round Marriage",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1198E",
+       "src": "cf",
+       "name": "Rectangle Painting 2",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1510B",
+       "src": "cf",
+       "name": "Button Lock",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1519F",
+       "src": "cf",
+       "name": "Chests and Keys",
+       "rating": 3200,
+       "from": "curated"
+      },
+      {
+       "id": "1630F",
+       "src": "cf",
+       "name": "Making It Bipartite",
+       "rating": 3400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1709",
+       "src": "cses",
+       "name": "Coin Grid",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "flow-mincost",
+     "name": "Min-cost max-flow & assignment",
+     "tier": 2300,
+     "order": 5,
+     "prereq": [
+      "flow-maxflow",
+      "sp-bellman-ford"
+     ],
+     "summary": "Among maximum flows find one of minimum total cost by repeatedly augmenting along the cheapest residual path (Bellman-Ford/SPFA, or Dijkstra with potentials). Used for weighted assignment, choosing k disjoint paths of min cost, and convex costs (one unit edge per marginal cost).",
+     "learn": [
+      "Successive shortest paths with SPFA; switch to Dijkstra + Johnson potentials for speed",
+      "Reverse edges have cost -c",
+      "Convex cost per unit: add parallel unit edges with increasing costs (e.g. (2k-1) for squares)",
+      "Hungarian algorithm for dense n x n assignment in O(n^3)",
+      "Maximising profit: negate costs; stop augmenting when the path cost becomes positive if flow amount is free",
+      "Flow value limited to k: add a super-source edge with capacity k"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Minimum Cost Flow",
+       "url": "https://usaco.guide/adv/min-cost-flow",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Minimum-cost flow - Successive shortest path algorithm",
+       "url": "https://cp-algorithms.com/graph/min_cost_flow.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Hungarian algorithm for solving the assignment problem",
+       "url": "https://cp-algorithms.com/graph/hungarian-algorithm.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "237E",
+       "src": "cf",
+       "name": "Build String",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "863F",
+       "src": "cf",
+       "name": "Almost Permutation",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1913E",
+       "src": "cf",
+       "name": "Matrix Problem",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "277E",
+       "src": "cf",
+       "name": "Binary Tree on Plane",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "884F",
+       "src": "cf",
+       "name": "Anti-Palindromize",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1061E",
+       "src": "cf",
+       "name": "Politics",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "818G",
+       "src": "cf",
+       "name": "Four Melodies",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1107F",
+       "src": "cf",
+       "name": "Vasya and Endless Credits",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2046D",
+       "src": "cf",
+       "name": "For the Emperor!",
+       "rating": 3100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2129",
+       "src": "cses",
+       "name": "Task Assignment",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "flow-lower-bounds",
+     "name": "Flows with demands (lower bounds) & circulations",
+     "tier": 2700,
+     "order": 6,
+     "prereq": [
+      "flow-maxflow"
+     ],
+     "summary": "When edges must carry at least l units, transform to a circulation problem with a new source/sink and node excesses, then check feasibility with one max flow. Used in balancing/colouring problems with minimum requirements per row/column.",
+     "learn": [
+      "Replace edge (u,v,[l,r]) with capacity r-l and add excess: demand[v]+=l, demand[u]-=l",
+      "Add edge t->s with INF to turn s-t flow into a circulation; feasible iff all super-source edges saturate",
+      "Min/max flow with lower bounds: binary search or a second max flow on the residual",
+      "Min cost circulation for lower bounds with costs"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Flow with Lower Bounds",
+       "url": "https://usaco.guide/adv/flow-lb",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Flows with demands",
+       "url": "https://cp-algorithms.com/graph/flow_with_demands.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "708D",
+       "src": "cf",
+       "name": "Incorrect Flow",
+       "rating": 2900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1288F",
+       "src": "cf",
+       "name": "Red-Blue Graph",
+       "rating": 2900,
+       "from": "curated"
+      },
+      {
+       "id": "704D",
+       "src": "cf",
+       "name": "Captain America",
+       "rating": 3100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1416F",
+       "src": "cf",
+       "name": "Showing Off",
+       "rating": 3300,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "graph-modeling",
+   "name": "Graph Construction Tricks",
+   "cfTags": [
+    "graphs",
+    "shortest paths",
+    "data structures"
+   ],
+   "subtopics": [
+    {
+     "id": "graph-state-space",
+     "name": "State graphs & layered graphs",
+     "tier": 1700,
+     "order": 1,
+     "prereq": [
+      "sp-dijkstra"
+     ],
+     "summary": "When the cost of moving depends on extra information (coupon used, current bike, horse taken, medicines active), make a vertex for each (node, extra state) and run BFS/Dijkstra on the product graph. Recognise small extra parameters: a boolean, k <= 10, a bitmask of <= 10 bits, time mod small number.",
+     "learn": [
+      "Vertex = (v, s); total states n * |S| must fit in time/memory",
+      "Coupon / one discount: two layers, crossing edge with halved cost (CSES Flight Discount)",
+      "Speed factor or vehicle: state = best factor so far; prune dominated states",
+      "\"Max + min edge removed/added\" objectives: 4 layers for flags (Minimum Path)",
+      "Parity / time mod k layers for alternating edges or periodic constraints",
+      "Implicit state spaces (permutation of a grid, bitmask) with BFS + hashing"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Shortest Paths with Non-Negative Edge Weights",
+       "url": "https://usaco.guide/gold/shortest-paths",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 45
+      },
+      {
+       "title": "USACO Guide: Unweighted Shortest Paths",
+       "url": "https://usaco.guide/gold/unweighted-shortest-paths",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      }
+     ],
+     "problems": [
+      {
+       "id": "2041D",
+       "src": "cf",
+       "name": "Drunken Maze",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1915G",
+       "src": "cf",
+       "name": "Bicycles",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "2014E",
+       "src": "cf",
+       "name": "Rendez-vous de Marian et Robin",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1601B",
+       "src": "cf",
+       "name": "Frog Traveler",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1846G",
+       "src": "cf",
+       "name": "Rudolf and CodeVid-23",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "2059D",
+       "src": "cf",
+       "name": "Graph and Graph",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "59E",
+       "src": "cf",
+       "name": "Shortest Path",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1801D",
+       "src": "cf",
+       "name": "The way home",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1486E",
+       "src": "cf",
+       "name": "Paired Payment",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1840F",
+       "src": "cf",
+       "name": "Railguns",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1473E",
+       "src": "cf",
+       "name": "Minimum Path",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1195",
+       "src": "cses",
+       "name": "Flight Discount",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1670",
+       "src": "cses",
+       "name": "Swap Game",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "graph-virtual-nodes",
+     "name": "Virtual nodes & segment-tree graphs",
+     "tier": 2000,
+     "order": 2,
+     "prereq": [
+      "sp-dijkstra",
+      "sp-01-bfs"
+     ],
+     "summary": "Replace O(n^2) pairwise edges with extra vertices: one node per colour/line/prime connected to its members (all members pairwise reachable through it), or segment-tree nodes so a vertex can connect to a range in O(log n) edges.",
+     "learn": [
+      "Group node: v -> g cost c, g -> v cost 0 models \"move between any two members for cost c\" with O(n) edges",
+      "Divide distances by 2 trick: use weight 1 on both halves and halve the answer",
+      "Prime-factor nodes: connect a number to each prime factor (Friendly Spiders)",
+      "Segment tree graph: an \"out\" tree (parent->child, 0 cost) and an \"in\" tree (child->parent) for range edges",
+      "Digit-split edges into chains of virtual nodes to compare lexicographic costs (Koala and Notebook)",
+      "Super source / super sink vertices for multiple starts/targets"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Shortest Paths with Non-Negative Edge Weights",
+       "url": "https://usaco.guide/gold/shortest-paths",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: 0-1 BFS",
+       "url": "https://cp-algorithms.com/graph/01_bfs.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1775D",
+       "src": "cf",
+       "name": "Friendly Spiders",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1941G",
+       "src": "cf",
+       "name": "Rudolf and Subway",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1520G",
+       "src": "cf",
+       "name": "To Go Or Not To Go?",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "786B",
+       "src": "cf",
+       "name": "Legacy",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1209F",
+       "src": "cf",
+       "name": "Koala and Notebook",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "graph-complement",
+     "name": "Complement graph traversal",
+     "tier": 2100,
+     "order": 3,
+     "prereq": [
+      "graph-components",
+      "dsu-basics"
+     ],
+     "summary": "When the input lists the edges that are MISSING, BFS on the complement by keeping a set (or linked list) of still-unvisited vertices and scanning it, skipping vertices adjacent in the given graph. Total work O(n + m log n).",
+     "learn": [
+      "Maintain unvisited vertices in a std::set or a DSU \"next\" structure; erase when visited",
+      "For each popped vertex, iterate the unvisited set and skip those in its (sorted/hashed) given adjacency",
+      "Each skip charges to a given edge, each visit removes a vertex -> O((n+m) log n)",
+      "Components of the complement = components with 0-weight edges for 0-1 MST",
+      "Pigeonhole: if m is small, the vertex of minimum given-degree is complement-adjacent to all but deg of the others, so one complement component is huge and only few vertices need explicit handling"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Graph Traversal",
+       "url": "https://usaco.guide/silver/graph-traversal",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Search for connected components",
+       "url": "https://cp-algorithms.com/graph/search-for-connected-components.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "601A",
+       "src": "cf",
+       "name": "The Two Routes",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1242B",
+       "src": "cf",
+       "name": "0-1 MST",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "920E",
+       "src": "cf",
+       "name": "Connected Components?",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "190E",
+       "src": "cf",
+       "name": "Counter Attack",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "653E",
+       "src": "cf",
+       "name": "Bear and Forgotten Tree 2",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1761E",
+       "src": "cf",
+       "name": "Make It Connected",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

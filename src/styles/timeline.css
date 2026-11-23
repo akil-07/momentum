@@ -1,0 +1,102 @@
+/* work log: Today rows, "What you did" card, done sheet, Progress → Timeline */
+
+/* three-way Progress switch fits 375px */
+.tm-seg3 .seg-b { font-size: 14px; white-space: nowrap; padding: 0 6px; }
+@media (max-width: 380px) { .tm-seg3 .seg-b { font-size: 13px; } }
+
+/* Today rows */
+.tm-vs { font-variant-numeric: tabular-nums; }
+.tm-vs b { color: var(--on-surface); font-weight: 650; }
+.task.live .tm-vs b { color: inherit; }
+.tm-run { display: inline-flex; align-items: center; gap: 5px; color: var(--error); font-weight: 650; font-variant-numeric: tabular-nums; }
+.tm-run .dot { width: 6px; height: 6px; }
+
+/* What you did today */
+.tm-did { gap: 10px; }
+.tm-did-n { font-size: 15px; font-variant-numeric: tabular-nums; }
+.tm-did-n b { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; margin-right: 2px; }
+.tm-strip { position: relative; height: 10px; border-radius: var(--r-full); background: var(--surface-container-highest); margin-bottom: 16px; }
+.tm-strip i { position: absolute; top: 0; bottom: 0; border-radius: var(--r-full); transform-origin: left; }
+.tm-strip i.run { animation: tm-pulse 1.6s ease-in-out infinite; }
+.tm-strip span { position: absolute; top: 13px; font-size: 11px; color: var(--on-surface-variant); font-variant-numeric: tabular-nums; }
+@keyframes tm-pulse { 50% { opacity: .55; } }
+
+/* sheets */
+.tm-readout { font-size: 15px; color: var(--on-surface-variant); font-variant-numeric: tabular-nums; min-height: 22px; }
+.tm-readout b { font-size: 20px; color: var(--on-surface); }
+.tm-readout .err { color: var(--error); }
+.tm-ds-t { margin: 0; }
+.tm-ds-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tm-ds-chips .chip { height: 32px; padding: 0 12px; font-size: 13px; }
+.btn.tm-skip { flex: 1; min-width: 0; height: auto; min-height: 40px; padding: 6px 12px; font-size: 13px; text-align: left; justify-content: flex-start; white-space: normal; line-height: 1.25; border-radius: var(--r-lg); }
+.tm-sel { height: 56px; padding: 0 12px; border-radius: var(--r-lg); border: 0; background: var(--surface-container-highest); color: var(--on-surface); font-size: 16px; width: 100%; min-width: 0; box-shadow: inset 0 -2px 0 var(--on-surface-variant); outline: none; }
+.tm-sel:focus { box-shadow: inset 0 -3px 0 var(--primary); }
+.tm-running { height: 56px; display: flex; align-items: center; gap: 8px; padding: 0 16px; border-radius: var(--r-lg); background: var(--surface-container-highest); color: var(--error); font-weight: 650; }
+
+/* Timeline view */
+.tm { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.tm-nav { display: flex; align-items: center; gap: 4px; }
+.tm-date { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; line-height: 1.25; }
+.tm-date b { font-size: 17px; }
+.tm-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.tm-kpi { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: var(--r-lg); background: var(--surface-container); min-width: 0; }
+.tm-kpi b { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--on-surface); white-space: nowrap; }
+.tm-kpi span { font-size: 12px; color: var(--on-surface-variant); }
+.tm-kpi.tm-k1 { background: var(--primary-container); }
+.tm-kpi.tm-k1 b, .tm-kpi.tm-k1 span { color: var(--on-primary-container); }
+@media (max-width: 600px) { .tm-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .tm-kpi.tm-k1 { grid-column: 1 / -1; } .tm-kpi.tm-k1 b { font-size: 24px; } }
+.tm-note { margin: 0; display: flex; align-items: center; gap: 6px; }
+.tm-cats { display: flex; flex-direction: column; gap: 10px; }
+.tm-catbar { display: flex; gap: 2px; height: 10px; border-radius: var(--r-full); overflow: hidden; }
+.tm-catbar i { flex-basis: 0; min-width: 3px; }
+.tm-cats .legend { gap: 6px 14px; }
+.tm-cats .legend b { color: var(--on-surface); font-weight: 650; font-variant-numeric: tabular-nums; }
+
+.tm-lanes-h { display: grid; grid-template-columns: 34px 1fr 34%; gap: 6px; margin-bottom: -8px; }
+.tm-lanes-h span:first-child { grid-column: 2; }
+.tm-chart { position: relative; margin-top: 2px; }
+.tm-hr { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--outline-variant); }
+.tm-hr span { position: absolute; left: 0; top: -8px; width: 28px; text-align: right; font-size: 11px; line-height: 16px; color: var(--on-surface-variant); font-variant-numeric: tabular-nums; background: var(--surface-container-low); }
+.tm-lane { position: absolute; top: 0; bottom: 0; }
+.tm-real { left: 40px; right: calc(34% + 6px); }
+.tm-plan { right: 0; width: 34%; }
+.tm-blk { position: absolute; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 1px; padding: 3px 6px 3px 9px; border-radius: 6px; overflow: hidden; text-align: left; min-width: 0; cursor: pointer; transition: filter .15s; }
+.tm-blk.hov, .tm-blk:focus-visible { filter: brightness(.94) saturate(1.1); outline: 2px solid var(--on-surface); outline-offset: 1px; z-index: 1; }
+.tm-blk-t { font-size: 12.5px; font-weight: 650; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tm-blk-m { font-size: 11px; opacity: .8; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.tm-blk.run::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--error); animation: tm-pulse 1.4s ease-in-out infinite; }
+.tm-ghost { position: absolute; border: 1.5px dashed; border-radius: 6px; padding: 2px 6px; opacity: .55; overflow: hidden; background: color-mix(in srgb, var(--surface-container-highest) 40%, transparent); }
+.tm-ghost.done { opacity: .35; }
+.tm-ghost span { display: block; font-size: 11px; line-height: 1.2; color: var(--on-surface-variant); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tm-now { position: absolute; left: 34px; right: 0; height: 0; border-top: 2px solid var(--error); z-index: 2; pointer-events: none; }
+.tm-now::before { content: ''; position: absolute; left: -4px; top: -5px; width: 8px; height: 8px; border-radius: 50%; background: var(--error); }
+.tm-now span { position: absolute; right: 0; top: -18px; font-size: 11px; font-weight: 700; color: var(--error); font-variant-numeric: tabular-nums; }
+.tm-empty { position: absolute; left: 40px; right: calc(34% + 6px); padding: 12px; text-align: center; border-radius: var(--r-md); background: var(--surface-container); }
+.tm-tip { transform: none; top: 0; max-width: min(260px, 70vw); white-space: normal; z-index: 3; }
+.tm-tip .tip-r span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.tm-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.tm-list li + li { border-top: 1px solid var(--outline-variant); }
+.tm-list button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 2px; text-align: left; min-width: 0; }
+.tm-l-time { display: flex; flex-direction: column; width: 44px; flex-shrink: 0; font-size: 13px; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.3; }
+.tm-l-time i { font-style: normal; font-weight: 400; color: var(--on-surface-variant); }
+.tm-l-mark { width: 4px; align-self: stretch; border-radius: 2px; flex-shrink: 0; }
+.tm-l-t { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tm-list .grow > .small { display: flex; align-items: center; gap: 4px; }
+.tm-list .grow .msr { font-size: 15px; }
+.tm-l-m { font-variant-numeric: tabular-nums; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; }
+.tm-l-m.run { color: var(--error); }
+.tm-l-m .dot { width: 6px; height: 6px; }
+/* the Today card's link to the Timeline: a real tap target */
+.tm-link { min-height: 32px; padding: 6px 10px; margin: -6px -10px; border-radius: var(--r-lg, 12px); }
+.tm-warn { display: flex; align-items: flex-start; gap: 6px; color: var(--tertiary); }
+.tm-warn .msr { font-size: 16px; }
+.tm-next { display: inline-flex; align-items: center; gap: 8px; min-height: 32px; cursor: pointer; }
+.tm-next input { width: 18px; height: 18px; accent-color: var(--primary); }
+/* automatic breaks: a calm hatched block in the actual-work lane (never counted as work) */
+.tm-blk.brk { background: repeating-linear-gradient(135deg, var(--tertiary-container) 0 6px, color-mix(in srgb, var(--tertiary-container) 55%, var(--surface)) 6px 12px); color: var(--on-tertiary-container); box-shadow: inset 3px 0 0 var(--tertiary); border: 1px dashed color-mix(in srgb, var(--tertiary) 50%, transparent); }
+.tm-blk.brk .tm-blk-t { font-weight: 550; font-style: italic; }
+
+/* done with "I didn't time it": dashed, at its planned slot; tap logs real times */
+.tm-blk.untimed { background: transparent; border: 1.5px dashed; padding-left: 8px; opacity: .85; }
+.tm-blk.untimed .tm-blk-m { opacity: .8; }

@@ -1,0 +1,4730 @@
+{
+ "area": "math",
+ "topics": [
+  {
+   "id": "math-basics",
+   "name": "Math Fundamentals",
+   "cfTags": [
+    "math"
+   ],
+   "subtopics": [
+    {
+     "id": "math-arith-basics",
+     "name": "Integer arithmetic, overflow & floor/ceil",
+     "tier": 800,
+     "order": 1,
+     "prereq": [],
+     "summary": "The everyday arithmetic every Div 2/3/4 A-B problem relies on: integer division, remainders, ceiling division, parity and 64-bit overflow. Recognise it when a statement asks for a count or minimum that can be written as a closed formula of the inputs.",
+     "learn": [
+      "Use long long whenever a product or sum can exceed about 2*10^9; cast before multiplying (1LL*a*b).",
+      "Ceiling division for positives: (a+b-1)/b; in C++ '/' truncates toward zero and % can be negative for negative operands.",
+      "Parity reasoning: the sum of k odd numbers has the parity of k; many A problems reduce to an even/odd check.",
+      "Count multiples of k in [l,r] as r/k-(l-1)/k; the k-th number not divisible by n is a closed formula.",
+      "Avoid floating point for exact integer answers: compute integer sqrt with a correction loop, compare a*d vs c*b instead of a/b vs c/d.",
+      "Derive a formula on small cases by hand, then double-check edge cases (0, 1, equal values, maximum constraints)."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Working with numbers",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 1.3 (p. 6)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Mathematics (sums, sets, logic, functions)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 1.5 (p. 10)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1328A",
+       "src": "cf",
+       "name": "Divisibility Problem",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1335A",
+       "src": "cf",
+       "name": "Candies and Two Sisters",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "2009A",
+       "src": "cf",
+       "name": "Minimize!",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1374B",
+       "src": "cf",
+       "name": "Multiply by 2, divide by 6",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1343A",
+       "src": "cf",
+       "name": "Candies",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1607B",
+       "src": "cf",
+       "name": "Odd Grasshopper",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1418A",
+       "src": "cf",
+       "name": "Buying Torches",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1463A",
+       "src": "cf",
+       "name": "Dungeon",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1352C",
+       "src": "cf",
+       "name": "K-th Not Divisible by n",
+       "rating": 1200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "math-sums-formulas",
+     "name": "Sums, series & closed formulas",
+     "tier": 1000,
+     "order": 2,
+     "prereq": [
+      "math-arith-basics"
+     ],
+     "summary": "Arithmetic and geometric series, sum of squares, and the habit of turning a loop over a huge range into an O(1) formula. Appears whenever n is up to 10^9-10^18 and the answer is a sum of a regular pattern.",
+     "learn": [
+      "1+2+...+n = n(n+1)/2; sum of the first k odd numbers is k^2; sum of squares n(n+1)(2n+1)/6.",
+      "Geometric series a(r^k-1)/(r-1); sum of powers of two 2^0+...+2^(k-1)=2^k-1.",
+      "Minimum/maximum sums of k distinct numbers from [1..n] are prefix/suffix arithmetic series, and every value in between is reachable.",
+      "Combine a monotone closed-form sum with binary search when you need the first k reaching a target.",
+      "Compute range sums of arithmetic sequences as (first+last)*count/2 and beware overflow of the intermediate product.",
+      "Telescoping and pairing tricks (Gauss pairing) simplify many 'sum over a pattern' tasks."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Mathematics: sum formulas",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 1.5 (p. 10)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-3406",
+       "src": "cses",
+       "name": "Triangle Number Sums",
+       "from": "curated"
+      },
+      {
+       "id": "1985B",
+       "src": "cf",
+       "name": "Maximum Multiple Sum",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1878C",
+       "src": "cf",
+       "name": "Vasilije in Cacak",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1353C",
+       "src": "cf",
+       "name": "Board Moves",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1327A",
+       "src": "cf",
+       "name": "Sum of Odd Integers",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1872D",
+       "src": "cf",
+       "name": "Plus Minus Permutation",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1612C",
+       "src": "cf",
+       "name": "Chat Ban",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1862D",
+       "src": "cf",
+       "name": "Ice Cream Balls",
+       "rating": 1300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "math-digits-bases",
+     "name": "Digits & number bases",
+     "tier": 1000,
+     "order": 3,
+     "prereq": [
+      "math-arith-basics"
+     ],
+     "summary": "Manipulating decimal digits and representations in base k (including binary): digit sums, round numbers, repunits, counting how digits change. Recognise it when a property is stated in terms of the decimal/binary representation of a number.",
+     "learn": [
+      "Extract digits with n%10 and n/=10; the number of digits of n is floor(log10 n)+1 but compute it with integer loops.",
+      "A number written in base k with digits 0/1 corresponds to a subset of powers of k (bitmask of the index).",
+      "Repunits 11...1 and 'numbers of identical digits' can be enumerated directly (only 9*18 such numbers below 10^18).",
+      "Large numbers of 11, 111, ... can be reduced: any representation only needs 11 and 111 (since 1111 = 11*101).",
+      "Count digit changes when incrementing from l to r by summing r/10^i - l/10^i over i.",
+      "Divisibility rules: by 3/9 via digit sum, by 2/5/10 via last digit, by 4/25 via last two digits."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Working with numbers",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 1.3 (p. 6)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1352A",
+       "src": "cf",
+       "name": "Sum of Round Numbers",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1520B",
+       "src": "cf",
+       "name": "Ordinary Numbers",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1266A",
+       "src": "cf",
+       "name": "Competitive Programmer",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1594B",
+       "src": "cf",
+       "name": "Special Numbers",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1526B",
+       "src": "cf",
+       "name": "I Hate 1111",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1538F",
+       "src": "cf",
+       "name": "Interesting Function",
+       "rating": 1500,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "number-theory",
+   "name": "Number Theory",
+   "cfTags": [
+    "number theory",
+    "chinese remainder theorem",
+    "math"
+   ],
+   "subtopics": [
+    {
+     "id": "nt-divisibility",
+     "name": "Divisibility & divisors in O(√n)",
+     "tier": 1000,
+     "order": 1,
+     "prereq": [
+      "math-arith-basics"
+     ],
+     "summary": "Divisors come in pairs (d, n/d), so all divisors of n can be enumerated in O(√n). This is the first tool for problems like 'find the smallest/largest divisor', 'split n into factors' or 'minimum packages of equal size'.",
+     "learn": [
+      "Loop d from 1 while d*d<=n; if n%d==0 record d and n/d (avoid recording the square root twice).",
+      "The smallest divisor >1 of n is prime; the largest proper divisor is n / smallest prime factor.",
+      "A number has an odd divisor >1 iff it is not a power of two.",
+      "The number of divisors of n<=10^9 is at most 1344, of n<=10^18 at most 103680, so iterating over divisors is usually cheap.",
+      "To check divisibility of a product without overflow, reduce factors with gcd first.",
+      "Reconstruct n from its full divisor list: n = smallest * largest, then verify the list."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Divisibility",
+       "url": "https://usaco.guide/gold/divisibility",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Primes and factors",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.1 (p. 197)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Number of divisors / sum of divisors",
+       "url": "https://cp-algorithms.com/algebra/divisors.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1713",
+       "src": "cses",
+       "name": "Counting Divisors",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1475A",
+       "src": "cf",
+       "name": "Odd Divisor",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1350A",
+       "src": "cf",
+       "name": "Orac and Factors",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1916B",
+       "src": "cf",
+       "name": "Two Divisors",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1899B",
+       "src": "cf",
+       "name": "250 Thousand Tons of TNT",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1294C",
+       "src": "cf",
+       "name": "Product of Three Numbers",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1360D",
+       "src": "cf",
+       "name": "Buying Shovels",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1372B",
+       "src": "cf",
+       "name": "Omkar and Last Class of Math",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1203C",
+       "src": "cf",
+       "name": "Common Divisors",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1165D",
+       "src": "cf",
+       "name": "Almost All Divisors",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1920C",
+       "src": "cf",
+       "name": "Partitioning the Array",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1744E2",
+       "src": "cf",
+       "name": "Divisible Numbers (hard version)",
+       "rating": 1900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-gcd-lcm",
+     "name": "GCD, LCM & Euclid's algorithm",
+     "tier": 1100,
+     "order": 2,
+     "prereq": [
+      "nt-divisibility"
+     ],
+     "summary": "gcd(a,b) via Euclid runs in O(log min(a,b)); lcm(a,b)=a/gcd(a,b)*b. Key identities like gcd(a,b)=gcd(a,b-a) and 'the gcd of a prefix changes at most log times' unlock many Div 2 B-D problems.",
+     "learn": [
+      "Euclid: gcd(a,b)=gcd(b,a mod b); std::gcd / std::lcm in C++17; compute lcm as a/gcd*b to avoid overflow.",
+      "gcd(a+x, b+x) = gcd(a+x, b-a): differences turn 'gcd of shifted array' into a fixed gcd of differences.",
+      "gcd(a1..an) can only decrease, and each decrease divides it by at least 2, so prefix gcds take O(log) distinct values.",
+      "Reduce ratios a:b by dividing by gcd to use them as hashable keys.",
+      "lcm grows fast: when lcm of a set exceeds a bound you can stop early.",
+      "gcd(a,b)=1 problems: consecutive integers are coprime; gcd(n, n+1)=1, gcd(n, 2n+1)=1.",
+      "Sparse table / segment tree over gcd answers range-gcd queries (gcd is idempotent)."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Divisibility (GCD & LCM)",
+       "url": "https://usaco.guide/gold/divisibility",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Primes and factors: Euclid's algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.1 (p. 197)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Euclidean algorithm for GCD",
+       "url": "https://cp-algorithms.com/algebra/euclid-algorithm.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1081",
+       "src": "cses",
+       "name": "Common Divisors",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1325A",
+       "src": "cf",
+       "name": "EhAb AnD gCd",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1765M",
+       "src": "cf",
+       "name": "Minimum LCM",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1511B",
+       "src": "cf",
+       "name": "GCD Length",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1736B",
+       "src": "cf",
+       "name": "Playing with GCD",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1285C",
+       "src": "cf",
+       "name": "Fadi and LCM",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "2007C",
+       "src": "cf",
+       "name": "Dora and C++",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1536C",
+       "src": "cf",
+       "name": "Diluc and Kaeya",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1458A",
+       "src": "cf",
+       "name": "Row GCD",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1349A",
+       "src": "cf",
+       "name": "Orac and LCM",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1542C",
+       "src": "cf",
+       "name": "Strange Function",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1034A",
+       "src": "cf",
+       "name": "Enlarge GCD",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1848C",
+       "src": "cf",
+       "name": "Vika and Price Tags",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1547F",
+       "src": "cf",
+       "name": "Array Stabilization (GCD version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1210C",
+       "src": "cf",
+       "name": "Kamil and Making a Stream",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1967B2",
+       "src": "cf",
+       "name": "Reverse Card (Hard Version)",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-primes-sieve",
+     "name": "Primes, primality & Sieve of Eratosthenes",
+     "tier": 1200,
+     "order": 3,
+     "prereq": [
+      "nt-divisibility"
+     ],
+     "summary": "Trial division tests primality in O(√n); the Sieve of Eratosthenes marks all primes up to N in O(N log log N) and the linear sieve also produces smallest prime factors. Recognise it when many numbers up to 10^6-10^7 need prime information.",
+     "learn": [
+      "Sieve: for each prime p, mark multiples starting at p*p; memory as vector<bool> or bitset for N=10^7.",
+      "Linear sieve computes spf[i] (smallest prime factor) and multiplicative functions in O(N).",
+      "Prime gaps are small (<~300 below 10^9) so 'next prime >= x' is a short trial-division loop.",
+      "Every even number >2 is not prime; Goldbach-style facts (every even number is a sum of two primes in contest ranges) appear in constructive tasks.",
+      "Deterministic Miller-Rabin with fixed bases tests 64-bit primality in O(log n) multiplications.",
+      "Segmented sieve finds primes in a range [L,R] with R up to 10^12 and R-L up to 10^6."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Divisibility (Prime Factorization)",
+       "url": "https://usaco.guide/gold/divisibility",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Primes and factors: sieve of Eratosthenes",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.1 (p. 197)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Sieve of Eratosthenes",
+       "url": "https://cp-algorithms.com/algebra/sieve-of-eratosthenes.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Linear Sieve",
+       "url": "https://cp-algorithms.com/algebra/prime-sieve-linear.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Primality tests (Miller-Rabin)",
+       "url": "https://cp-algorithms.com/algebra/primality_tests.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-3396",
+       "src": "cses",
+       "name": "Next Prime",
+       "from": "curated"
+      },
+      {
+       "id": "26A",
+       "src": "cf",
+       "name": "Almost Prime",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1238A",
+       "src": "cf",
+       "name": "Prime Subtraction",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1474B",
+       "src": "cf",
+       "name": "Different Divisors",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "2093C",
+       "src": "cf",
+       "name": "Simple Repetition",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1872C",
+       "src": "cf",
+       "name": "Non-coprime Split",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1332B",
+       "src": "cf",
+       "name": "Composite Coloring",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1771C",
+       "src": "cf",
+       "name": "Hossam and Trainees",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1176D",
+       "src": "cf",
+       "name": "Recover it!",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1749D",
+       "src": "cf",
+       "name": "Counting Arrays",
+       "rating": 1900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-factorization",
+     "name": "Prime factorization & smallest-prime-factor sieve",
+     "tier": 1300,
+     "order": 4,
+     "prereq": [
+      "nt-primes-sieve"
+     ],
+     "summary": "Write n = p1^e1 ... pk^ek by trial division (O(√n)) or in O(log n) per query using a precomputed smallest-prime-factor array. Exponent vectors turn products, perfect powers, squares and divisibility questions into simple per-prime arithmetic.",
+     "learn": [
+      "Trial division up to √n; whatever remains >1 is a prime factor.",
+      "With spf[] from a sieve, factorize any x<=N in O(log x) by repeated division.",
+      "a divides b iff every prime exponent of a is <= that of b; gcd/lcm take min/max exponents.",
+      "Perfect k-th power iff all exponents are divisible by k; reduce exponents mod k to get a canonical 'signature' (square-free part for k=2).",
+      "Legendre's formula: the exponent of p in n! is sum floor(n/p^i); trailing zeros of n! in base b use the limiting prime of b.",
+      "A number <=10^18 has at most 15 distinct prime factors; <=10^9 at most 9."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Divisibility (Prime Factorization)",
+       "url": "https://usaco.guide/gold/divisibility",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Primes and factors",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.1 (p. 197)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Integer factorization",
+       "url": "https://cp-algorithms.com/algebra/factorization.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1881D",
+       "src": "cf",
+       "name": "Divide and Equalize",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1444A",
+       "src": "cf",
+       "name": "Division",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1114C",
+       "src": "cf",
+       "name": "Trailing Loves (or L'oeufs?)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1228C",
+       "src": "cf",
+       "name": "Primes and Multiplication",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1497E1",
+       "src": "cf",
+       "name": "Square-Free Division (easy version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1225D",
+       "src": "cf",
+       "name": "Power Products",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1470B",
+       "src": "cf",
+       "name": "Strange Definition",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1366D",
+       "src": "cf",
+       "name": "Two Divisors",
+       "rating": 2000,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-modular-arithmetic",
+     "name": "Modular arithmetic",
+     "tier": 1200,
+     "order": 5,
+     "prereq": [
+      "math-arith-basics"
+     ],
+     "summary": "Doing all arithmetic modulo m (usually 10^9+7 or 998244353) to keep numbers small, and reasoning about remainders (pairs whose sum is divisible by k, cycles of last digits). Recognise 'print the answer modulo ...' or conditions on divisibility of sums.",
+     "learn": [
+      "(a+b) mod m, (a-b+m) mod m, (a*b) mod m with 64-bit intermediates; never divide directly under a modulus.",
+      "Normalise negatives: ((x % m) + m) % m.",
+      "Group numbers by remainder: a+b divisible by k iff r_a + r_b ≡ 0 (mod k); count pairs with a map of remainders.",
+      "Pigeonhole: among m+1 numbers two share a remainder mod m, so if n>m the product of differences mod m is 0.",
+      "Last digits / remainders under repeated operations become periodic quickly; simulate until the cycle.",
+      "Algebraic tricks: multiply both sides by a factor to separate i and j (e.g. (a+b)(a^2+b^2) = (a^4-b^4)/(a-b))."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Modular Arithmetic",
+       "url": "https://usaco.guide/gold/modular",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Modular arithmetic",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.2 (p. 201)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1931D",
+       "src": "cf",
+       "name": "Divisible Pairs",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1714E",
+       "src": "cf",
+       "name": "Add Modulo 10",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1305C",
+       "src": "cf",
+       "name": "Kuroni and Impossible Calculation",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1514C",
+       "src": "cf",
+       "name": "Product 1 Modulo N",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1344A",
+       "src": "cf",
+       "name": "Hilbert's Hotel",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "2033F",
+       "src": "cf",
+       "name": "Kosuke's Sloth",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1389E",
+       "src": "cf",
+       "name": "Calendar Ambiguity",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1188B",
+       "src": "cf",
+       "name": "Count Pairs",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-binary-exponentiation",
+     "name": "Binary (fast) exponentiation",
+     "tier": 1300,
+     "order": 6,
+     "prereq": [
+      "nt-modular-arithmetic"
+     ],
+     "summary": "Compute a^b mod m in O(log b) by repeated squaring. Needed for counting answers like 2^n or (2^m-1)^n, for modular inverses via Fermat, and as the core of matrix exponentiation.",
+     "learn": [
+      "Iterative pow: while(b){ if(b&1) r=r*a%m; a=a*a%m; b>>=1; }.",
+      "Reduce the base first (a%=m) and use 64-bit (or __int128 when m is ~10^18).",
+      "Counting independent binary choices gives powers of 2; choices per item with 'not all empty' give (2^m-1)^n.",
+      "The same doubling idea works for any associative operation (matrix multiply, function composition, binary lifting).",
+      "Exponent towers need Euler's theorem to reduce the exponent (see Euler phi).",
+      "Precompute powers in an array when you need many consecutive powers."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Modular Arithmetic (Exponentiation)",
+       "url": "https://usaco.guide/gold/modular",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Modular arithmetic: modular exponentiation",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.2 (p. 201)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Binary Exponentiation",
+       "url": "https://cp-algorithms.com/algebra/binary-exp.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1095",
+       "src": "cses",
+       "name": "Exponentiation",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "185A",
+       "src": "cf",
+       "name": "Plant",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1594E1",
+       "src": "cf",
+       "name": "Rubik's Cube Coloring (easy version)",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1866B",
+       "src": "cf",
+       "name": "Battling with Numbers",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1236B",
+       "src": "cf",
+       "name": "Alice and the List of Presents",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1985G",
+       "src": "cf",
+       "name": "D-Function",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1557C",
+       "src": "cf",
+       "name": "Moamen and XOR",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1228C",
+       "src": "cf",
+       "name": "Primes and Multiplication",
+       "rating": 1700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-modular-inverse",
+     "name": "Modular inverse & division mod p",
+     "tier": 1400,
+     "order": 7,
+     "prereq": [
+      "nt-binary-exponentiation"
+     ],
+     "summary": "x^{-1} mod p exists when gcd(x,p)=1; for prime p it equals x^{p-2} (Fermat). This is how fractions, expected values and binomial coefficients are output 'modulo 998244353'.",
+     "learn": [
+      "For prime p: inv(x)=pow(x,p-2,p); for general m use extended Euclid (requires gcd(x,m)=1).",
+      "A fraction P/Q is printed as P*Q^{-1} mod p; add/multiply fractions directly in modular form.",
+      "Inverses of 1..n in O(n): inv[i] = -(p/i) * inv[p%i] mod p.",
+      "Inverse factorials: invfact[n]=pow(fact[n],p-2), then invfact[i-1]=invfact[i]*i.",
+      "Never take the inverse of a value that may be ≡0 mod p (e.g. n>=p in n!).",
+      "Division by 2 mod p is multiplication by (p+1)/2."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Modular Arithmetic (Modular Inverse)",
+       "url": "https://usaco.guide/gold/modular",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Modular arithmetic: modular inverse",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.2 (p. 201)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Modular Multiplicative Inverse",
+       "url": "https://cp-algorithms.com/algebra/module-inverse.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "2008F",
+       "src": "cf",
+       "name": "Sakurako's Box",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1569C",
+       "src": "cf",
+       "name": "Jury Meeting",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1452D",
+       "src": "cf",
+       "name": "Radio Towers",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1279D",
+       "src": "cf",
+       "name": "Santa's Bot",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1312D",
+       "src": "cf",
+       "name": "Count the Arrays",
+       "rating": 1700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-harmonic-sieve",
+     "name": "Harmonic loops over multiples (n/1+n/2+...)",
+     "tier": 1600,
+     "order": 8,
+     "prereq": [
+      "nt-divisibility"
+     ],
+     "summary": "Iterating, for every d, over all multiples of d costs n/1+n/2+...+n/n = O(n log n). It powers 'for every value, look at its multiples/divisors' DP and gcd counting on value-indexed arrays.",
+     "learn": [
+      "for(d=1;d<=n;d++) for(m=d;m<=n;m+=d) ... runs in O(n log n); use it to build divisor lists for all numbers up to n.",
+      "Count, for each g, how many array values are multiples of g using a frequency array (cnt[g] = sum of freq of multiples).",
+      "Longest chain where each element divides the next: dp over values pushing to multiples.",
+      "'Is g achievable as a gcd of a subset?' check gcd of all present multiples of g equals g.",
+      "Combine with going from large g to small to subtract over-counting (preparation for Möbius).",
+      "Minimum lcm pair: for each g, take the two smallest present multiples of g."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Divisibility",
+       "url": "https://usaco.guide/gold/divisibility",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Primes and factors (sum of divisors, harmonic bounds)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.1 (p. 197)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1350B",
+       "src": "cf",
+       "name": "Orac and Models",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1627D",
+       "src": "cf",
+       "name": "Not Adding",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1475G",
+       "src": "cf",
+       "name": "Strange Beauty",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1884D",
+       "src": "cf",
+       "name": "Counting Rhyme",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1154G",
+       "src": "cf",
+       "name": "Minimum Possible LCM",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1646E",
+       "src": "cf",
+       "name": "Power Board",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-divisor-functions",
+     "name": "Divisor functions & multiplicative functions",
+     "tier": 1700,
+     "order": 9,
+     "prereq": [
+      "nt-factorization",
+      "nt-harmonic-sieve"
+     ],
+     "summary": "From n = ∏ p^e you get τ(n)=∏(e+1), σ(n)=∏(p^{e+1}-1)/(p-1) and the product of divisors. Multiplicative functions (f(ab)=f(a)f(b) for coprime a,b) can be sieved for all n<=N.",
+     "learn": [
+      "Number of divisors τ(n)=∏(e_i+1); sum of divisors σ(n)=∏(1+p+...+p^e).",
+      "Product of divisors = n^{τ(n)/2}; reduce the exponent mod p-1 when working modulo a prime p.",
+      "Multiplicative functions (τ, σ, φ, μ, ω-related) can be computed for all n<=N by the linear sieve.",
+      "Count distinct prime factors ω(n) for all n with a sieve; 2^{ω(n)} counts coprime ordered factor pairs.",
+      "Sum of τ(i) or σ(i) over i<=N via sum over d of floor(N/d) (and d*floor(N/d)).",
+      "DP over divisors of values (dp[d] over multiples) for maximizing sums of prefix gcds."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Divisibility (Counting Divisors)",
+       "url": "https://usaco.guide/gold/divisibility",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: Prefix Sums of Number-Theoretic Functions (Part 1)",
+       "url": "https://usaco.guide/adv/prefix-sums-nt-1",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "CPH: Primes and factors: number and sum of factors",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.1 (p. 197)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Number of divisors / sum of divisors",
+       "url": "https://cp-algorithms.com/algebra/divisors.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1082",
+       "src": "cses",
+       "name": "Sum of Divisors",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2182",
+       "src": "cses",
+       "name": "Divisor Analysis",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "236B",
+       "src": "cf",
+       "name": "Easy Number Challenge",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1528B",
+       "src": "cf",
+       "name": "Kavi on Pairing Duty",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1512G",
+       "src": "cf",
+       "name": "Short Task",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1499D",
+       "src": "cf",
+       "name": "The Number of Pairs",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1614D1",
+       "src": "cf",
+       "name": "Divan and Kostomuksha (easy version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1614D2",
+       "src": "cf",
+       "name": "Divan and Kostomuksha (hard version)",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1792E",
+       "src": "cf",
+       "name": "Divisors and Table",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-euler-phi",
+     "name": "Euler's totient, Fermat & Euler's theorem",
+     "tier": 1700,
+     "order": 10,
+     "prereq": [
+      "nt-factorization",
+      "nt-modular-inverse"
+     ],
+     "summary": "φ(n) counts 1<=k<=n with gcd(k,n)=1, computed from the factorization as n∏(1-1/p). Euler's theorem a^φ(m) ≡ 1 (mod m) (Fermat for primes) lets you reduce huge exponents and explains periodicity of powers.",
+     "learn": [
+      "φ(n)=n∏(1-1/p) over distinct primes p|n; sieve φ for all n<=N in O(N log log N).",
+      "Number of k in [0,m) with gcd(a+k, m) = gcd(a,m) is φ(m/gcd(a,m)).",
+      "Fermat: a^{p-1} ≡ 1 mod p for prime p not dividing a, so exponents reduce mod p-1 (CSES Exponentiation II).",
+      "Generalised Euler: for e >= log2 m, a^e ≡ a^{(e mod φ(m)) + φ(m)} (mod m) even if gcd(a,m)≠1 (power towers).",
+      "Σ_{d|n} φ(d) = n, a frequent identity for gcd sums: Σ_i gcd(i,n) = Σ_{d|n} d·φ(n/d).",
+      "Exponents of a recurrence of products (f_n = f_{n-1}f_{n-2}...) live modulo p-1 and are found with matrix power."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Divisibility (Euler's Totient Function)",
+       "url": "https://usaco.guide/gold/divisibility",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Modular arithmetic: Euler's theorem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.2 (p. 201)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Euler's totient function",
+       "url": "https://cp-algorithms.com/algebra/phi-function.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1712",
+       "src": "cses",
+       "name": "Exponentiation II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1295D",
+       "src": "cf",
+       "name": "Same GCDs",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "919E",
+       "src": "cf",
+       "name": "Congruence Equation",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "776E",
+       "src": "cf",
+       "name": "The Holmes Children",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1717E",
+       "src": "cf",
+       "name": "Madoka and The Best University",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1182E",
+       "src": "cf",
+       "name": "Product Oriented Recurrence",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "906D",
+       "src": "cf",
+       "name": "Power Tower",
+       "rating": 2700,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "nt-ext-euclid",
+     "name": "Extended Euclid & linear Diophantine equations",
+     "tier": 1800,
+     "order": 11,
+     "prereq": [
+      "nt-gcd-lcm"
+     ],
+     "summary": "Extended Euclid finds x,y with ax+by=gcd(a,b). It solves ax+by=c (solvable iff gcd|c), gives modular inverses modulo non-primes, and solves linear congruences ax ≡ b (mod m).",
+     "learn": [
+      "Recursive ext_gcd returns g and (x,y); all solutions: x+k·b/g, y-k·a/g.",
+      "ax+by=c has integer solutions iff gcd(a,b) divides c; scale the base solution by c/g.",
+      "To find non-negative or minimal solutions, shift k so that x is in [0, b/g).",
+      "If x+y should be small with a,b positive, brute force over one variable up to the other coefficient (bounded by b/g).",
+      "Linear congruence ax ≡ b (mod m): divide by g=gcd(a,m) (needs g|b), then multiply by the inverse of a/g mod m/g.",
+      "Watch overflow: coefficients can reach ~10^18; use __int128 for products.",
+      "Frobenius / Chicken McNugget: for coprime a,b>0 every integer > ab-a-b is a non-negative combination of a and b; ab-a-b itself is not."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Extended Euclidean Algorithm",
+       "url": "https://usaco.guide/adv/extend-euclid",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Solving equations: Diophantine equations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.3 (p. 204)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Extended Euclidean Algorithm",
+       "url": "https://cp-algorithms.com/algebra/extended-euclid-algorithm.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Linear Diophantine Equation",
+       "url": "https://cp-algorithms.com/algebra/linear-diophantine-equation.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Linear Congruence Equation",
+       "url": "https://cp-algorithms.com/algebra/linear_congruence_equation.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "633A",
+       "src": "cf",
+       "name": "Ebony and Ivory",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "7C",
+       "src": "cf",
+       "name": "Line",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1244C",
+       "src": "cf",
+       "name": "The Football Season",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1748D",
+       "src": "cf",
+       "name": "ConstructOR",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "982E",
+       "src": "cf",
+       "name": "Billiard",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-crt",
+     "name": "Chinese Remainder Theorem",
+     "tier": 2000,
+     "order": 12,
+     "prereq": [
+      "nt-ext-euclid"
+     ],
+     "summary": "A system x ≡ a_i (mod m_i) with pairwise coprime moduli has a unique solution modulo ∏m_i; with general moduli it is merged pairwise via extended Euclid. Appears with periodic events, interactive 'guess x' tasks and with knowing x mod several small numbers.",
+     "learn": [
+      "Merge two congruences x≡a1 (mod m1), x≡a2 (mod m2): solvable iff a1≡a2 (mod gcd); new modulus lcm(m1,m2).",
+      "Knowing x mod m_i for all i determines x mod lcm(m_i); a modulus k is determined iff k | lcm(m_i).",
+      "Interactive: learn x modulo several small coprime numbers (e.g. via gcd queries) and combine.",
+      "Periodic coincidences of two cycles of lengths n and m repeat every lcm(n,m); count them per residue class with CRT.",
+      "Pigeonhole over small primes: if for prime p every residue class is used twice, no shift works (Koxia).",
+      "Garner's algorithm reconstructs big numbers from residues modulo several primes."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Extended Euclidean Algorithm (Chinese Remainder Theorem)",
+       "url": "https://usaco.guide/adv/extend-euclid",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Solving equations: Chinese remainder theorem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.3 (p. 204)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Chinese Remainder Theorem",
+       "url": "https://cp-algorithms.com/algebra/chinese-remainder-theorem.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1770C",
+       "src": "cf",
+       "name": "Koxia and Number Theory",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "687B",
+       "src": "cf",
+       "name": "Remainders Game",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1665D",
+       "src": "cf",
+       "name": "GCD Guess",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "919E",
+       "src": "cf",
+       "name": "Congruence Equation",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1500B",
+       "src": "cf",
+       "name": "Two chandeliers",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1993F1",
+       "src": "cf",
+       "name": "Dyn-scripted Robot (Easy Version)",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "338D",
+       "src": "cf",
+       "name": "GCD Table",
+       "rating": 2900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-floor-blocks",
+     "name": "Floor-division blocks (O(√n) distinct quotients)",
+     "tier": 1700,
+     "order": 13,
+     "prereq": [
+      "nt-harmonic-sieve"
+     ],
+     "summary": "floor(n/i) takes only O(√n) distinct values, and all i with the same quotient form a contiguous block [l, n/(n/l)]. This turns sums like Σ f(floor(n/i)) or Σ n mod i into O(√n) loops.",
+     "learn": [
+      "Iterate blocks: for(l=1;l<=n;l=r+1){ q=n/l; r=n/q; ... }.",
+      "n mod i = n - i·floor(n/i), so Σ n mod i is computed block by block with arithmetic series.",
+      "For a fixed quotient q, the i with floor(n/i)=q are in [n/(q+1)+1, n/q].",
+      "DP of the form dp[x] = Σ_z dp[floor(x/z)] is sped up by grouping equal quotients or by pushing contributions to multiples ranges.",
+      "Conditions like floor(a/b) = a mod b reduce to a = k(b+1) with k<b; count pairs with block sums.",
+      "Combine with Möbius prefix sums for Σ_{i<=n} Σ_{j<=m} [gcd(i,j)=1] (iterate blocks where both n/i and m/i are constant: r=min(n/(n/l), m/(m/l))).",
+      "Σ_{i<n} floor((a·i+b)/c) has an O(log) Euclid-like algorithm (floor_sum, as in AtCoder Library) for when even O(√n) is too slow."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Prefix Sums of Number-Theoretic Functions (Part 1)",
+       "url": "https://usaco.guide/adv/prefix-sums-nt-1",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "CPH: Primes and factors (sum of factors over ranges)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.1 (p. 197)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1263C",
+       "src": "cf",
+       "name": "Everyone is a Winner!",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1485C",
+       "src": "cf",
+       "name": "Floor and Mod",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1558B",
+       "src": "cf",
+       "name": "Up the Strip",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "616E",
+       "src": "cf",
+       "name": "Sum of Remainders",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1954E",
+       "src": "cf",
+       "name": "Chain Reaction",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "830C",
+       "src": "cf",
+       "name": "Bamboo Partition",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1780E",
+       "src": "cf",
+       "name": "Josuke and Complete Graph",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1603D",
+       "src": "cf",
+       "name": "Artistic Partition",
+       "rating": 3000,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-mobius",
+     "name": "Möbius function & inversion (gcd counting)",
+     "tier": 2100,
+     "order": 14,
+     "prereq": [
+      "nt-divisor-functions",
+      "comb-pie"
+     ],
+     "summary": "μ(n) is 0 if n has a squared prime factor, otherwise (-1)^{#primes}. Σ_{d|n} μ(d) = [n=1] lets you count coprime pairs/subsets and pairs with gcd exactly g by inclusion–exclusion over divisors.",
+     "learn": [
+      "[gcd = 1] = Σ_{d | gcd} μ(d): count coprime pairs as Σ_d μ(d)·C(cnt_d, 2).",
+      "Number of non-empty subsets with gcd 1: Σ_d μ(d)(2^{cnt_d}-1) where cnt_d = number of multiples of d.",
+      "'Exactly g' from 'divisible by g': f(g) = F(g) - Σ_{k>=2} f(kg), computed from large to small (a Möbius inversion without μ).",
+      "Sieve μ with the linear sieve; only square-free d matter.",
+      "Möbius inversion: if F(n) = Σ_{d|n} f(d) then f(n) = Σ_{d|n} μ(d) F(n/d).",
+      "Dirichlet convolution view: μ * 1 = ε, φ * 1 = id; combine with floor blocks for large n.",
+      "For n up to 10^10-10^11, prefix sums of μ or φ come from Dirichlet hyperbola / Du's sieve in about O(n^{2/3}) (advanced)."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Inclusion-Exclusion Principle (Möbius Function)",
+       "url": "https://usaco.guide/plat/PIE",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "USACO Guide: Prefix Sums of Number-Theoretic Functions (Dirichlet convolution)",
+       "url": "https://usaco.guide/adv/prefix-sums-nt-1",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "[Tutorial] Math note — Möbius inversion",
+       "url": "https://codeforces.com/blog/entry/53925",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      },
+      {
+       "title": "[Tutorial] Math note — Dirichlet convolution",
+       "url": "https://codeforces.com/blog/entry/54150",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2417",
+       "src": "cses",
+       "name": "Counting Coprime Pairs",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "803F",
+       "src": "cf",
+       "name": "Coprime Subsequences",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "900D",
+       "src": "cf",
+       "name": "Unusual Sequences",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "839D",
+       "src": "cf",
+       "name": "Winter is here",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1559E",
+       "src": "cf",
+       "name": "Mocha and Stars",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "547C",
+       "src": "cf",
+       "name": "Mike and Foam",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "915G",
+       "src": "cf",
+       "name": "Coprime Arrays",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1097F",
+       "src": "cf",
+       "name": "Alex and a TV Show",
+       "rating": 2500,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "nt-discrete-log",
+     "name": "Primitive roots & discrete logarithm (BSGS)",
+     "tier": 2400,
+     "order": 15,
+     "prereq": [
+      "nt-euler-phi",
+      "nt-ext-euclid"
+     ],
+     "summary": "A primitive root g mod p generates all non-zero residues, so multiplication becomes addition of exponents. Baby-step giant-step solves a^x ≡ b (mod m) in O(√m). Rare but appears in recurrences of products and 'k-th root mod p' tasks.",
+     "learn": [
+      "Primitive root of prime p: test candidates g with g^{(p-1)/q} ≠ 1 for every prime q | p-1.",
+      "BSGS: write x = i·k - j with k≈√m, store a^j·b in a hash map, scan a^{ik}.",
+      "Taking logs base a primitive root converts x^k ≡ b into k·y ≡ log b (mod p-1), a linear congruence.",
+      "Multiplicative recurrences f_n = ∏ f_{n-i}^{c_i} become linear recurrences on exponents mod p-1 (matrix power).",
+      "Pollard's rho with Miller–Rabin factorizes 64-bit numbers in about O(n^{1/4}) when trial division is too slow.",
+      "Discrete root / Tonelli–Shanks for modular square roots are the same toolbox."
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Discrete Logarithm",
+       "url": "https://cp-algorithms.com/algebra/discrete-log.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Primitive Root",
+       "url": "https://cp-algorithms.com/algebra/primitive-root.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Discrete Root",
+       "url": "https://cp-algorithms.com/algebra/discrete-root.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Other results (Fermat, Wilson, ...)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 21.4 (p. 205)",
+       "minutes": 5
+      }
+     ],
+     "problems": [
+      {
+       "id": "1182E",
+       "src": "cf",
+       "name": "Product Oriented Recurrence",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1106F",
+       "src": "cf",
+       "name": "Lunar New Year and a Recursive Sequence",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "combinatorics",
+   "name": "Combinatorics",
+   "cfTags": [
+    "combinatorics",
+    "math"
+   ],
+   "subtopics": [
+    {
+     "id": "comb-counting-basics",
+     "name": "Counting principles (sum & product rules)",
+     "tier": 1000,
+     "order": 1,
+     "prereq": [
+      "math-arith-basics"
+     ],
+     "summary": "Rule of sum, rule of product, counting pairs with a frequency map, and complementary counting. Most early 'count the number of ...' problems need nothing more, but the counts must be organised to avoid O(n^2).",
+     "learn": [
+      "Product rule: independent choices multiply; sum rule: disjoint cases add.",
+      "Count pairs i<j with equal key as Σ C(cnt,2) using a map; pairs with different keys as total minus equal.",
+      "Complementary counting: count the bad configurations and subtract from all.",
+      "Count substrings of allowed characters as Σ len·(len+1)/2 over maximal blocks.",
+      "Count unordered pairs from two groups as |A|·|B| minus conflicting pairs (inclusion–exclusion lite).",
+      "Arranging n people in circles: divide by rotations (n-1)!/... for circular arrangements."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Combinatorics",
+       "url": "https://usaco.guide/gold/combo",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Combinatorics (introduction)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22 (p. 207)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1840B",
+       "src": "cf",
+       "name": "Binary Cafe",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1272C",
+       "src": "cf",
+       "name": "Yet Another Broken Keyboard",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1985E",
+       "src": "cf",
+       "name": "Secret Box",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1922B",
+       "src": "cf",
+       "name": "Forming Triangles",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1328B",
+       "src": "cf",
+       "name": "K-th Beautiful String",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1326C",
+       "src": "cf",
+       "name": "Permutation Partitions",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1433E",
+       "src": "cf",
+       "name": "Two Round Dances",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1475C",
+       "src": "cf",
+       "name": "Ball in Berland",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1215B",
+       "src": "cf",
+       "name": "The Number of Products",
+       "rating": 1400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-binomial",
+     "name": "Binomial coefficients & factorials mod p",
+     "tier": 1400,
+     "order": 2,
+     "prereq": [
+      "comb-counting-basics",
+      "nt-modular-inverse"
+     ],
+     "summary": "C(n,k) counts k-subsets. Precompute factorials and inverse factorials mod p in O(n) to answer each C(n,k) in O(1); use Pascal's triangle for small n or non-prime modulus. Lucas's theorem handles C(n,k) mod a small prime.",
+     "learn": [
+      "Precompute fact[0..N], invfact[0..N] once; C(n,k)=fact[n]·invfact[k]·invfact[n-k], 0 if k<0 or k>n.",
+      "When n is huge but k is small, compute C(n,k) = n(n-1)...(n-k+1)/k! directly in O(k).",
+      "Pascal: C(n,k)=C(n-1,k-1)+C(n-1,k), O(n^2) table, works for any modulus.",
+      "Identities: Σ_k C(n,k)=2^n, hockey stick Σ_{i} C(i,k)=C(n+1,k+1), Vandermonde Σ C(a,i)C(b,k-i)=C(a+b,k).",
+      "Multinomial n!/(c1!c2!...) counts arrangements of a multiset (distinct strings from letters).",
+      "Fix the element in a special role (the median, the minimum) and choose the rest with binomials.",
+      "Lucas: C(n,k) mod p = ∏ C(n_i,k_i) over base-p digits; C(n,k) is odd iff k & n == k (Xor Pyramid)."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Combinatorics (Binomial Coefficients)",
+       "url": "https://usaco.guide/gold/combo",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Binomial coefficients",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.1 (p. 208)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Binomial Coefficients",
+       "url": "https://cp-algorithms.com/combinatorics/binomial-coefficients.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1079",
+       "src": "cses",
+       "name": "Binomial Coefficients",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1715",
+       "src": "cses",
+       "name": "Creating Strings II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2419",
+       "src": "cses",
+       "name": "Xor Pyramid Peak",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-3194",
+       "src": "cses",
+       "name": "Xor Pyramid Diagonal",
+       "from": "curated"
+      },
+      {
+       "id": "cses-3195",
+       "src": "cses",
+       "name": "Xor Pyramid Row",
+       "from": "curated"
+      },
+      {
+       "id": "1081C",
+       "src": "cf",
+       "name": "Colorful Bricks",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1999F",
+       "src": "cf",
+       "name": "Expected Median",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "553A",
+       "src": "cf",
+       "name": "Kyoya and Colored Balls",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1795D",
+       "src": "cf",
+       "name": "Triangle Coloring",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1475E",
+       "src": "cf",
+       "name": "Advertising Agency",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1462E2",
+       "src": "cf",
+       "name": "Close Tuples (hard version)",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1420D",
+       "src": "cf",
+       "name": "Rescue Nibel!",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1359E",
+       "src": "cf",
+       "name": "Modular Stability",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1696E",
+       "src": "cf",
+       "name": "Placing Jinas",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1334E",
+       "src": "cf",
+       "name": "Divisor Paths",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-stars-bars",
+     "name": "Stars and bars & distributions",
+     "tier": 1600,
+     "order": 3,
+     "prereq": [
+      "comb-binomial"
+     ],
+     "summary": "The number of ways to write n as an ordered sum of k non-negative integers is C(n+k-1, k-1); with positive parts C(n-1,k-1). Also counts non-decreasing sequences and multisets.",
+     "learn": [
+      "n identical balls into k distinct boxes: C(n+k-1,k-1); each box >=1: C(n-1,k-1).",
+      "Non-decreasing sequences of length m with values in [1,n] are multisets: C(n+m-1,m).",
+      "Lower bounds: subtract them first; upper bounds: use inclusion–exclusion over violated boxes.",
+      "Group indistinguishable objects (pairs of adjacent pawns) and place them among free cells: C(free+groups, groups).",
+      "Combine two monotone arrays into one longer monotone sequence to reduce to a single stars-and-bars count.",
+      "Generating-function view: coefficient of x^n in (1-x)^{-k}."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Combinatorics (Stars and Bars)",
+       "url": "https://usaco.guide/gold/combo",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Binomial coefficients: boxes and balls",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.1 (p. 208)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Stars and bars",
+       "url": "https://cp-algorithms.com/combinatorics/stars_and_bars.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1716",
+       "src": "cses",
+       "name": "Distributing Apples",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1288C",
+       "src": "cf",
+       "name": "Two Arrays",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1545B",
+       "src": "cf",
+       "name": "AquaMoon and Chess",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1931G",
+       "src": "cf",
+       "name": "One-Dimensional Puzzle",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "2060F",
+       "src": "cf",
+       "name": "Multiplicative Arrays",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1929F",
+       "src": "cf",
+       "name": "Sasha and the Wedding Binary Search Tree",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "451E",
+       "src": "cf",
+       "name": "Devu and Flowers",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-contribution",
+     "name": "Contribution technique (sum over all pairs/subsets)",
+     "tier": 1400,
+     "order": 4,
+     "prereq": [
+      "comb-counting-basics"
+     ],
+     "summary": "Instead of enumerating all subarrays, pairs, paths or subsets, compute how much each element (or edge, or bit) contributes to the total and sum those contributions. A core trick behind 'sum over all ...' problems.",
+     "learn": [
+      "Element a[i] lies in i·(n-i+1) subarrays (1-indexed); weight it accordingly.",
+      "Sum of |x_i - x_j| over pairs: sort and add x_i·(2i-n-1).",
+      "Edge (u,v) of a tree lies on size·(n-size) paths.",
+      "Bitwise sums: handle each bit separately and count pairs/subarrays where the bit is set.",
+      "Sorted-order arguments: after sorting, each element's role (max/min/median) is determined by its position.",
+      "Sum over all 2^n subsets: an element appears in 2^{n-1} of them."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Combinatorics",
+       "url": "https://usaco.guide/gold/combo",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Binomial coefficients (counting arguments)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.1 (p. 208)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "2000E",
+       "src": "cf",
+       "name": "Photoshoot for Gorillas",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1648A",
+       "src": "cf",
+       "name": "Weird Sum",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1996E",
+       "src": "cf",
+       "name": "Decode",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1879D",
+       "src": "cf",
+       "name": "Sum of XOR Functions",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1422C",
+       "src": "cf",
+       "name": "Bargain",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1401D",
+       "src": "cf",
+       "name": "Maximum Distributed Tree",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1327E",
+       "src": "cf",
+       "name": "Count The Blocks",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1400D",
+       "src": "cf",
+       "name": "Zigzags",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1444B",
+       "src": "cf",
+       "name": "Divide and Sum",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1009E",
+       "src": "cf",
+       "name": "Intercity Travelling",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1467D",
+       "src": "cf",
+       "name": "Sum of Paths",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-pie",
+     "name": "Inclusion–exclusion principle",
+     "tier": 1800,
+     "order": 5,
+     "prereq": [
+      "comb-binomial"
+     ],
+     "summary": "|A1∪...∪An| = Σ|Ai| - Σ|Ai∩Aj| + ... . Used to count objects avoiding all 'bad' properties: integers coprime to a set of primes, permutations with no bad positions, grids with constraints in every row/column.",
+     "learn": [
+      "Iterate over subsets of the bad properties with sign (-1)^{|S|}; feasible when the number of properties is small (≤20) or symmetric.",
+      "Symmetric case: Σ_k (-1)^k C(m,k)·f(k) where f(k) counts objects violating k fixed properties.",
+      "Count numbers ≤n divisible by none of k primes with 2^k subsets of products (stop when the product exceeds n).",
+      "Upper bounds in stars and bars: subtract boxes that exceed their capacity via PIE.",
+      "Count gcd(b_i, b_{i-1}) constraints: factorize the ratio and use PIE over its distinct primes.",
+      "Grids with 'every row and column has a minimum': PIE over rows (and columns) that violate."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Inclusion-Exclusion Principle",
+       "url": "https://usaco.guide/plat/PIE",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Inclusion-exclusion",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.3 (p. 212)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: The Inclusion-Exclusion Principle",
+       "url": "https://cp-algorithms.com/combinatorics/inclusion-exclusion.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2185",
+       "src": "cses",
+       "name": "Prime Multiples",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2421",
+       "src": "cses",
+       "name": "Counting Reorders",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2429",
+       "src": "cses",
+       "name": "Grid Completion",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1207D",
+       "src": "cf",
+       "name": "Number Of Permutations",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1750D",
+       "src": "cf",
+       "name": "Count GCD",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1228E",
+       "src": "cf",
+       "name": "Another Filling the Grid",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1342E",
+       "src": "cf",
+       "name": "Placing Rooks",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "451E",
+       "src": "cf",
+       "name": "Devu and Flowers",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "997C",
+       "src": "cf",
+       "name": "Sky Full of Stars",
+       "rating": 2500,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-permutations",
+     "name": "Counting permutations: cycles, derangements & involutions",
+     "tier": 1600,
+     "order": 6,
+     "prereq": [
+      "comb-binomial"
+     ],
+     "summary": "Counting permutations by structure: derangements D(n)=(n-1)(D(n-1)+D(n-2)), cycle decompositions, involutions, permutations with few fixed points, and permutations constrained by prefix maxima or by where values must go.",
+     "learn": [
+      "Derangements: D(n)=n!Σ(-1)^k/k! or the recurrence (n-1)(D(n-1)+D(n-2)).",
+      "Permutation = disjoint cycles; the order of a permutation is the lcm of its cycle lengths.",
+      "Involutions (p(p(i))=i): I(n) = I(n-1) + (n-1)·I(n-2); each element is a fixed point or paired with another.",
+      "Place values from largest to smallest (or smallest to largest) and count free positions: products of (available slots) give the answer.",
+      "Prefix maxima / records: the maximum splits the permutation into independent left and right parts, combined with a binomial C(n-1, left size).",
+      "Count permutations with at most k misplaced elements: Σ C(n,i)·D(i)."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Combinatorics (Derangements)",
+       "url": "https://usaco.guide/gold/combo",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Inclusion-exclusion: derangements",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.3 (p. 212)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1717",
+       "src": "cses",
+       "name": "Christmas Party",
+       "from": "curated"
+      },
+      {
+       "id": "cses-3397",
+       "src": "cses",
+       "name": "Permutation Order",
+       "from": "curated"
+      },
+      {
+       "id": "cses-3398",
+       "src": "cses",
+       "name": "Permutation Rounds",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1391C",
+       "src": "cf",
+       "name": "Cyclic Permutations",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "888D",
+       "src": "cf",
+       "name": "Almost Identity Permutations",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1957C",
+       "src": "cf",
+       "name": "How Does the Rook Move?",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1699C",
+       "src": "cf",
+       "name": "The Third Problem",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1553E",
+       "src": "cf",
+       "name": "Permutation Shift",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1946E",
+       "src": "cf",
+       "name": "Girl Permutation",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1768E",
+       "src": "cf",
+       "name": "Partial Sorting",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-stirling",
+     "name": "Stirling numbers, set partitions & sums of powers",
+     "tier": 2300,
+     "order": 7,
+     "prereq": [
+      "comb-permutations",
+      "comb-pie"
+     ],
+     "summary": "Stirling numbers of the second kind S(n,k) count partitions of n labelled items into k non-empty groups; those of the first kind count permutations with k cycles. Their main contest use is rewriting x^k as a combination of falling factorials, which turns sums of k-th powers over subsets or random variables into sums of binomials.",
+     "learn": [
+      "S(n,k) = S(n-1,k-1) + k·S(n-1,k); unsigned first kind c(n,k) = c(n-1,k-1) + (n-1)·c(n-1,k).",
+      "Surjections from n items onto k labelled boxes: k!·S(n,k) = Σ_i (-1)^i C(k,i)(k-i)^n (inclusion–exclusion), so one row S(n,·) is a single convolution.",
+      "x^k = Σ_j S(k,j)·x(x-1)...(x-j+1): turns Σ_{subsets} |S|^k into Σ_j S(k,j)·n!/(n-j)!·2^{n-j} in O(k^2).",
+      "E[X^k] for a binomial-like count X becomes Σ_j S(k,j)·j!·E[C(X,j)], and E[C(X,j)] is just a count of j-element subsets.",
+      "Bell numbers B(n) = Σ_k S(n,k) count all set partitions; Bell triangle or B(n+1) = Σ C(n,i)B(i).",
+      "Rook placements with exactly k attacking pairs, or n balls into k non-empty unlabelled boxes, are Stirling counts in disguise."
+     ],
+     "resources": [
+      {
+       "title": "Wikipedia: Stirling numbers of the second kind",
+       "url": "https://en.wikipedia.org/wiki/Stirling_numbers_of_the_second_kind",
+       "kind": "other",
+       "where": "Wikipedia",
+       "minutes": 15
+      },
+      {
+       "title": "Wikipedia: Stirling numbers of the first kind",
+       "url": "https://en.wikipedia.org/wiki/Stirling_numbers_of_the_first_kind",
+       "kind": "other",
+       "where": "Wikipedia",
+       "minutes": 10
+      },
+      {
+       "title": "[Tutorial] Generating Functions in Competitive Programming (Part 1)",
+       "url": "https://codeforces.com/blog/entry/77468",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 45
+      },
+      {
+       "title": "CPH: Inclusion-exclusion (surjections)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.3 (p. 212)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2228",
+       "src": "cses",
+       "name": "Counting Sequences",
+       "from": "curated"
+      },
+      {
+       "id": "1342E",
+       "src": "cf",
+       "name": "Placing Rooks",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "932E",
+       "src": "cf",
+       "name": "Team Work",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1716F",
+       "src": "cf",
+       "name": "Bags with Balls",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1278F",
+       "src": "cf",
+       "name": "Cards",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "961G",
+       "src": "cf",
+       "name": "Partitions",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "960G",
+       "src": "cf",
+       "name": "Bandit Blues",
+       "rating": 2900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-catalan",
+     "name": "Catalan numbers, bracket sequences & reflection",
+     "tier": 1900,
+     "order": 8,
+     "prereq": [
+      "comb-binomial"
+     ],
+     "summary": "C_n = C(2n,n)/(n+1) counts balanced bracket sequences, binary trees, Dyck paths, triangulations. The reflection principle counts lattice paths that never cross a line, giving C(n+m,m) - C(n+m,m-1)-type answers.",
+     "learn": [
+      "Catalan recurrence C_{n+1}=Σ C_i C_{n-i}; closed form C(2n,n)-C(2n,n+1).",
+      "Reflection: paths from (0,0) to (a,b) touching y=x+1 correspond bijectively to paths to a reflected endpoint.",
+      "Count bracket sequences with a fixed prefix: remaining opens/closes with the balance constraint via reflection.",
+      "Balanced sequences with forced matched intervals split into independent groups; multiply Catalan numbers per group.",
+      "Number of BSTs / binary trees with n nodes is C_n; with height constraints use DP on the Catalan recurrence.",
+      "Ballot problem / exceedance: the fraction of 'good' paths is often (a-b+1)/(a+1)."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Catalan Numbers",
+       "url": "https://usaco.guide/adv/catalan",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Catalan numbers",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.2 (p. 210)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Catalan Numbers",
+       "url": "https://cp-algorithms.com/combinatorics/catalan-numbers.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Balanced bracket sequences",
+       "url": "https://cp-algorithms.com/combinatorics/bracket_sequences.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2064",
+       "src": "cses",
+       "name": "Bracket Sequences I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2187",
+       "src": "cses",
+       "name": "Bracket Sequences II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "9D",
+       "src": "cf",
+       "name": "How many trees?",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1976D",
+       "src": "cf",
+       "name": "Invertible Bracket Sequences",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1830C",
+       "src": "cf",
+       "name": "Hyperregular Bracket Strings",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1264D1",
+       "src": "cf",
+       "name": "Beautiful Bracket Sequence (easy version)",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1924D",
+       "src": "cf",
+       "name": "Balanced Subsequences",
+       "rating": 2700,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "comb-lattice-paths",
+     "name": "Lattice paths, obstacles & the reflection principle",
+     "tier": 2200,
+     "order": 9,
+     "prereq": [
+      "comb-catalan"
+     ],
+     "summary": "Monotone paths on a grid from (0,0) to (a,b) number C(a+b,a). With forbidden cells, sort them and subtract paths through the first forbidden cell (an O(k^2) DP over obstacles); with a forbidden line, reflect the endpoint. Recognise 'count walks/sequences of +1/-1 steps with a constraint on prefix sums'.",
+     "learn": [
+      "Paths from (x1,y1) to (x2,y2) with right/up steps: C((x2-x1)+(y2-y1), x2-x1).",
+      "Obstacles: sort them, dp[i] = paths to obstacle i avoiding earlier obstacles = all paths − Σ_{j before i} dp[j]·paths(j→i); answer uses the target as the last 'obstacle'.",
+      "Reflection principle: paths that touch the line y = x + c are in bijection with paths to the endpoint reflected over that line.",
+      "Sequences of n (+1) and m (−1) with all prefix sums ≥ −k (or maximum prefix sum ≥ k) are counted by one reflection: C(n+m, m) − C(n+m, m−k−1) style formulas.",
+      "Expected / summed maximum prefix sum: Σ_k (number of sequences with max prefix ≥ k).",
+      "Probability that a queue never runs out of change (+10/−20 coins) is a ballot-type ratio of two binomials."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Catalan numbers (paths in a grid)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.2 (p. 210)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Balanced bracket sequences",
+       "url": "https://cp-algorithms.com/combinatorics/bracket_sequences.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "Wikipedia: Bertrand's ballot theorem",
+       "url": "https://en.wikipedia.org/wiki/Bertrand%27s_ballot_theorem",
+       "kind": "other",
+       "where": "Wikipedia",
+       "minutes": 10
+      },
+      {
+       "title": "Wikipedia: Lattice path",
+       "url": "https://en.wikipedia.org/wiki/Lattice_path",
+       "kind": "other",
+       "where": "Wikipedia",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1078",
+       "src": "cses",
+       "name": "Grid Paths II",
+       "from": "curated"
+      },
+      {
+       "id": "559C",
+       "src": "cf",
+       "name": "Gerald and Giant Chess",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1204E",
+       "src": "cf",
+       "name": "Natasha, Sasha and the Prefix Sums",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "26D",
+       "src": "cf",
+       "name": "Tickets",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "722E",
+       "src": "cf",
+       "name": "Research Rover",
+       "rating": 2900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-cayley",
+     "name": "Counting trees: Cayley's formula & Prüfer codes",
+     "tier": 2300,
+     "order": 10,
+     "prereq": [
+      "comb-binomial"
+     ],
+     "summary": "There are n^{n-2} labelled trees on n vertices (Cayley), proven via Prüfer sequences, where vertex v appears deg(v)-1 times. Generalisations count forests and ways to connect k components with sizes s_i: n^{k-2}∏s_i.",
+     "learn": [
+      "Prüfer sequence: length n-2, bijection with labelled trees; degree of v = occurrences + 1.",
+      "Trees with prescribed degrees: (n-2)!/∏(d_i-1)!.",
+      "Connecting k components of sizes s_1..s_k into a tree: n^{k-2}·∏ s_i.",
+      "Forests of k rooted trees containing fixed roots: k·n^{n-k-1}.",
+      "Counting trees where a given path has length k: choose the path's inner vertices, then use the forest formula.",
+      "Matrix-tree theorem (Kirchhoff) counts spanning trees of any graph via a determinant."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Cayley's formula",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.5 (p. 215)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Counting labeled graphs",
+       "url": "https://cp-algorithms.com/combinatorics/counting_labeled_graphs.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Kirchhoff's theorem",
+       "url": "https://cp-algorithms.com/graph/kirchhoff-theorem.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Prüfer code",
+       "url": "https://cp-algorithms.com/graph/pruefer_code.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1109D",
+       "src": "cf",
+       "name": "Sasha and Interesting Fact from Graph Theory",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "156D",
+       "src": "cf",
+       "name": "Clues",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "917D",
+       "src": "cf",
+       "name": "Stranger Trees",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1762E",
+       "src": "cf",
+       "name": "Tree Sum",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-burnside",
+     "name": "Burnside's lemma & Pólya counting",
+     "tier": 2300,
+     "order": 11,
+     "prereq": [
+      "comb-binomial",
+      "nt-gcd-lcm"
+     ],
+     "summary": "Counts objects up to symmetry (rotations, reflections): the number of distinct objects equals the average number of configurations fixed by each symmetry. Classic use: necklaces and grid colourings up to rotation.",
+     "learn": [
+      "Burnside: #orbits = (1/|G|) Σ_{g∈G} fix(g).",
+      "Rotation by k of an n-bead necklace has gcd(k,n) cycles, so fix = m^{gcd(k,n)}.",
+      "Group sums by d=gcd: Σ_{d|n} φ(n/d)·m^d / n.",
+      "Pólya: fixed colourings of a permutation with c cycles is m^c.",
+      "For grids under 90° rotations, count cycles of each rotation on cells.",
+      "Divide by |G| using a modular inverse."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Burnside's lemma",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22.4 (p. 214)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Burnside's lemma / Pólya enumeration theorem",
+       "url": "https://cp-algorithms.com/combinatorics/burnside.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2209",
+       "src": "cses",
+       "name": "Counting Necklaces",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2210",
+       "src": "cses",
+       "name": "Counting Grids",
+       "from": "curated"
+      },
+      {
+       "id": "1065E",
+       "src": "cf",
+       "name": "Side Transmutations",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "comb-generating-functions",
+     "name": "Generating functions",
+     "tier": 2300,
+     "order": 12,
+     "prereq": [
+      "comb-binomial",
+      "comb-pie"
+     ],
+     "summary": "Encode a sequence a_n as the polynomial/power series Σ a_n x^n; products of generating functions combine independent choices, so counting questions become coefficient extraction, often finished with PIE or FFT.",
+     "learn": [
+      "Ordinary GF of choosing 0..c items of a type: (1-x^{c+1})/(1-x); of unlimited items: 1/(1-x).",
+      "[x^n] (1-x)^{-k} = C(n+k-1, k-1); expand (1-x^{c+1}) products with PIE.",
+      "Exponential GFs (Σ a_n x^n/n!) handle labelled structures; products give binomial convolutions.",
+      "Products of many small polynomials are computed by divide & conquer with NTT.",
+      "Stirling numbers of the first kind are coefficients of x(x+1)...(x+n-1).",
+      "Catalan GF satisfies C(x)=1+xC(x)^2; solving needs polynomial sqrt/inverse."
+     ],
+     "resources": [
+      {
+       "title": "[Tutorial] Generating Functions in Competitive Programming (Part 1)",
+       "url": "https://codeforces.com/blog/entry/77468",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 45
+      },
+      {
+       "title": "USACO Guide: More Complex Operations Using FFT",
+       "url": "https://usaco.guide/adv/fft-ext",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "451E",
+       "src": "cf",
+       "name": "Devu and Flowers",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1251F",
+       "src": "cf",
+       "name": "Red-White Fence",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "958F3",
+       "src": "cf",
+       "name": "Lightsabers (hard)",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1257G",
+       "src": "cf",
+       "name": "Divisor Set",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "960G",
+       "src": "cf",
+       "name": "Bandit Blues",
+       "rating": 2900,
+       "from": "curated"
+      },
+      {
+       "id": "438E",
+       "src": "cf",
+       "name": "The Child and Binary Tree",
+       "rating": 3100,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "probability",
+   "name": "Probability & Expected Value",
+   "cfTags": [
+    "probabilities",
+    "math"
+   ],
+   "subtopics": [
+    {
+     "id": "prob-basics",
+     "name": "Probability basics & probabilities mod p",
+     "tier": 1500,
+     "order": 1,
+     "prereq": [
+      "comb-binomial",
+      "nt-modular-inverse"
+     ],
+     "summary": "Probability = favourable/total for uniform outcomes, multiplication for independent events, conditioning by cases. Many CF problems ask for the probability or expectation as P·Q^{-1} mod 998244353.",
+     "learn": [
+      "Uniform outcomes: count favourable and total with combinatorics.",
+      "Independent events multiply; complementary event: P(at least one) = 1 - P(none).",
+      "Probability DP over steps: dp[state] = probability of reaching the state.",
+      "Print fractions mod p by multiplying with modular inverses; keep everything modular from the start.",
+      "Conditioning: P(A) = Σ P(A|B_i)P(B_i) over a partition of cases.",
+      "Double precision is fine when the output is a real number (CSES Dice Probability) — print enough digits."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Probability: calculation",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.1 (p. 225)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Probability: events",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.2 (p. 226)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Combinatorics (Expected Value)",
+       "url": "https://usaco.guide/gold/combo",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1725",
+       "src": "cses",
+       "name": "Dice Probability",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1727",
+       "src": "cses",
+       "name": "Candy Lottery",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1728",
+       "src": "cses",
+       "name": "Inversion Probability",
+       "from": "curated"
+      },
+      {
+       "id": "476B",
+       "src": "cf",
+       "name": "Dreamoon and WiFi",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "312B",
+       "src": "cf",
+       "name": "Archer",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1461C",
+       "src": "cf",
+       "name": "Random Events",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "518D",
+       "src": "cf",
+       "name": "Ilya and Escalator",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "148D",
+       "src": "cf",
+       "name": "Bag of mice",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "935D",
+       "src": "cf",
+       "name": "Fafa and Ancient Alphabet",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1543C",
+       "src": "cf",
+       "name": "Need for Pink Slips",
+       "rating": 1900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "prob-linearity",
+     "name": "Expected value & linearity of expectation",
+     "tier": 1800,
+     "order": 2,
+     "prereq": [
+      "prob-basics"
+     ],
+     "summary": "E[X+Y]=E[X]+E[Y] always, even for dependent variables. Write a complicated quantity as a sum of indicator variables and add their probabilities. The most frequent probability idea on Codeforces.",
+     "learn": [
+      "Indicator trick: E[#good things] = Σ P(thing i is good).",
+      "Expected depth-like sums: in a random removal order, vertex v is chosen directly with probability 1/depth(v).",
+      "Expected number of pairs/inversions: sum over pairs of the probability the pair is 'good'.",
+      "E[X^2] = Σ_{i,j} E[X_i X_j] (expected square via pairs); for XOR, split into bit pairs.",
+      "Symmetry: in a random permutation each relative order of k fixed elements is equally likely.",
+      "Expected sum over all equally likely configurations = total sum / number of configurations (and vice versa).",
+      "Tail-sum formula for non-negative integers: E[X] = Σ_{k≥1} P(X ≥ k); E[max] is computed via P(max < k) = ∏ P(X_i < k)."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Combinatorics (Linearity of Expectation)",
+       "url": "https://usaco.guide/gold/combo",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Random variables: expected value",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.3 (p. 228)",
+       "minutes": 15
+      },
+      {
+       "title": "Sums and Expected Value — part 1 (Errichto)",
+       "url": "https://codeforces.com/blog/entry/62690",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1726",
+       "src": "cses",
+       "name": "Moving Robots",
+       "from": "curated"
+      },
+      {
+       "id": "1824B1",
+       "src": "cf",
+       "name": "LuoTianyi and the Floating Islands (Easy Version)",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1777D",
+       "src": "cf",
+       "name": "Score of a Tree",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1925D",
+       "src": "cf",
+       "name": "Good Trip",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "2020E",
+       "src": "cf",
+       "name": "Expected Power",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "280C",
+       "src": "cf",
+       "name": "Game on Tree",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1540B",
+       "src": "cf",
+       "name": "Tree Array",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1983E",
+       "src": "cf",
+       "name": "I Love Balls",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1418E",
+       "src": "cf",
+       "name": "Expected Damage",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "prob-expected-dp",
+     "name": "Expected-value DP & Markov chains",
+     "tier": 2000,
+     "order": 3,
+     "prereq": [
+      "prob-linearity",
+      "@dp-probability"
+     ],
+     "summary": "When a process repeats until a condition holds, write E[state] = cost + Σ p·E[next] and solve: by DP in topological order, by algebra when the state can return to itself (geometric distribution), or by Gaussian elimination for general Markov chains.",
+     "learn": [
+      "Self-loops: E = 1 + pE + ... gives E = (1 + ...)/(1-p); expected trials until success with probability p is 1/p.",
+      "Process states backwards from the absorbing state (dp over 'remaining work').",
+      "Expected steps over a chain of states: linear equations E_i = a_i + b_i·E_0 solved by expressing everything in terms of one unknown.",
+      "Multiplicative/number-theoretic states: dp over divisors of the current gcd or prime exponents.",
+      "Coupon collector: expected draws to see all n types is n·(1 + 1/2 + ... + 1/n); in general, sum the expected waiting times of each phase.",
+      "Markov chains: transition matrix powers give distributions after k steps; stationary distribution solves πP=π."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Markov chains",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.4 (p. 230)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Random variables",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.3 (p. 228)",
+       "minutes": 15
+      },
+      {
+       "title": "Sums and Expected Value — part 1 (Errichto)",
+       "url": "https://codeforces.com/blog/entry/62690",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "16E",
+       "src": "cf",
+       "name": "Fish",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1753C",
+       "src": "cf",
+       "name": "Wish I Knew How to Sort",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1265E",
+       "src": "cf",
+       "name": "Beautiful Mirrors",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1778D",
+       "src": "cf",
+       "name": "Flexible String Revisit",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1097D",
+       "src": "cf",
+       "name": "Makoto and a Blackboard",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "908D",
+       "src": "cf",
+       "name": "New Year and Arbitrary Arrangement",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1139D",
+       "src": "cf",
+       "name": "Steps to One",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1874C",
+       "src": "cf",
+       "name": "Jellyfish and EVA",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1854C",
+       "src": "cf",
+       "name": "Expected Destruction",
+       "rating": 2500,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "prob-randomized",
+     "name": "Randomized algorithms",
+     "tier": 2200,
+     "order": 4,
+     "prereq": [
+      "prob-basics"
+     ],
+     "summary": "Use randomness to get algorithms that are correct with high probability: pick random elements that likely belong to the answer, random sampling in interactive problems, random hashing, and randomized checks. Requires a good RNG (mt19937).",
+     "learn": [
+      "If the answer is supported by ≥ half the elements, a random element is in it with probability ≥ 1/2; repeat ~20-30 times.",
+      "Random candidate + full check (Monte Carlo / Las Vegas); estimate failure probability (1-p)^k.",
+      "Interactive search: random queries to find a large starting point before a deterministic walk.",
+      "Use mt19937 seeded with chrono time; never rand() (small range on Windows, hackable).",
+      "Majority/frequency queries on ranges by sampling random positions.",
+      "Randomly shuffle input to defeat adversarial worst cases (treaps, hashing, incremental algorithms)."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Randomness",
+       "url": "https://usaco.guide/adv/random",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Randomized algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24.5 (p. 231)",
+       "minutes": 10
+      },
+      {
+       "title": "Don't use rand(): a guide to random number generators in C++",
+       "url": "https://codeforces.com/blog/entry/61587",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "843B",
+       "src": "cf",
+       "name": "Interactive LowerBound",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1114E",
+       "src": "cf",
+       "name": "Arithmetic Progression",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "444B",
+       "src": "cf",
+       "name": "DZY Loves FFT",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1523D",
+       "src": "cf",
+       "name": "Love-Hate",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1305F",
+       "src": "cf",
+       "name": "Kuroni and the Punishment",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "840D",
+       "src": "cf",
+       "name": "Destiny",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "364D",
+       "src": "cf",
+       "name": "Ghd",
+       "rating": 2900,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "game-theory",
+   "name": "Game Theory",
+   "cfTags": [
+    "games"
+   ],
+   "subtopics": [
+    {
+     "id": "game-basics",
+     "name": "Game analysis: parity, symmetry & mirroring",
+     "tier": 800,
+     "order": 1,
+     "prereq": [
+      "math-arith-basics"
+     ],
+     "summary": "Two-player 'who wins with optimal play' problems where the answer follows from a parity count, a symmetric (mirroring) strategy, or a small invariant. Usually solved by playing small cases by hand and spotting the pattern.",
+     "learn": [
+      "Brute-force tiny cases to find the pattern, then prove it with a strategy.",
+      "Mirroring: the second player copies the first player's move on the symmetric position.",
+      "Parity: if every move changes the state by a fixed amount, the winner depends on the parity of the total number of moves.",
+      "Strategy stealing: the first player can win if an extra free move cannot hurt.",
+      "Focus on terminal positions: who is forced to make the last move?",
+      "Tree games: the degree of the special vertex and parity of n often decide the winner."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Game states",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 25.1 (p. 235)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Games on arbitrary graphs",
+       "url": "https://cp-algorithms.com/game_theory/games_on_graphs.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2208",
+       "src": "cses",
+       "name": "Another Game",
+       "from": "curated"
+      },
+      {
+       "id": "1899A",
+       "src": "cf",
+       "name": "Game with Integers",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1919A",
+       "src": "cf",
+       "name": "Wallet Exchange",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1373B",
+       "src": "cf",
+       "name": "01 Game",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1527B1",
+       "src": "cf",
+       "name": "Palindrome Game (easy version)",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1747C",
+       "src": "cf",
+       "name": "Swap Game",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1943A",
+       "src": "cf",
+       "name": "MEX Game 1",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1370C",
+       "src": "cf",
+       "name": "Number Game",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1363C",
+       "src": "cf",
+       "name": "Game On Leaves",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1537D",
+       "src": "cf",
+       "name": "Deleting Divisors",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1396B",
+       "src": "cf",
+       "name": "Stoned Game",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1527B2",
+       "src": "cf",
+       "name": "Palindrome Game (hard version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1404B",
+       "src": "cf",
+       "name": "Tree Tag",
+       "rating": 1900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "game-states-dp",
+     "name": "Winning/losing positions & game DP",
+     "tier": 1200,
+     "order": 2,
+     "prereq": [
+      "game-basics",
+      "@dp-intro"
+     ],
+     "summary": "A position is winning iff some move leads to a losing position; losing iff all moves lead to winning positions. Computing this by DP (or retrograde BFS on graphs with cycles) solves games with small state spaces and minimax score games.",
+     "learn": [
+      "W/L rule: lose if no move exists (normal play); win iff exists a move to a losing state.",
+      "Compute in topological order (by remaining stones, positions sorted by value, interval length).",
+      "Score games (maximize own minus opponent's): dp[l][r] = max(a_l - dp[l+1][r], a_r - dp[l][r-1]).",
+      "Games on DAGs with two tokens: dp over (pos1, pos2, last letter, turn).",
+      "Graphs with cycles: retrograde analysis from terminal states with counters (draws remain undetermined).",
+      "Look for periodicity in W/L tables (1-2-k game: period 3, or period k+1 when k is divisible by 3)."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Game states",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 25.1 (p. 235)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Game Theory",
+       "url": "https://usaco.guide/adv/game-theory",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Games on arbitrary graphs",
+       "url": "https://cp-algorithms.com/game_theory/games_on_graphs.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1729",
+       "src": "cses",
+       "name": "Stick Game",
+       "from": "curated"
+      },
+      {
+       "id": "1860C",
+       "src": "cf",
+       "name": "Game on Permutation",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1738C",
+       "src": "cf",
+       "name": "Even Number Addicts",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1033C",
+       "src": "cf",
+       "name": "Permutation Game",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "917B",
+       "src": "cf",
+       "name": "MADMAX",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1194D",
+       "src": "cf",
+       "name": "1-2-K Game",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1728D",
+       "src": "cf",
+       "name": "Letter Picking",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1987D",
+       "src": "cf",
+       "name": "World is Mine",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1628D1",
+       "src": "cf",
+       "name": "Game on Sum (Easy Version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "2005E1",
+       "src": "cf",
+       "name": "Subtangle Game (Easy Version)",
+       "rating": 2100,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "game-nim",
+     "name": "Nim & XOR-sum games",
+     "tier": 1700,
+     "order": 3,
+     "prereq": [
+      "game-states-dp"
+     ],
+     "summary": "In Nim, the first player wins iff the XOR of pile sizes is non-zero. Many games are disguised Nim: staircase Nim (only odd-indexed steps matter), games where only the first non-trivial pile matters, and Nim with randomised piles.",
+     "learn": [
+      "Nim: losing iff a1 ^ a2 ^ ... ^ an == 0; the winning move makes the XOR zero.",
+      "Misère Nim: same as Nim unless all piles are size 1 (then parity decides).",
+      "Staircase Nim: only piles on odd steps matter — it is Nim on those piles.",
+      "Sequential Nim (must take from the first non-empty pile): the player who first meets a pile >1 wins.",
+      "Removing the same amount from all piles: only the sorted distinct sizes/gaps matter.",
+      "XOR of ranges of consecutive integers has an O(1) formula (pattern by n mod 4)."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Nim game",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 25.2 (p. 237)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Game Theory (Nim)",
+       "url": "https://usaco.guide/adv/game-theory",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Sprague-Grundy theorem. Nim",
+       "url": "https://cp-algorithms.com/game_theory/sprague-grundy-nim.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1730",
+       "src": "cses",
+       "name": "Nim Game I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1098",
+       "src": "cses",
+       "name": "Nim Game II",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1099",
+       "src": "cses",
+       "name": "Stair Game",
+       "from": "curated"
+      },
+      {
+       "id": "1382B",
+       "src": "cf",
+       "name": "Sequential Nim",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "2239A",
+       "src": "cf",
+       "name": "Nim Game Is XOR Game",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1965A",
+       "src": "cf",
+       "name": "Everything Nim",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1147C",
+       "src": "cf",
+       "name": "Thanos Nim",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "15C",
+       "src": "cf",
+       "name": "Industrial Nim",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1451F",
+       "src": "cf",
+       "name": "Nullify The Matrix",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "2043F",
+       "src": "cf",
+       "name": "Nim",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "game-sprague-grundy",
+     "name": "Sprague–Grundy theorem",
+     "tier": 2000,
+     "order": 4,
+     "prereq": [
+      "game-nim"
+     ],
+     "summary": "Every impartial game position has a Grundy value = mex of the values of positions reachable in one move; a sum of independent games is losing iff the XOR of Grundy values is 0. Compute Grundy numbers by brute force, then find a pattern or periodicity.",
+     "learn": [
+      "g(position) = mex{ g(next) }; g = 0 ⇔ losing.",
+      "Sum of games: XOR the Grundy values of independent components (piles, subtrees, rows).",
+      "Splitting moves (one pile into two) contribute g(a) ^ g(b) to the mex set.",
+      "Print the Grundy table for small inputs to find periodicity or a closed form (e.g. based on smallest prime factor).",
+      "State compression: Grundy values over bitmasks of used moves (Game of Stones) or of exponent sets.",
+      "Trees: Green Hackenbush value of a rooted tree is XOR over children of (child value + 1)."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Sprague–Grundy theorem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 25.3 (p. 238)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Game Theory (Sprague-Grundy)",
+       "url": "https://usaco.guide/adv/game-theory",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Sprague-Grundy theorem. Nim",
+       "url": "https://cp-algorithms.com/game_theory/sprague-grundy-nim.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2207",
+       "src": "cses",
+       "name": "Grundy's Game",
+       "from": "curated"
+      },
+      {
+       "id": "2004E",
+       "src": "cf",
+       "name": "Not a Nim Problem",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "768E",
+       "src": "cf",
+       "name": "Game of Stones",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "603C",
+       "src": "cf",
+       "name": "Lieges of Legendre",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "850C",
+       "src": "cf",
+       "name": "Arpa and a game with Mojtaba",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "812E",
+       "src": "cf",
+       "name": "Sagheer and Apple Tree",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1312F",
+       "src": "cf",
+       "name": "Attack on Red Kingdom",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1498F",
+       "src": "cf",
+       "name": "Christmas Game",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1823E",
+       "src": "cf",
+       "name": "Removing Graph",
+       "rating": 2500,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "matrices",
+   "name": "Matrices & Linear Algebra",
+   "cfTags": [
+    "matrices",
+    "math"
+   ],
+   "subtopics": [
+    {
+     "id": "mat-expo",
+     "name": "Matrix exponentiation for linear recurrences",
+     "tier": 1900,
+     "order": 1,
+     "prereq": [
+      "nt-binary-exponentiation",
+      "@dp-intro"
+     ],
+     "summary": "A linear recurrence f_n = Σ c_i f_{n-i} (+const) is a vector times a k×k transition matrix; raising the matrix to the n-th power with binary exponentiation computes f_n in O(k^3 log n) for n up to 10^18.",
+     "learn": [
+      "Fibonacci: [[1,1],[1,0]]^n; extend the state vector with constants or prefix sums to handle +c or Σ terms.",
+      "DP with a fixed transition and huge length (counting strings/arrays of length 10^18 with local constraints) is matrix power.",
+      "Cost O(k^3 log n): keep k ≤ ~100; reduce state by symmetry or by digit residues.",
+      "Matrix products in a segment tree support range updates of recurrences (Fibonacci on ranges).",
+      "Exponents of multiplicative recurrences are reduced mod p-1 and powered as matrices.",
+      "Use unsigned long long accumulation and a single mod per entry to speed up the inner loop.",
+      "Fibonacci facts: gcd(F_m, F_n) = F_gcd(m,n); F_n mod k is periodic (Pisano period ≤ 6k); fast doubling computes F_n without matrices.",
+      "Advanced: Berlekamp–Massey finds the shortest linear recurrence from the first 2k terms; Kitamasa / polynomial mod computes the n-th term in O(k^2 log n)."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Matrix Exponentiation",
+       "url": "https://usaco.guide/plat/matrix-expo",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Linear recurrences",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 23.2 (p. 220)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Matrix operations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 23.1 (p. 217)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Fibonacci Numbers",
+       "url": "https://cp-algorithms.com/algebra/fibonacci-numbers.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1722",
+       "src": "cses",
+       "name": "Fibonacci Numbers",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1096",
+       "src": "cses",
+       "name": "Throwing Dice",
+       "from": "curated"
+      },
+      {
+       "id": "691E",
+       "src": "cf",
+       "name": "Xor-sequences",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "222E",
+       "src": "cf",
+       "name": "Decoding Genome",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "621E",
+       "src": "cf",
+       "name": "Wet Shark and Blocks",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1970E2",
+       "src": "cf",
+       "name": "Trails (Medium)",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "852B",
+       "src": "cf",
+       "name": "Neural Network country",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1117D",
+       "src": "cf",
+       "name": "Magic Gems",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "551D",
+       "src": "cf",
+       "name": "GukiZ and Binary Operations",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "514E",
+       "src": "cf",
+       "name": "Darth Vader and Tree",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "718C",
+       "src": "cf",
+       "name": "Sasha and Array",
+       "rating": 2300,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "mat-graph-paths",
+     "name": "Walk counting, (min,+) products & matrices in segment trees",
+     "tier": 2100,
+     "order": 2,
+     "prereq": [
+      "mat-expo",
+      "@ds-segtree-combine"
+     ],
+     "summary": "The (i,j) entry of A^k counts walks of length exactly k between i and j. Replacing (+,×) with (min,+) gives shortest walks with exactly k edges, and binary lifting on matrices answers 'smallest k with property' questions.",
+     "learn": [
+      "Walk counting: (A^k)[i][j] = number of walks of length k from i to j.",
+      "Min-plus product: C[i][j] = min_k A[i][k] + B[k][j]; it is associative so fast exponentiation still works.",
+      "Shortest path with exactly k edges via min-plus power; with at most k by adding self-loops of cost 0.",
+      "Binary lifting over powers A^{2^j} to find the minimal length with a property (e.g. a positive cycle).",
+      "Boolean matrix powers with bitsets for reachability after k steps.",
+      "Edges unlocked over time: process time segments and multiply reachability matrices.",
+      "A DP whose transition is a small (min,+) or (max,+) matrix per position can be stored in a segment tree: each node keeps the product of its range, giving O(k^3 log n) range queries and point updates.",
+      "Aho–Corasick automaton states + (max,+) matrix power maximize a score over texts of length up to 10^14."
+     ],
+     "resources": [
+      {
+       "title": "CPH: Graphs and matrices",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 23.3 (p. 222)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Matrix Exponentiation",
+       "url": "https://usaco.guide/plat/matrix-expo",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Number of paths of fixed length / Shortest paths of fixed length",
+       "url": "https://cp-algorithms.com/graph/fixed_length_paths.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-1723",
+       "src": "cses",
+       "name": "Graph Paths I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1724",
+       "src": "cses",
+       "name": "Graph Paths II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1970E3",
+       "src": "cf",
+       "name": "Trails (Hard)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1814E",
+       "src": "cf",
+       "name": "Chain Chips",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "780F",
+       "src": "cf",
+       "name": "Axel and Marston in Bitland",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "147B",
+       "src": "cf",
+       "name": "Smile House",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "696D",
+       "src": "cf",
+       "name": "Legen...",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1681E",
+       "src": "cf",
+       "name": "Labyrinth Adventures",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "750E",
+       "src": "cf",
+       "name": "New Year and Old Subsequence",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "576D",
+       "src": "cf",
+       "name": "Flights for Regular Customers",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "mat-gauss",
+     "name": "Gaussian elimination (systems, rank, determinant)",
+     "tier": 2300,
+     "order": 3,
+     "prereq": [
+      "nt-modular-inverse"
+     ],
+     "summary": "Gauss–Jordan elimination solves n linear equations in O(n^3), computes rank, inverse and determinant, over reals or modulo a prime. Used for expected-value systems with cycles, linear systems mod p, and counting spanning trees.",
+     "learn": [
+      "Pick a pivot (largest absolute value for doubles; any non-zero mod p), normalise the row, eliminate the column elsewhere.",
+      "Number of solutions: 0 if inconsistent, unique if rank=n, otherwise p^{n-rank} (mod p) or infinite.",
+      "Determinant = product of pivots with sign flips for row swaps.",
+      "Banded/tridiagonal systems (grid rows) solve in O(n) per row instead of O(n^3).",
+      "Expected values on graphs with cycles: one equation per state, then eliminate.",
+      "Over GF(2) use bitsets for O(n^3/64).",
+      "Recover a polynomial of degree k from k+1 sample values mod p by solving the Vandermonde system (or by Lagrange interpolation)."
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Gauss method for solving system of linear equations",
+       "url": "https://cp-algorithms.com/linear_algebra/linear-system-gauss.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "cp-algorithms: Calculating the determinant using Gauss",
+       "url": "https://cp-algorithms.com/linear_algebra/determinant-gauss.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Finding the rank of a matrix",
+       "url": "https://cp-algorithms.com/linear_algebra/rank-matrix.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Matrices: operations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 23.1 (p. 217)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-3154",
+       "src": "cses",
+       "name": "System of Linear Equations",
+       "from": "curated"
+      },
+      {
+       "id": "1155E",
+       "src": "cf",
+       "name": "Guess the Root",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "24D",
+       "src": "cf",
+       "name": "Broken robot",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "832E",
+       "src": "cf",
+       "name": "Vasya and Shifts",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1411G",
+       "src": "cf",
+       "name": "No Game No Life",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "446D",
+       "src": "cf",
+       "name": "DZY Loves Games",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "963E",
+       "src": "cf",
+       "name": "Circles of Waiting",
+       "rating": 3100,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "xor-linear-algebra",
+   "name": "Linear Algebra mod 2 (XOR basis)",
+   "cfTags": [
+    "matrices",
+    "bitmasks",
+    "math"
+   ],
+   "subtopics": [
+    {
+     "id": "xor-basis",
+     "name": "XOR basis (linear basis over GF(2))",
+     "tier": 2100,
+     "order": 1,
+     "prereq": [
+      "@bit-xor"
+     ],
+     "summary": "Treat numbers as vectors over GF(2); a basis of at most 60 vectors spans every XOR of a subset. Supports: max subset XOR, is x representable, number of distinct subset XORs (2^rank), and counting subsets with a given XOR (2^{n-rank}).",
+     "learn": [
+      "Insert: for bits high→low, if the bit is set and basis[bit] exists XOR it out, else store as basis[bit].",
+      "Max XOR: greedily XOR basis vectors from the highest bit if it increases the value.",
+      "x is representable iff it reduces to 0; number of subsets with XOR x is 2^{n-rank} if representable.",
+      "Segments partition with no zero-XOR subset of segments: answer is the rank of prefix XORs.",
+      "Cycle space of a graph: XOR of a path between u,v can be changed by any cycle XOR; reduce with the basis of cycle XORs.",
+      "Square-free parity vectors (exponents mod 2) turn 'product is a perfect square' into a GF(2) rank problem."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: XOR Basis",
+       "url": "https://usaco.guide/adv/xor-basis",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "A Beautiful Technique for Some XOR Related Problems",
+       "url": "https://codeforces.com/blog/entry/68953",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-3191",
+       "src": "cses",
+       "name": "Maximum Xor Subset",
+       "from": "curated"
+      },
+      {
+       "id": "cses-3211",
+       "src": "cses",
+       "name": "Number of Subset Xors",
+       "from": "curated"
+      },
+      {
+       "id": "cses-3192",
+       "src": "cses",
+       "name": "K Subset Xors",
+       "from": "curated"
+      },
+      {
+       "id": "895C",
+       "src": "cf",
+       "name": "Square Subsets",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1101G",
+       "src": "cf",
+       "name": "(Zero XOR Subset)-less",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "845G",
+       "src": "cf",
+       "name": "Shortest Path Problem?",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "959F",
+       "src": "cf",
+       "name": "Mahmoud and Ehab and yet another xor task",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1163E",
+       "src": "cf",
+       "name": "Magical Permutation",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "662A",
+       "src": "cf",
+       "name": "Gambling Nim",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1427E",
+       "src": "cf",
+       "name": "Xum",
+       "rating": 2500,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "xor-basis-advanced",
+     "name": "Prefix/range linear bases & bases on trees",
+     "tier": 2400,
+     "order": 2,
+     "prereq": [
+      "xor-basis"
+     ],
+     "summary": "Extensions of the XOR basis: keep the most recent index per pivot to answer 'max XOR in a[l..r]' offline or online, merge bases along tree paths (with LCA/divide & conquer), and count with basis-based combinatorics.",
+     "learn": [
+      "Prefix basis keeping the largest index for each pivot answers max XOR on [l,r] using only vectors with index ≥ l.",
+      "Merging two bases costs O(log^2 C); combine with binary lifting, centroid or divide & conquer for tree paths.",
+      "Subtree/rerooting: bases of subtrees via Euler tour + prefix bases.",
+      "Graph cycle bases with dynamic components combine DSU and basis merging.",
+      "Counting subsets by popcount of XOR: enumerate the span when rank is small, otherwise use the orthogonal complement.",
+      "Rank changes at most log C times when adding vectors: amortised arguments."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: XOR Basis",
+       "url": "https://usaco.guide/adv/xor-basis",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "A Beautiful Technique for Some XOR Related Problems",
+       "url": "https://codeforces.com/blog/entry/68953",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1902F",
+       "src": "cf",
+       "name": "Trees and XOR Queries Again",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1100F",
+       "src": "cf",
+       "name": "Ivan and Burgers",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1778E",
+       "src": "cf",
+       "name": "The Tree Has Fallen!",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "724G",
+       "src": "cf",
+       "name": "Xor-matic Number of the Graph",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1336E1",
+       "src": "cf",
+       "name": "Chiori and Doll Picking (easy version)",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1299D",
+       "src": "cf",
+       "name": "Around the World",
+       "rating": 3000,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fft",
+   "name": "FFT & Polynomial Methods",
+   "cfTags": [
+    "fft",
+    "math"
+   ],
+   "subtopics": [
+    {
+     "id": "fft-convolution",
+     "name": "FFT & polynomial multiplication",
+     "tier": 2300,
+     "order": 1,
+     "prereq": [
+      "nt-binary-exponentiation",
+      "math-sums-formulas"
+     ],
+     "summary": "The Fast Fourier Transform multiplies two polynomials of degree n in O(n log n). Any count of the form c[k] = Σ_{i+j=k} a[i]·b[j] (sums of pairs, matching with shifts, wildcard string matching) is a convolution.",
+     "learn": [
+      "Convolution: c[k] = Σ_{i+j=k} a_i b_j; reverse one array to get correlations Σ a_i b_{i+k} (shift matching).",
+      "Use complex FFT with doubles for counts up to ~10^15 result precision; round results.",
+      "Wildcard/mismatch string matching: one convolution per alphabet letter, or Σ (a-b)^2 a b trick.",
+      "Count pairs (i,j) with a_i + a_j = s for all s using a frequency polynomial squared.",
+      "Repeated self-convolution (k items) via fast exponentiation of the polynomial with truncation.",
+      "Prefix-sum counts ('how many subarrays have exactly k elements less than x') become convolutions of count arrays."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Fast Fourier Transform",
+       "url": "https://usaco.guide/adv/fft",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Fast Fourier transform",
+       "url": "https://cp-algorithms.com/algebra/fft.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 45
+      }
+     ],
+     "problems": [
+      {
+       "id": "cses-2111",
+       "src": "cses",
+       "name": "Apples and Bananas",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2112",
+       "src": "cses",
+       "name": "One Bit Positions",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2113",
+       "src": "cses",
+       "name": "Signal Processing",
+       "from": "curated"
+      },
+      {
+       "id": "954I",
+       "src": "cf",
+       "name": "Yet Another String Matching Problem",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "993E",
+       "src": "cf",
+       "name": "Nikita and Order Statistics",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "632E",
+       "src": "cf",
+       "name": "Thief in a Shop",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "528D",
+       "src": "cf",
+       "name": "Fuzzy Search",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1398G",
+       "src": "cf",
+       "name": "Running Competition",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "827E",
+       "src": "cf",
+       "name": "Rusty String",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "286E",
+       "src": "cf",
+       "name": "Ladies' Shop",
+       "rating": 2800,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "fft-ntt",
+     "name": "NTT & polynomial operations mod 998244353",
+     "tier": 2400,
+     "order": 2,
+     "prereq": [
+      "fft-convolution",
+      "nt-modular-inverse"
+     ],
+     "summary": "The Number Theoretic Transform performs exact convolution modulo primes like 998244353 = 119·2^23+1 using a primitive root (3). Together with divide-and-conquer multiplication, polynomial inverse/log/exp, it solves most counting problems with generating functions.",
+     "learn": [
+      "NTT replaces complex roots of unity with g^{(p-1)/n} mod p; works when n divides p-1.",
+      "Arbitrary modulus (10^9+7): three NTT primes + CRT, or split-FFT with doubles.",
+      "Product of many polynomials: divide & conquer (or a priority queue by degree) in O(n log^2 n).",
+      "Polynomial inverse by Newton iteration: B ← B(2 - AB) doubling the precision.",
+      "log/exp/power of power series allow 'k-fold product' and set-partition counts.",
+      "Watch sizes: pad to a power of two ≥ deg A + deg B + 1."
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Fast Fourier Transform (Convolution Mod)",
+       "url": "https://usaco.guide/adv/fft",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 45
+      },
+      {
+       "title": "USACO Guide: More Complex Operations Using FFT",
+       "url": "https://usaco.guide/adv/fft-ext",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Fast Fourier transform (NTT section)",
+       "url": "https://cp-algorithms.com/algebra/fft.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Operations on polynomials and series",
+       "url": "https://cp-algorithms.com/algebra/polynomial.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1096G",
+       "src": "cf",
+       "name": "Lucky Tickets",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1251F",
+       "src": "cf",
+       "name": "Red-White Fence",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1218E",
+       "src": "cf",
+       "name": "Product Tuples",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "958F3",
+       "src": "cf",
+       "name": "Lightsabers (hard)",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1257G",
+       "src": "cf",
+       "name": "Divisor Set",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1613F",
+       "src": "cf",
+       "name": "Tree Coloring",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "960G",
+       "src": "cf",
+       "name": "Bandit Blues",
+       "rating": 2900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "fft-walsh-hadamard",
+     "name": "Walsh–Hadamard transform (XOR/AND/OR convolution)",
+     "tier": 2600,
+     "order": 3,
+     "prereq": [
+      "fft-convolution",
+      "@dp-sos"
+     ],
+     "summary": "Bitwise convolutions c[k] = Σ_{i⊕j=k} a_i b_j (XOR), and the AND/OR versions (zeta/Möbius transforms over subsets) run in O(n·2^n). They appear when combining masks, row/column flips and counting subsets by AND.",
+     "learn": [
+      "FWHT for XOR: butterfly (u,v) → (u+v, u-v); inverse divides by 2^n.",
+      "OR convolution = subset-sum (zeta) transform, multiply pointwise, then Möbius transform.",
+      "AND convolution uses superset sums; counting subsets whose AND is 0 via PIE on superset counts.",
+      "Model 'flip some rows to minimise ones per column' as XOR convolution of column-mask counts with a cost function.",
+      "Combine with Fibonacci/linear transforms pointwise in the transformed domain.",
+      "Work modulo a prime with the inverse of 2^n."
+     ],
+     "resources": [
+      {
+       "title": "Fast Walsh Hadamard Transforms and its inner workings",
+       "url": "https://codeforces.com/blog/entry/71899",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 40
+      },
+      {
+       "title": "USACO Guide: Sum over Subsets DP",
+       "url": "https://usaco.guide/plat/dp-sos",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "449D",
+       "src": "cf",
+       "name": "Jzzhu and Numbers",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1218D",
+       "src": "cf",
+       "name": "Xor Spanning Tree",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "662C",
+       "src": "cf",
+       "name": "Binary Table",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "914G",
+       "src": "cf",
+       "name": "Sum the Fibonacci",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1119H",
+       "src": "cf",
+       "name": "Triple",
+       "rating": 3200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "poly-interpolation",
+     "name": "Polynomial interpolation & sums of powers",
+     "tier": 2400,
+     "order": 4,
+     "prereq": [
+      "nt-modular-inverse",
+      "math-sums-formulas"
+     ],
+     "summary": "A polynomial of degree d is determined by d+1 values. When an answer is provably a polynomial in n of small degree (sums of k-th powers, DP values as a function of a huge parameter), compute it for d+1 small n and evaluate at the real n by Lagrange interpolation in O(d) or O(d^2).",
+     "learn": [
+      "Lagrange: P(x) = Σ_i y_i ∏_{j≠i} (x - x_j)/(x_i - x_j); with x_i = 0..d use prefix/suffix products and factorials for O(d).",
+      "Σ_{i=1}^{n} i^k is a polynomial in n of degree k+1 (Faulhaber), so k+2 sample points suffice.",
+      "If dp[n][x] is a polynomial in x of degree ≤ n (e.g. salaries up to D with tree constraints), compute it for x = 0..n and interpolate at x = D.",
+      "Finite differences: the (d+1)-th difference of a degree-d polynomial is 0; shifting x by s changes the coefficient of x^{d-1} by d·s·a_d.",
+      "Recover all coefficients by Gaussian elimination on a Vandermonde system when d is tiny (≤ 10) and you can query values.",
+      "Everything is modulo a prime: precompute inverses of 1..d and handle x equal to a sample point separately."
+     ],
+     "resources": [
+      {
+       "title": "Wikipedia: Lagrange polynomial",
+       "url": "https://en.wikipedia.org/wiki/Lagrange_polynomial",
+       "kind": "other",
+       "where": "Wikipedia",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Operations on polynomials and series (interpolation)",
+       "url": "https://cp-algorithms.com/algebra/polynomial.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Gauss method for solving system of linear equations",
+       "url": "https://cp-algorithms.com/linear_algebra/linear-system-gauss.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1155E",
+       "src": "cf",
+       "name": "Guess the Root",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1817C",
+       "src": "cf",
+       "name": "Similar Polynomials",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "622F",
+       "src": "cf",
+       "name": "The Sum of the k-th Powers",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "995F",
+       "src": "cf",
+       "name": "Cowmpany Cowmpensation",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

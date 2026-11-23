@@ -1,0 +1,105 @@
+/* peak-performance analytics, rivals, morning energy check */
+
+/* fixed categorical series palette (validated: adjacent CVD ΔE ≥ 9.1 light / 8.4 dark) */
+:root {
+  --rv-1: #2a78d6; --rv-2: #eb6834; --rv-3: #1baf7a; --rv-4: #eda100;
+  --rv-5: #e87ba4; --rv-6: #008300; --rv-7: #6250d6; --rv-8: #e34948;
+}
+:root[data-scheme="dark"] {
+  --rv-1: #3987e5; --rv-2: #d95926; --rv-3: #199e70; --rv-4: #c98500;
+  --rv-5: #d55181; --rv-6: #0ca30c; --rv-7: #9085e9; --rv-8: #e66767;
+}
+
+/* energy check */
+.energy-check { gap: 12px; }
+.ec-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ec-l { width: 64px; flex-shrink: 0; font-weight: 600; color: var(--on-surface-variant); }
+.ec-row .chips { gap: 6px; }
+.ec-row .chip { height: 32px; padding: 0 12px; font-size: 13px; }
+.ec-actions { justify-content: flex-end; }
+
+/* peak window tiles */
+.peak-kpis .kpi-v { font-variant-numeric: tabular-nums; }
+
+/* hour heat strip */
+.peak-strip { display: grid; grid-template-columns: repeat(24, 1fr); gap: 2px; padding-top: 4px; }
+.pk-c { height: 40px; border-radius: 4px; background: var(--surface-container-highest); outline: none; transition: transform .15s; }
+.pk-c:first-child { border-radius: 8px 4px 4px 8px; } .pk-c:last-child { border-radius: 4px 8px 8px 4px; }
+.pk-c.thin, .legend i.pk-hatch {
+  background: repeating-linear-gradient(135deg, var(--surface-container-highest) 0 3px, var(--surface-container) 3px 6px);
+}
+.pk-c.peak, .legend i.pk-ring { box-shadow: inset 0 0 0 2px var(--on-surface); }
+.pk-c.hov, .pk-c:focus-visible { transform: scaleY(1.12); }
+.peak-axis { position: relative; height: 16px; font-size: 11px; color: var(--on-surface-variant); font-variant-numeric: tabular-nums; }
+.peak-axis span { position: absolute; top: 2px; }
+.legend i.pk-ring { background: transparent; }
+
+/* rivals */
+.rivals { display: flex; flex-direction: column; gap: 16px; }
+.rv-sum { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+.rv-add { gap: 8px; }
+.rv-in { flex: 1; min-width: 0; height: 40px; padding: 0 14px; border: 0; border-radius: var(--r-md); background: var(--surface-container-highest); color: var(--on-surface); font-size: 15px; outline: none; box-shadow: inset 0 -2px 0 var(--on-surface-variant); }
+.rv-in:focus { box-shadow: inset 0 -2px 0 var(--primary); }
+.rv-err { color: var(--error); display: flex; align-items: center; gap: 6px; }
+.rv-list { gap: 6px; }
+.rv-chip { height: 32px; padding: 0 4px 0 12px; gap: 6px; font-size: 13px; }
+.rv-chip .muted { font-variant-numeric: tabular-nums; font-weight: 500; }
+.rv-x { position: relative; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; color: var(--on-surface-variant); }
+.rv-x::after { content: ''; position: absolute; inset: -8px; } /* 40px tap target, same look */
+.rv-x:hover { background: var(--surface-container-highest); }
+.rv-x .msr { font-size: 16px; }
+.rv-foot { justify-content: space-between; gap: 8px; }
+.rv-foot .chip { height: 40px; font-size: 13px; }
+@media (max-width: 480px) { .pk-c { height: 32px; } .peak-axis span:nth-child(even) { display: none; } }
+.overline.sect { margin: 8px 4px -6px; }
+.kpi.card.pk-hero { background: var(--primary-container); color: var(--on-primary-container); }
+.kpi.pk-hero .muted { color: inherit; opacity: .75; }
+
+/* ── Progress → Stats & habits ── */
+/* tap targets: text links keep their look but get a 40px hit area */
+.linkish.pad { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 0 4px; }
+.linkish.pad::after { content: ''; position: absolute; inset: -12px -4px; }
+.chart .card-head { align-items: flex-start; }
+.chart-empty { margin: 0; padding: 40px 0; text-align: center; }
+
+/* ranked bars: the label column shrinks on a phone; tap / focus a row to read the full label */
+ul.hbars li { grid-template-columns: minmax(0, 90px) minmax(0, 1fr) auto; border-radius: 6px; outline: none; cursor: default; }
+ul.hbars li:focus-visible { box-shadow: 0 0 0 2px var(--primary); }
+ul.hbars li.open .hb-l { white-space: normal; overflow: visible; overflow-wrap: anywhere; color: var(--on-surface); }
+
+/* topic rows (Ladder) never push the page wider than a phone */
+.topic-list .topic { grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr) auto; }
+.topic-list .topic-name { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 560px) { .topic-list .topic { grid-template-columns: minmax(0, 1fr) auto; } }
+
+/* habits: the small totals in one card */
+.habit-grid { margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 125px), 1fr)); gap: 8px; }
+.habit-grid > div { min-width: 0; padding: 10px 12px; border-radius: var(--r-lg); background: var(--surface-container); }
+.habit-grid dt { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--on-surface-variant); }
+.habit-grid dt .msr { font-size: 16px; color: var(--primary); }
+.habit-grid dd { margin: 2px 0 0; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.habits .card-head { flex-wrap: wrap; gap: 4px 12px; }
+.kpis.rates .kpi .wavy, .kpis.rates .kpi svg { max-width: 100%; }
+
+/* More stats: a card-like summary row, the detail cards below it */
+.more-stats > summary { list-style: none; display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 12px 20px; border-radius: var(--r-xl); background: var(--surface-container-low); cursor: pointer; transition: background .2s; }
+.more-stats > summary::-webkit-details-marker { display: none; }
+.more-stats > summary:hover { background: var(--surface-container); }
+.more-stats > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.more-stats > summary .grow { display: flex; flex-direction: column; gap: 2px; }
+.more-stats > summary > .msr:first-child { color: var(--primary); }
+.more-stats > summary > .msr:last-child { transition: transform .3s var(--ease-spatial); }
+.more-stats[open] > summary > .msr:last-child { transform: rotate(180deg); }
+.more-body { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+.more-body .grid-2.top { align-items: start; }
+
+/* the chain: tap a day to read it (no hover on a phone) */
+.heat .hc { cursor: pointer; }
+.heat .hc.sel { transform: scale(1.35); border-radius: 50%; box-shadow: 0 0 0 2px var(--on-surface); }
+@media (hover: none) { .card .heat .hc:not(.sel):hover { transform: none; border-radius: 30%; } }
+.heat-read { font-variant-numeric: tabular-nums; text-align: right; }
+
+/* Timeline category bar: tap a segment, its legend row lights up */
+.tm-catbar i { cursor: pointer; }
+.tm-catbar i.on { box-shadow: inset 0 0 0 2px var(--on-surface); }
+.tm-cats .legend .tm-cat-on { color: var(--on-surface); font-weight: 700; }

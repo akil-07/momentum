@@ -1,0 +1,5369 @@
+{
+ "area": "basics",
+ "topics": [
+  {
+   "id": "implementation",
+   "name": "Implementation & Simulation",
+   "cfTags": [
+    "implementation",
+    "math"
+   ],
+   "subtopics": [
+    {
+     "id": "impl-basics",
+     "name": "Implementation fundamentals",
+     "tier": 800,
+     "order": 1,
+     "prereq": [],
+     "summary": "Turning a statement directly into correct code: reading input fast, choosing the right integer type and handling every edge case. Almost every Div 2/3/4 A problem is pure implementation; the difficulty is precision, not ideas.",
+     "learn": [
+      "Fast I/O: ios::sync_with_stdio(false); cin.tie(nullptr); never mix with printf/scanf after that",
+      "Know the limits: int ~2.1e9, long long ~9.2e18; use long long whenever a product or sum can exceed 2e9",
+      "Multi-test input (t test cases): reset all global arrays/counters per test, and respect 'sum of n over all tests' bounds",
+      "Read the statement twice; write down the exact output format (YES/NO case, spaces, -1 cases) before coding",
+      "Test on the samples plus hand-made edge cases: n=1, all equal elements, maximum values",
+      "Prefer simple, direct code over clever code; off-by-one errors are the main source of WA"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Data Types",
+       "url": "https://usaco.guide/general/data-types",
+       "kind": "usaco",
+       "where": "USACO Guide General",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Fast Input and Output",
+       "url": "https://usaco.guide/general/fast-io",
+       "kind": "usaco",
+       "where": "USACO Guide General",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Input and output",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 1.2 (p. 4)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Working with numbers",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 1.3 (p. 6)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "4A",
+       "src": "cf",
+       "name": "Watermelon",
+       "rating": 800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "71A",
+       "src": "cf",
+       "name": "Way Too Long Words",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "231A",
+       "src": "cf",
+       "name": "Team",
+       "rating": 800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1352A",
+       "src": "cf",
+       "name": "Sum of Round Numbers",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1676A",
+       "src": "cf",
+       "name": "Lucky?",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1829B",
+       "src": "cf",
+       "name": "Blank Space",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1760A",
+       "src": "cf",
+       "name": "Medium Number",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1512A",
+       "src": "cf",
+       "name": "Spy Detected!",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1873C",
+       "src": "cf",
+       "name": "Target Practice",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1950A",
+       "src": "cf",
+       "name": "Stair, Peak, or Neither?",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1722B",
+       "src": "cf",
+       "name": "Colourblindness",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1433A",
+       "src": "cf",
+       "name": "Boring Apartments",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1068",
+       "src": "cses",
+       "name": "Weird Algorithm",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1083",
+       "src": "cses",
+       "name": "Missing Number",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1069",
+       "src": "cses",
+       "name": "Repetitions",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1094",
+       "src": "cses",
+       "name": "Increasing Array",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "impl-complexity",
+     "name": "Time complexity & constraint estimation",
+     "tier": 900,
+     "order": 2,
+     "prereq": [
+      "impl-basics"
+     ],
+     "summary": "Estimating the running time of an idea from the constraints before coding it: roughly 1e8 simple operations per second. Reading n <= 2e5 should immediately suggest O(n log n), n <= 20 suggests 2^n, and so on.",
+     "learn": [
+      "Big-O rules: loops multiply, sequential parts add, keep the dominant term",
+      "Constraint table: n<=10 -> O(n!), n<=20 -> O(2^n), n<=500 -> O(n^3), n<=5000 -> O(n^2), n<=2e5 -> O(n log n), n<=1e18 -> O(log n) or O(sqrt) on a smaller quantity",
+      "Iterate divisors up to sqrt(n): O(sqrt n) instead of O(n)",
+      "Bounded search: if the answer or a variable is at most cube-root/sqrt of the limit, brute-force over it",
+      "Watch hidden costs: string concatenation, erasing from vector front, endl flushing, copying containers into functions",
+      "Amortized analysis: a pointer that only moves forward costs O(n) total"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Time Complexity",
+       "url": "https://usaco.guide/bronze/time-comp",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Time complexity",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 2 (p. 17)",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Estimating efficiency",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 2.3 (p. 21)",
+       "minutes": 5
+      }
+     ],
+     "problems": [
+      {
+       "id": "1520B",
+       "src": "cf",
+       "name": "Ordinary Numbers",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1475B",
+       "src": "cf",
+       "name": "New Year's Number",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1490C",
+       "src": "cf",
+       "name": "Sum of Cubes",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1213C",
+       "src": "cf",
+       "name": "Book Reading",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1360D",
+       "src": "cf",
+       "name": "Buying Shovels",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1203C",
+       "src": "cf",
+       "name": "Common Divisors",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1294C",
+       "src": "cf",
+       "name": "Product of Three Numbers",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1071",
+       "src": "cses",
+       "name": "Number Spiral",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1618",
+       "src": "cses",
+       "name": "Trailing Zeros",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "impl-simulation",
+     "name": "Simulation",
+     "tier": 1000,
+     "order": 3,
+     "prereq": [
+      "impl-basics"
+     ],
+     "summary": "Doing exactly what the statement describes, step by step, with the right data structures. Harder versions require noticing that the process repeats (cycle/period) or that only a bounded number of steps matter, so it can be fast-forwarded.",
+     "learn": [
+      "Model the state explicitly (positions, grid, queue) and update it one step at a time",
+      "Use deque/stack/set when the simulation adds/removes from ends or needs ordered access",
+      "Grids: direction arrays dx/dy, boundary checks, and simulating gravity/rotations carefully",
+      "If the number of steps is huge, find a period (state repeats) or a point after which nothing changes, then jump ahead with arithmetic",
+      "Bound the number of 'interesting' steps (e.g. values shrink quickly, last digit cycles) and simulate only those",
+      "Write the simulation as a function and test it on the sample before optimising"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Simulation",
+       "url": "https://usaco.guide/bronze/simulation",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1791B",
+       "src": "cf",
+       "name": "Following Directions",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1907B",
+       "src": "cf",
+       "name": "YetnotherrokenKeoard",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1669G",
+       "src": "cf",
+       "name": "Fall Down",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1294B",
+       "src": "cf",
+       "name": "Collecting Packages",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1703E",
+       "src": "cf",
+       "name": "Mirror Grid",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1234B2",
+       "src": "cf",
+       "name": "Social Network (hard version)",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1352D",
+       "src": "cf",
+       "name": "Alice, Bob and Candies",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1714E",
+       "src": "cf",
+       "name": "Add Modulo 10",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2162",
+       "src": "cses",
+       "name": "Josephus Problem I",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "impl-casework",
+     "name": "Casework",
+     "tier": 1000,
+     "order": 4,
+     "prereq": [
+      "impl-basics"
+     ],
+     "summary": "Splitting the input space into a few cases that are each easy to solve. Typical when the answer is a small number (0/1/2/-1) or depends on parity, signs or which of a few configurations occurs.",
+     "learn": [
+      "Enumerate cases systematically (e.g. by sign, parity, which element is the maximum) so none are missed",
+      "Prove the answer is always small (e.g. at most 2 operations) and then check 0, 1, 2 separately",
+      "Brute-force small inputs to validate your case analysis",
+      "Handle degenerate cases first: n=1, all equal, already sorted, zero",
+      "When cases multiply, try to reduce them by symmetry (swap a,b; reverse the array)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Casework",
+       "url": "https://usaco.guide/bronze/casework",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1294A",
+       "src": "cf",
+       "name": "Collecting Coins",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1716A",
+       "src": "cf",
+       "name": "2-3 Moves",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1374B",
+       "src": "cf",
+       "name": "Multiply by 2, divide by 6",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1342A",
+       "src": "cf",
+       "name": "Road To Zero",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1409B",
+       "src": "cf",
+       "name": "Minimum Product",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1352B",
+       "src": "cf",
+       "name": "Same Parity Summands",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1371B",
+       "src": "cf",
+       "name": "Magical Calendar",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "581D",
+       "src": "cf",
+       "name": "Three Logos",
+       "rating": 1700,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "complete-search",
+   "name": "Complete Search",
+   "cfTags": [
+    "brute force",
+    "bitmasks",
+    "meet-in-the-middle"
+   ],
+   "subtopics": [
+    {
+     "id": "search-iterate",
+     "name": "Brute force by iterating",
+     "tier": 800,
+     "order": 1,
+     "prereq": [
+      "impl-complexity"
+     ],
+     "summary": "Trying every candidate answer or every combination of a few variables with nested loops. Works whenever the search space, after bounding it smartly, fits in about 1e8 operations.",
+     "learn": [
+      "Identify what to enumerate: the answer itself, a pair (i, j), a small parameter (k, a digit, a divisor)",
+      "Bound the search space with an observation (answer <= 60, only sqrt(n) divisors, only 2 distinct values matter)",
+      "Fix one variable and compute the rest greedily or with a formula",
+      "Check the total complexity across all test cases before coding",
+      "Brute force is also your testing tool: write it to validate a faster solution on random small inputs"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Basic Complete Search",
+       "url": "https://usaco.guide/bronze/intro-complete",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Complete search",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 5 (p. 47)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1873B",
+       "src": "cf",
+       "name": "Good Kid",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "2009A",
+       "src": "cf",
+       "name": "Minimize!",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1985B",
+       "src": "cf",
+       "name": "Maximum Multiple Sum",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1881A",
+       "src": "cf",
+       "name": "Don't Try to Count",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1380A",
+       "src": "cf",
+       "name": "Three Indices",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1791D",
+       "src": "cf",
+       "name": "Distinct Split",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1676H1",
+       "src": "cf",
+       "name": "Maximum Crossings (Easy Version)",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1285C",
+       "src": "cf",
+       "name": "Fadi and LCM",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1759D",
+       "src": "cf",
+       "name": "Make It Round",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1352E",
+       "src": "cf",
+       "name": "Special Elements",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1213D1",
+       "src": "cf",
+       "name": "Equalizing by Division (easy version)",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1920C",
+       "src": "cf",
+       "name": "Partitioning the Array",
+       "rating": 1600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "search-recursion",
+     "name": "Recursion & generating candidates",
+     "tier": 1000,
+     "order": 2,
+     "prereq": [
+      "search-iterate"
+     ],
+     "summary": "Writing a recursive function that explores choices or divides a problem into self-similar halves. Used to generate all numbers of a special form, to check divide-and-conquer structures, or to try both options at each step.",
+     "learn": [
+      "Define the state passed to the recursion and the base case first",
+      "Generate special numbers (e.g. made only of digits 4/7) recursively instead of looping over all integers",
+      "Divide and conquer on halves: solve(l, r) splits into solve(l, mid) and solve(mid+1, r)",
+      "Count the recursion tree size to estimate complexity (branching^depth)",
+      "Watch the recursion depth (default stack ~ 1e5-1e6 frames); convert to iteration if needed"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Complete Search with Recursion",
+       "url": "https://usaco.guide/bronze/complete-rec",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Generating subsets (recursive method)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 5.1 (p. 47)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1829D",
+       "src": "cf",
+       "name": "Gold Rush",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "727A",
+       "src": "cf",
+       "name": "Transformation: from A to B",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "535B",
+       "src": "cf",
+       "name": "Tavas and SaDDas",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1490D",
+       "src": "cf",
+       "name": "Permutation Transformation",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1741D",
+       "src": "cf",
+       "name": "Masha and a Beautiful Tree",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "653B",
+       "src": "cf",
+       "name": "Bear and Compressing",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1385D",
+       "src": "cf",
+       "name": "a-Good String",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1036C",
+       "src": "cf",
+       "name": "Classy Numbers",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2165",
+       "src": "cses",
+       "name": "Tower of Hanoi",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "search-subsets",
+     "name": "Generating subsets (bitmask enumeration)",
+     "tier": 1200,
+     "order": 3,
+     "prereq": [
+      "search-recursion",
+      "bit-basics"
+     ],
+     "summary": "Enumerating all 2^n subsets of a small set, usually with an integer mask from 0 to 2^n - 1. Appears when n <= 20 or when the choice per element is binary and few elements matter.",
+     "learn": [
+      "Loop mask from 0 to (1<<n)-1; element i is chosen iff (mask>>i)&1",
+      "Recursive alternative: at each index either take or skip the element",
+      "Iterate all submasks of a mask: for (s = m; s; s = (s-1) & m) — total 3^n over all masks",
+      "Enumerate over a small 'type' set (e.g. which of 26 letters are allowed, which corners are filled) even when n itself is large",
+      "Complexity O(2^n * n); for n around 40 switch to meet-in-the-middle"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Complete Search with Recursion (Subsets)",
+       "url": "https://usaco.guide/bronze/complete-rec",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Generating subsets",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 5.1 (p. 47)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Representing sets",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.3 (p. 98)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Enumerating submasks of a bitmask",
+       "url": "https://cp-algorithms.com/algebra/all-submasks.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1097B",
+       "src": "cf",
+       "name": "Petr and a Combination Lock",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1553C",
+       "src": "cf",
+       "name": "Penalty",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1362B",
+       "src": "cf",
+       "name": "Johnny and His Hobbies",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1882B",
+       "src": "cf",
+       "name": "Sets and Union",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "550B",
+       "src": "cf",
+       "name": "Preparing Olympiad",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1494B",
+       "src": "cf",
+       "name": "Berland Crossword",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1778C",
+       "src": "cf",
+       "name": "Flexible String",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1017D",
+       "src": "cf",
+       "name": "The Wu",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1623",
+       "src": "cses",
+       "name": "Apple Division",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "search-permutations",
+     "name": "Generating permutations",
+     "tier": 1200,
+     "order": 4,
+     "prereq": [
+      "search-recursion"
+     ],
+     "summary": "Trying all n! orderings with next_permutation or recursion when n <= 8-10. Also used to enumerate all digit orders or all assignments of distinct roles.",
+     "learn": [
+      "Sort first, then do { ... } while (next_permutation(a.begin(), a.end())) to visit each permutation once (handles duplicates)",
+      "Recursive generation with a used[] array when you need pruning",
+      "n! grows fast: 8! = 40320, 10! ~ 3.6e6, 11! ~ 4e7 — check limits",
+      "Often you permute a small 'pattern' (digit positions, 5 people, 3 rectangles) rather than the whole input",
+      "Combine with a cheap evaluation per permutation; total cost is n! times evaluation"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Complete Search with Recursion (Permutations)",
+       "url": "https://usaco.guide/bronze/complete-rec",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Generating permutations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 5.2 (p. 49)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Generating all K-combinations",
+       "url": "https://cp-algorithms.com/combinatorics/generating_combinations.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1999B",
+       "src": "cf",
+       "name": "Card Game",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "47B",
+       "src": "cf",
+       "name": "Coins",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "431B",
+       "src": "cf",
+       "name": "Shower Line",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "124B",
+       "src": "cf",
+       "name": "Permutations",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "513B1",
+       "src": "cf",
+       "name": "Permutations",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "685A",
+       "src": "cf",
+       "name": "Robbers' watch",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1622",
+       "src": "cses",
+       "name": "Creating Strings",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "search-backtracking",
+     "name": "Backtracking & pruning",
+     "tier": 1500,
+     "order": 5,
+     "prereq": [
+      "search-recursion"
+     ],
+     "summary": "Building a solution incrementally and abandoning a partial solution as soon as it cannot lead to a valid answer. Pruning (and memoization) turns an exponential search into something fast enough in practice.",
+     "learn": [
+      "Template: place(i): if i==n record answer; for each choice c valid at i: apply c, place(i+1), undo c",
+      "Prune early: check constraints as soon as a choice is made, not only at the end",
+      "Prune by bounds: stop if the current partial cost already exceeds the best answer",
+      "Symmetry breaking: fix the first choice to cut identical branches",
+      "When the same state repeats, memoize it — this is the bridge to dynamic programming",
+      "Classic examples: n-queens, grid path counting with dead-end detection, generating numbers with digit constraints"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Complete Search with Recursion (Backtracking)",
+       "url": "https://usaco.guide/bronze/complete-rec",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Backtracking",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 5.3 (p. 50)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Pruning the search",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 5.4 (p. 51)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "9C",
+       "src": "cf",
+       "name": "Hexadecimal's Numbers",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "96B",
+       "src": "cf",
+       "name": "Lucky Numbers (easy)",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "244B",
+       "src": "cf",
+       "name": "Undoubtedly Lucky Numbers",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1575D",
+       "src": "cf",
+       "name": "Divisible by Twenty-Five",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "263C",
+       "src": "cf",
+       "name": "Circle of Numbers",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1593F",
+       "src": "cf",
+       "name": "Red-Black Number",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "448E",
+       "src": "cf",
+       "name": "Divisors",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1624",
+       "src": "cses",
+       "name": "Chessboard and Queens",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1625",
+       "src": "cses",
+       "name": "Grid Paths",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "search-mitm",
+     "name": "Meet in the middle",
+     "tier": 1800,
+     "order": 6,
+     "prereq": [
+      "search-subsets",
+      "bs-sorted"
+     ],
+     "summary": "Split the input into two halves, enumerate all 2^(n/2) possibilities for each half, and combine the halves with sorting + binary search, two pointers, or a hash map. Reduces 2^40 to about 2^20 * 20.",
+     "learn": [
+      "Recognise it: n around 35-45 with subset-like choices, or a path whose two halves can be enumerated separately",
+      "Enumerate left-half sums into a sorted vector; for each right-half sum binary search / two-pointer the complement",
+      "For counting, use a hash map (or sorted + equal_range) of left-half values",
+      "Paths in a grid: enumerate from the start to the anti-diagonal and from the end back to it, meet on the diagonal",
+      "Mind memory: 2^20 values per half is fine; 2^23 of pairs can be tight",
+      "Modular / XOR variants combine with the same idea (sorted + lower_bound for 'max (a+b) mod m')"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Meet In The Middle",
+       "url": "https://usaco.guide/gold/meet-in-the-middle",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Meet in the middle",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 5.5 (p. 54)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "888E",
+       "src": "cf",
+       "name": "Maximum Subsequence",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1006F",
+       "src": "cf",
+       "name": "Xor-Paths",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "525E",
+       "src": "cf",
+       "name": "Anya and Cubes",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1105E",
+       "src": "cf",
+       "name": "Helping Hiasat ",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "585D",
+       "src": "cf",
+       "name": "Lizard Era: Beginning",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "912E",
+       "src": "cf",
+       "name": "Prime Gift",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1257F",
+       "src": "cf",
+       "name": "Make Them Similar",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1628",
+       "src": "cses",
+       "name": "Meet in the Middle",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1642",
+       "src": "cses",
+       "name": "Sum of Four Values",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sorting",
+   "name": "Sorting",
+   "cfTags": [
+    "sortings"
+   ],
+   "subtopics": [
+    {
+     "id": "sort-basics",
+     "name": "Sorting & using sorted order",
+     "tier": 800,
+     "order": 1,
+     "prereq": [
+      "impl-basics"
+     ],
+     "summary": "Sorting makes equal values adjacent, puts extremes at the ends and enables greedy and two-pointer reasoning. Many easy problems become trivial once you realise the order of elements does not matter and you may sort.",
+     "learn": [
+      "std::sort is O(n log n); sort(a.rbegin(), a.rend()) for descending",
+      "After sorting: count distinct values, find duplicates, take k largest/smallest, pair smallest with largest",
+      "Ask 'does the input order matter?' — if not, sort first",
+      "Sort pairs/tuples to sort by several keys lexicographically; keep original indices in the pair if you must output them",
+      "unique + erase to deduplicate a sorted vector"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Sorting",
+       "url": "https://usaco.guide/bronze/intro-sorting",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Sorting theory",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 3.1 (p. 25)",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Sorting in C++",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 3.2 (p. 29)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1399A",
+       "src": "cf",
+       "name": "Remove Smallest",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1360B",
+       "src": "cf",
+       "name": "Honest Coach",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1353B",
+       "src": "cf",
+       "name": "Two Arrays And Swaps",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1669B",
+       "src": "cf",
+       "name": "Triple",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1742B",
+       "src": "cf",
+       "name": "Increasing",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1971A",
+       "src": "cf",
+       "name": "My First Sorting Problem",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1312B",
+       "src": "cf",
+       "name": "Bogosort",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1808B",
+       "src": "cf",
+       "name": "Playing in a Casino",
+       "rating": 1200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1857C",
+       "src": "cf",
+       "name": "Assembly via Minimums",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1810C",
+       "src": "cf",
+       "name": "Make It Permutation",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "863B",
+       "src": "cf",
+       "name": "Kayaking",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1621",
+       "src": "cses",
+       "name": "Distinct Numbers",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "sort-comparator",
+     "name": "Custom comparators & sorting by key",
+     "tier": 1200,
+     "order": 2,
+     "prereq": [
+      "sort-basics"
+     ],
+     "summary": "Sorting objects by a custom rule: by a derived key (a_i - b_i, remainder, value/weight), by several criteria, or by a rule that compares two items directly. Must define a strict weak ordering.",
+     "learn": [
+      "Lambda comparator: sort(v.begin(), v.end(), [](const T& x, const T& y){ return x.key < y.key; })",
+      "Comparator must be strict: use <, never <=, or std::sort may crash",
+      "Sort by several criteria with tie-breakers, e.g. by score desc then index asc (or compare tuples)",
+      "Sort indices instead of objects (iota + sort by a[i]) to keep original positions",
+      "Derived keys: sort by a_i - b_i, by a_i mod k, by the result of a function",
+      "Avoid floating keys when a cross-multiplied integer comparison works"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Custom Comparators and Coordinate Compression",
+       "url": "https://usaco.guide/silver/sorting-custom",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Sorting in C++ (comparison functions)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 3.2 (p. 29)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1850B",
+       "src": "cf",
+       "name": "Ten Words of Wisdom",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1849B",
+       "src": "cf",
+       "name": "Monsters",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1857D",
+       "src": "cf",
+       "name": "Strong Vertices",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1551C",
+       "src": "cf",
+       "name": "Interesting Story",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1478C",
+       "src": "cf",
+       "name": "Nezzar and Symmetric Array",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1472E",
+       "src": "cf",
+       "name": "Correct Placement",
+       "rating": 1700,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "sort-compress-events",
+     "name": "Coordinate compression & event sorting",
+     "tier": 1500,
+     "order": 3,
+     "prereq": [
+      "sort-comparator",
+      "bs-sorted"
+     ],
+     "summary": "Coordinate compression maps large or sparse values to 0..k-1 while keeping their order, so they can index arrays or BITs. Event sorting (a basic sweep line) turns intervals into +1/-1 events processed in sorted order.",
+     "learn": [
+      "Compression: copy, sort, unique, then index = lower_bound(vals, x) - vals.begin()",
+      "Intervals [l, r]: events (l, +1) and (r+1, -1) (or (r, -1) with a tie-break) sorted by coordinate",
+      "Sweep through events keeping a running count to find maximum overlap or coverage lengths",
+      "Decide tie-breaking explicitly: do closings come before openings at the same coordinate?",
+      "Compression + Fenwick tree for counting inversions or 'number of earlier elements smaller than x'",
+      "A std::map can replace compression when only ordered iteration is needed"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Coordinate Compression",
+       "url": "https://usaco.guide/silver/sorting-custom",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Sweep line algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 30 (p. 275)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "2014D",
+       "src": "cf",
+       "name": "Robert Hood and Mrs Hood",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1915F",
+       "src": "cf",
+       "name": "Greetings",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1000C",
+       "src": "cf",
+       "name": "Covered Points Count",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1579E2",
+       "src": "cf",
+       "name": "Array Optimization by Deque",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1420D",
+       "src": "cf",
+       "name": "Rescue Nibel!",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1042D",
+       "src": "cf",
+       "name": "Petya and Array",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1311F",
+       "src": "cf",
+       "name": "Moving Points",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1619",
+       "src": "cses",
+       "name": "Restaurant Customers",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1144",
+       "src": "cses",
+       "name": "Salary Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "prefix-sums",
+   "name": "Prefix Sums & Difference Arrays",
+   "cfTags": [
+    "implementation",
+    "data structures",
+    "dp"
+   ],
+   "subtopics": [
+    {
+     "id": "prefix-1d",
+     "name": "1D prefix sums",
+     "tier": 1000,
+     "order": 1,
+     "prereq": [
+      "impl-basics"
+     ],
+     "summary": "Precompute p[i] = a[1] + ... + a[i] so any range sum is p[r] - p[l-1] in O(1). The standard tool when a problem asks many range-sum queries or iterates over all subarrays.",
+     "learn": [
+      "Use 1-indexed p with p[0] = 0 to avoid special cases",
+      "Range sum [l, r] = p[r] - p[l-1]; use long long",
+      "Prefix counts: keep a prefix array per character/property (e.g. count of 'a' in s[1..i])",
+      "Combine prefix and suffix arrays to evaluate 'remove one element' or 'split into two parts' options in O(1) each",
+      "Prefix sums of a boolean array answer 'how many good positions in [l, r]'"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Prefix Sums",
+       "url": "https://usaco.guide/silver/prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Static array queries (sum queries)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.1 (p. 84)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1807D",
+       "src": "cf",
+       "name": "Odd Queries",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "313B",
+       "src": "cf",
+       "name": "Ilya and Queries",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1832B",
+       "src": "cf",
+       "name": "Maximum Sum",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1311C",
+       "src": "cf",
+       "name": "Perform the Combo",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1555C",
+       "src": "cf",
+       "name": "Coin Rows",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "2008E",
+       "src": "cf",
+       "name": "Alternating String",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1826D",
+       "src": "cf",
+       "name": "Running Miles",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "466C",
+       "src": "cf",
+       "name": "Number of Ways",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2026D",
+       "src": "cf",
+       "name": "Sums of Segments",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1646",
+       "src": "cses",
+       "name": "Static Range Sum Queries",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "prefix-counting",
+     "name": "Counting subarrays with prefix sums + hashing",
+     "tier": 1300,
+     "order": 2,
+     "prereq": [
+      "prefix-1d"
+     ],
+     "summary": "Counting or detecting subarrays with a given sum/property by looking up earlier prefix values in a map: sum(l..r) = k iff p[r] - p[l-1] = k. Works with transformed arrays (a_i - 1, +1/-1, values mod m).",
+     "learn": [
+      "For each r, add cnt[p[r] - k] to the answer, then increment cnt[p[r]]; start with cnt[0] = 1",
+      "Transform the array so the condition becomes 'sum equals 0' (e.g. a_i - 1 for sum = length, +1/-1 for balanced)",
+      "Divisibility: count pairs of equal p[i] mod m (normalise negatives with ((x % m) + m) % m)",
+      "Zero-sum subarray exists iff some prefix value repeats; greedy cut when a prefix repeats to break all zero-sum segments",
+      "Use std::map or a hashed unordered_map with a custom hash to avoid anti-hash tests"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Prefix Sums",
+       "url": "https://usaco.guide/silver/prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Static array queries",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.1 (p. 84)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1520D",
+       "src": "cf",
+       "name": "Same Differences",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1915E",
+       "src": "cf",
+       "name": "Romantic Glasses",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "2033D",
+       "src": "cf",
+       "name": "Kousuke's Assignment",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1426D",
+       "src": "cf",
+       "name": "Non-zero Segments",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1398C",
+       "src": "cf",
+       "name": "Good Subarrays",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1748C",
+       "src": "cf",
+       "name": "Zero-Sum Prefixes",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1661",
+       "src": "cses",
+       "name": "Subarray Sums II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1662",
+       "src": "cses",
+       "name": "Subarray Divisibility",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "prefix-max-subarray",
+     "name": "Maximum subarray sum (Kadane)",
+     "tier": 1200,
+     "order": 3,
+     "prereq": [
+      "prefix-1d"
+     ],
+     "summary": "Finding the best contiguous segment: best ending at i is max(a[i], best ending at i-1 + a[i]), or equivalently p[r] - min prefix before r. Variants add constraints such as a forced modification, a segment that must be proper, or multiplying one segment.",
+     "learn": [
+      "Kadane: cur = max(a[i], cur + a[i]); ans = max(ans, cur)",
+      "Equivalent view: answer = max over r of p[r] - min_{l<r} p[l]",
+      "Variant 'apply an operation to one subarray': track gain array and run Kadane on it",
+      "Variant with states (before / inside / after the modified segment) is a tiny DP",
+      "Decide whether the empty subarray is allowed",
+      "Length-bounded windows need sliding-window minimum of prefixes"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: More on Prefix Sums (Max Subarray Sum)",
+       "url": "https://usaco.guide/silver/more-prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Maximum subarray sum",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 2.4 (p. 21)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Search the subarray with the maximum/minimum sum",
+       "url": "https://cp-algorithms.com/others/maximum_average_segment.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1899C",
+       "src": "cf",
+       "name": "Yarik and Array",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1946B",
+       "src": "cf",
+       "name": "Maximum Sum",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1285B",
+       "src": "cf",
+       "name": "Just Eat It!",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1373D",
+       "src": "cf",
+       "name": "Maximum Sum on Even Positions",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "33C",
+       "src": "cf",
+       "name": "Wonderful Randomized Sum",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1155D",
+       "src": "cf",
+       "name": "Beautiful Array",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1643",
+       "src": "cses",
+       "name": "Maximum Subarray Sum",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "prefix-difference",
+     "name": "Difference arrays (range updates)",
+     "tier": 1300,
+     "order": 4,
+     "prereq": [
+      "prefix-1d"
+     ],
+     "summary": "Applying many 'add x to [l, r]' updates offline: d[l] += x, d[r+1] -= x, then take the prefix sum of d. Also used to count how many intervals cover each point.",
+     "learn": [
+      "Range add in O(1): d[l] += x; d[r+1] -= x; final value a[i] = prefix of d up to i",
+      "Counting coverage: each interval adds 1; after the prefix pass you know how many intervals cover each point",
+      "Can be nested: count how many times each operation is applied with one difference array, then apply operations with another",
+      "Combine with sorting: count how often each position is queried, then pair biggest counts with biggest values",
+      "Second-order differences handle adding arithmetic progressions to a range"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: More on Prefix Sums (Difference Arrays)",
+       "url": "https://usaco.guide/silver/more-prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Additional techniques (difference arrays)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.4 (p. 93)",
+       "minutes": 5
+      }
+     ],
+     "problems": [
+      {
+       "id": "295A",
+       "src": "cf",
+       "name": "Greg and Array",
+       "rating": 1400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "816B",
+       "src": "cf",
+       "name": "Karen and Coffee",
+       "rating": 1400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "276C",
+       "src": "cf",
+       "name": "Little Girl and Maximum Sum",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1795C",
+       "src": "cf",
+       "name": "Tea Tasting",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1132C",
+       "src": "cf",
+       "name": "Painting the Fence",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2030D",
+       "src": "cf",
+       "name": "QED's Favorite Permutation",
+       "rating": 1700,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "prefix-2d",
+     "name": "2D prefix sums",
+     "tier": 1400,
+     "order": 5,
+     "prereq": [
+      "prefix-1d"
+     ],
+     "summary": "Precomputing P[i][j] = sum of the rectangle (1,1)-(i,j) so any sub-rectangle sum is an O(1) inclusion-exclusion. Also extends to 2D difference arrays and to higher dimensions.",
+     "learn": [
+      "Build: P[i][j] = a[i][j] + P[i-1][j] + P[i][j-1] - P[i-1][j-1]",
+      "Query (r1,c1)-(r2,c2): P[r2][c2] - P[r1-1][c2] - P[r2][c1-1] + P[r1-1][c1-1]",
+      "2D difference array: four corner updates, then a 2D prefix pass",
+      "Add a third dimension when values are small (e.g. one prefix table per brightness or per value)",
+      "Combine with binary search on the side length of a square",
+      "Weighted prefix sums (sum of i*a[i]) let you compute more complex aggregates in O(1)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: More on Prefix Sums (2D Prefix Sums)",
+       "url": "https://usaco.guide/silver/more-prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Static array queries (2D)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.1 (p. 84)",
+       "minutes": 5
+      }
+     ],
+     "problems": [
+      {
+       "id": "1722E",
+       "src": "cf",
+       "name": "Counting Rectangles",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "835C",
+       "src": "cf",
+       "name": "Star sky",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1731D",
+       "src": "cf",
+       "name": "Valiant's New Map",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "245H",
+       "src": "cf",
+       "name": "Queries for Number of Palindromes",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2044H",
+       "src": "cf",
+       "name": "Hard Demon Problem",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1301E",
+       "src": "cf",
+       "name": "Nanosoft",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1652",
+       "src": "cses",
+       "name": "Forest Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "prefix-other-ops",
+     "name": "Prefix/suffix aggregates (xor, max, min, intersection)",
+     "tier": 1400,
+     "order": 6,
+     "prereq": [
+      "prefix-1d",
+      "bit-xor"
+     ],
+     "summary": "Prefix and suffix arrays work for any associative operation: prefix XOR gives range XOR in O(1); prefix/suffix max/min/gcd/intersection let you evaluate 'everything except element i' or 'split point' questions quickly.",
+     "learn": [
+      "Prefix XOR: xor(l..r) = px[r] ^ px[l-1] (XOR is its own inverse)",
+      "Prefix/suffix combination: value without element i = op(pre[i-1], suf[i+1])",
+      "Max/min/gcd are not invertible, so use prefix + suffix (or a sparse table) instead of subtraction",
+      "Interval intersection of all but one segment: prefix/suffix max of l and min of r",
+      "Counting subarrays with given XOR uses the same hash-map trick as sums"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: More on Prefix Sums",
+       "url": "https://usaco.guide/silver/more-prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Static array queries",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.1 (p. 84)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "2123C",
+       "src": "cf",
+       "name": "Prefix Min and Suffix Max",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1847C",
+       "src": "cf",
+       "name": "Vampiric Powers, anyone?",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1516B",
+       "src": "cf",
+       "name": "AGAGA XOOORRR",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1272D",
+       "src": "cf",
+       "name": "Remove One Element",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1029C",
+       "src": "cf",
+       "name": "Maximal Intersection",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1349A",
+       "src": "cf",
+       "name": "Orac and LCM",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1968F",
+       "src": "cf",
+       "name": "Equal XOR Segments",
+       "rating": 1800,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "two-pointers",
+   "name": "Two Pointers & Sliding Window",
+   "cfTags": [
+    "two pointers"
+   ],
+   "subtopics": [
+    {
+     "id": "tp-basics",
+     "name": "Two pointers on sorted arrays",
+     "tier": 1100,
+     "order": 1,
+     "prereq": [
+      "sort-basics"
+     ],
+     "summary": "Two indices moving monotonically through one or two sorted arrays: pair-sum search from both ends, merging two sorted lists, counting pairs with sum in a range. Total movement is O(n), so the whole scan is linear.",
+     "learn": [
+      "Opposite ends: l = 0, r = n-1; if a[l] + a[r] > target then r-- else l++",
+      "Count pairs with sum <= x: for each l move r down while a[l] + a[r] > x",
+      "Pairs with sum in [L, R] = count(<= R) - count(<= L-1)",
+      "Merge-like scan over two sorted arrays (matching applicants to apartments, people to boats)",
+      "Prove why moving a pointer never skips the optimum (monotonicity)",
+      "Three values: fix one, two-pointer the other two in O(n^2)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Two Pointers",
+       "url": "https://usaco.guide/silver/two-pointers",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Two pointers method",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 8.1 (p. 77)",
+       "minutes": 10
+      },
+      {
+       "title": "Codeforces EDU: Two Pointers Method",
+       "url": "https://codeforces.com/edu/course/2/lesson/9",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU (ITMO Academy pilot course)",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "1462A",
+       "src": "cf",
+       "name": "Favorite Sequence",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1791C",
+       "src": "cf",
+       "name": "Prepend and Append",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1399C",
+       "src": "cf",
+       "name": "Boats Competition",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1729D",
+       "src": "cf",
+       "name": "Friends and the Restaurant",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "2051D",
+       "src": "cf",
+       "name": "Counting Pairs",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1538C",
+       "src": "cf",
+       "name": "Number of Pairs",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1324D",
+       "src": "cf",
+       "name": "Pair of Topics",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1883G1",
+       "src": "cf",
+       "name": "Dances (Easy version)",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1640",
+       "src": "cses",
+       "name": "Sum of Two Values",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1641",
+       "src": "cses",
+       "name": "Sum of Three Values",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1084",
+       "src": "cses",
+       "name": "Apartments",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1090",
+       "src": "cses",
+       "name": "Ferris Wheel",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "tp-window",
+     "name": "Variable-size sliding window",
+     "tier": 1300,
+     "order": 2,
+     "prereq": [
+      "tp-basics"
+     ],
+     "summary": "Maintaining a window [l, r] that expands to the right and shrinks from the left while a monotone condition holds (sum <= k, at most k distinct values, at most k zeros). Finds longest/shortest good subarrays or counts them in O(n).",
+     "learn": [
+      "Requirement: if [l, r] is good then every sub-window is good (or every super-window is) — monotonicity",
+      "For each r, advance l while the window is bad; then [l, r] is the longest good window ending at r",
+      "Counting good subarrays: add (r - l + 1) for each r",
+      "Maintain window state incrementally: sum, frequency map, number of distinct values",
+      "'Exactly k' = 'at most k' - 'at most k-1'",
+      "Cyclic arrays: double the array and limit the window length to n"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Two Pointers (Sliding Window)",
+       "url": "https://usaco.guide/silver/two-pointers",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Sliding Window (With Two Pointers)",
+       "url": "https://usaco.guide/gold/sliding-window",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 15
+      },
+      {
+       "title": "Codeforces EDU: Two Pointers Method",
+       "url": "https://codeforces.com/edu/course/2/lesson/9",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU (ITMO Academy pilot course)",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "1692E",
+       "src": "cf",
+       "name": "Binary Deque",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1354B",
+       "src": "cf",
+       "name": "Ternary String",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "279B",
+       "src": "cf",
+       "name": "Books",
+       "rating": 1400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "701C",
+       "src": "cf",
+       "name": "They Are Everywhere",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "660C",
+       "src": "cf",
+       "name": "Hard Process",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "616D",
+       "src": "cf",
+       "name": "Longest k-Good Segment",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "814C",
+       "src": "cf",
+       "name": "An impassioned circulation of affection",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1777C",
+       "src": "cf",
+       "name": "Quiz Master",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1611F",
+       "src": "cf",
+       "name": "ATM and Students",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1744F",
+       "src": "cf",
+       "name": "MEX vs MED",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1660",
+       "src": "cses",
+       "name": "Subarray Sums I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1141",
+       "src": "cses",
+       "name": "Playlist",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2428",
+       "src": "cses",
+       "name": "Subarray Distinct Values",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "tp-fixed-window",
+     "name": "Fixed-size window & sliding min/max (monotonic deque)",
+     "tier": 1600,
+     "order": 3,
+     "prereq": [
+      "tp-window"
+     ],
+     "summary": "Processing every window of length k: add the new element, remove the old one. For window minimum/maximum use a monotonic deque (amortised O(1)); for medians/costs use two multisets. Frequently used to speed up DP transitions over a range.",
+     "learn": [
+      "Fixed window: update aggregate with a[r] in and a[r-k] out instead of recomputing",
+      "Monotonic deque: pop back while back is worse than the new element, pop front when it leaves the window",
+      "Alternative: queue implemented with two stacks storing running minima",
+      "Sliding median / sliding cost: two balanced multisets (lower and upper half)",
+      "DP optimisation: dp[i] = min(dp[j]) + c over j in [i-k, i-1] becomes O(n) with the deque",
+      "Maximum subarray sum with length in [a, b]: prefix sums + sliding window minimum"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Sliding Window",
+       "url": "https://usaco.guide/gold/sliding-window",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Sliding window minimum",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 8.3 (p. 81)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Minimum stack / Minimum queue",
+       "url": "https://cp-algorithms.com/data_structures/stack_queue_modification.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1690D",
+       "src": "cf",
+       "name": "Black and White Stripe",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1196D2",
+       "src": "cf",
+       "name": "RGB Substring (hard version)",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1941E",
+       "src": "cf",
+       "name": "Rudolf and k Bridges",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "2009G1",
+       "src": "cf",
+       "name": "Yunli's Subarray Queries (easy version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "940E",
+       "src": "cf",
+       "name": "Cashback",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "487B",
+       "src": "cf",
+       "name": "Strip",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1644",
+       "src": "cses",
+       "name": "Maximum Subarray Sum II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1076",
+       "src": "cses",
+       "name": "Sliding Median",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1077",
+       "src": "cses",
+       "name": "Sliding Cost",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "binary-search",
+   "name": "Binary Search",
+   "cfTags": [
+    "binary search"
+   ],
+   "subtopics": [
+    {
+     "id": "bs-sorted",
+     "name": "Binary search on a sorted array",
+     "tier": 1100,
+     "order": 1,
+     "prereq": [
+      "sort-basics"
+     ],
+     "summary": "Finding positions in a sorted array in O(log n): first element >= x, number of elements <= x, elements in a value range. The C++ tools are lower_bound and upper_bound.",
+     "learn": [
+      "lower_bound(a.begin(), a.end(), x) -> first >= x; upper_bound -> first > x",
+      "Count of values in [L, R] = upper_bound(R) - lower_bound(L)",
+      "Answer many queries offline: sort once, binary search per query",
+      "Binary search over prefix sums / prefix maxima (they are monotone) to answer 'how far can I go' queries",
+      "std::set / multiset have their own .lower_bound — use the member function, not std::lower_bound (which is O(n) there)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Binary Search on a Sorted Array",
+       "url": "https://usaco.guide/silver/binary-search-sorted-array",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Binary search",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 3.3 (p. 31)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Binary search",
+       "url": "https://cp-algorithms.com/num_methods/binary_search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 20
+      },
+      {
+       "title": "Codeforces EDU: Binary Search",
+       "url": "https://codeforces.com/edu/course/2/lesson/6",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU (ITMO Academy pilot course)",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "706B",
+       "src": "cf",
+       "name": "Interesting drink",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1676E",
+       "src": "cf",
+       "name": "Eating Queries",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "474B",
+       "src": "cf",
+       "name": "Worms",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1742E",
+       "src": "cf",
+       "name": "Scuza",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "600B",
+       "src": "cf",
+       "name": "Queries about less or equal elements",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "702C",
+       "src": "cf",
+       "name": "Cellular Network",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1971E",
+       "src": "cf",
+       "name": "Find the Car",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1091",
+       "src": "cses",
+       "name": "Concert Tickets",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "bs-answer",
+     "name": "Binary search on the answer",
+     "tier": 1300,
+     "order": 2,
+     "prereq": [
+      "bs-sorted"
+     ],
+     "summary": "If a yes/no predicate check(x) is monotone in x (false...false true...true), binary search for the boundary using O(log range) calls to check. Typical for 'minimise the maximum', 'maximise the minimum', or 'minimum time to finish'.",
+     "learn": [
+      "Spot it: answers like 'minimum possible maximum' or 'largest x such that ...' with an easy feasibility check",
+      "Write check(x) first (often greedy), prove monotonicity, then binary search",
+      "Invariant template: lo always bad, hi always good; while (hi - lo > 1) { mid = lo + (hi - lo)/2; ... }",
+      "Choose bounds carefully (0 to 2e18 for time-type answers) and guard overflow inside check",
+      "Total complexity O(check * log(range))",
+      "Off-by-one: decide whether you search the first true or the last true"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Binary Search",
+       "url": "https://usaco.guide/silver/binary-search",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 30
+      },
+      {
+       "title": "CPH: Binary search (finding optimal solutions)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 3.3 (p. 31)",
+       "minutes": 10
+      },
+      {
+       "title": "Codeforces EDU: Binary Search",
+       "url": "https://codeforces.com/edu/course/2/lesson/6",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU (ITMO Academy pilot course)",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "1873E",
+       "src": "cf",
+       "name": "Building an Aquarium",
+       "rating": 1100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1613C",
+       "src": "cf",
+       "name": "Poisoned Dagger",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1352C",
+       "src": "cf",
+       "name": "K-th Not Divisible by n",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1612C",
+       "src": "cf",
+       "name": "Chat Ban",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1201C",
+       "src": "cf",
+       "name": "Maximum Median",
+       "rating": 1400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1840D",
+       "src": "cf",
+       "name": "Wooden Toy Festival",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1907D",
+       "src": "cf",
+       "name": "Jumping Through Segments",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1985F",
+       "src": "cf",
+       "name": "Final Boss",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1760F",
+       "src": "cf",
+       "name": "Quests",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1623C",
+       "src": "cf",
+       "name": "Balanced Stone Heaps",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1856C",
+       "src": "cf",
+       "name": "To Become Max",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1661C",
+       "src": "cf",
+       "name": "Water the Trees",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1620",
+       "src": "cses",
+       "name": "Factory Machines",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1085",
+       "src": "cses",
+       "name": "Array Division",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "bs-real",
+     "name": "Binary search on real numbers & averages",
+     "tier": 1500,
+     "order": 3,
+     "prereq": [
+      "bs-answer"
+     ],
+     "summary": "Binary searching a real-valued answer (time, radius, power, ratio) when the feasibility check is monotone. Also covers 'maximise the average/ratio' problems: average >= x iff sum(a_i - x) >= 0, so binary search x (fractional programming).",
+     "learn": [
+      "Iterate a fixed number of times (60-100) instead of comparing with an epsilon; print with enough decimals (setprecision(10))",
+      "Pick safe bounds: lo surely feasible, hi surely infeasible (or vice versa); use long double when values reach 1e9+",
+      "Maximise average of a chosen subset/subarray: binary search x, subtract x from every element, check whether a valid choice has sum >= 0",
+      "Maximise a ratio sum(a)/sum(b): check whether max of sum(a_i - x*b_i) >= 0",
+      "Time-based checks: 'can everything be done/met by time t' with a simulation or geometry formula",
+      "If a closed formula exists, prefer it; otherwise binary search avoids fragile algebra"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Binary search (search on real numbers)",
+       "url": "https://cp-algorithms.com/num_methods/binary_search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 15
+      },
+      {
+       "title": "Codeforces EDU: Binary Search (real-valued answers and averages)",
+       "url": "https://codeforces.com/edu/course/2/lesson/6",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU (ITMO Academy pilot course)",
+       "minutes": 60
+      },
+      {
+       "title": "USACO Guide: Binary Search",
+       "url": "https://usaco.guide/silver/binary-search",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1886B",
+       "src": "cf",
+       "name": "Fear of the Dark",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1354C1",
+       "src": "cf",
+       "name": "Simple Polygon Embedding",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1408C",
+       "src": "cf",
+       "name": "Discrete Acceleration",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1730B",
+       "src": "cf",
+       "name": "Meeting on the Line",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1359C",
+       "src": "cf",
+       "name": "Mixing Water",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1059D",
+       "src": "cf",
+       "name": "Nature Reserve",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "bs-kth-median",
+     "name": "k-th value & median binary search",
+     "tier": 1800,
+     "order": 4,
+     "prereq": [
+      "bs-answer",
+      "prefix-1d"
+     ],
+     "summary": "Finding the k-th smallest value of a huge implicit multiset by binary searching the value x and counting how many elements are <= x. The same idea gives the 'median >= x' trick: map elements to +1/-1 relative to x so a median condition becomes a sum condition.",
+     "learn": [
+      "k-th smallest: smallest x with count(<= x) >= k; count(<= x) must be computable quickly (formula, two pointers, sorted arrays)",
+      "Multiplication table: count(<= x) = sum over rows i of min(m, x / i)",
+      "Median >= x trick: b_i = (a_i >= x ? +1 : -1); median of a segment is >= x iff its b-sum is > 0 (adjust for the exact median definition)",
+      "Subarray with length >= k and positive b-sum: prefix sums + running minimum of p[j] for j <= i - k",
+      "Threshold binary search: find the value v such that taking every gain >= v uses about k operations, then fix up ties",
+      "Maximising the median of a construction: binary search the median, check greedily with the +1/-1 view"
+     ],
+     "resources": [
+      {
+       "title": "Codeforces EDU: Binary Search (k-th element)",
+       "url": "https://codeforces.com/edu/course/2/lesson/6",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU (ITMO Academy pilot course)",
+       "minutes": 60
+      },
+      {
+       "title": "cp-algorithms: Binary search",
+       "url": "https://cp-algorithms.com/num_methods/binary_search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Binary Search",
+       "url": "https://usaco.guide/silver/binary-search",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "2103C",
+       "src": "cf",
+       "name": "Median Splits",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "448D",
+       "src": "cf",
+       "name": "Multiplication Table",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1251D",
+       "src": "cf",
+       "name": "Salary Changing",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1996F",
+       "src": "cf",
+       "name": "Bomb",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "2128E1",
+       "src": "cf",
+       "name": "Submedians (Easy Version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1486D",
+       "src": "cf",
+       "name": "Max Median",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1993D",
+       "src": "cf",
+       "name": "Med-imize",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2422",
+       "src": "cses",
+       "name": "Multiplication Table",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "bs-advanced",
+     "name": "Binary search with complex checks",
+     "tier": 1800,
+     "order": 5,
+     "prereq": [
+      "bs-answer"
+     ],
+     "summary": "Binary search on the answer where the feasibility check is itself a non-trivial algorithm: a greedy over the whole array, a DP, a simulation in time, or a two-dimensional reachability condition.",
+     "learn": [
+      "Write and test check(x) as a standalone function before adding the binary search",
+      "Check may be DP or greedy over the whole array; total cost is O(check * log range)",
+      "Binary search on time with a movement/coverage simulation check (packmen, ships, robots)",
+      "Alternating constraints (odd/even positions) are checked greedily by trying both roles",
+      "Binary search on min and on max separately when minimising max - min",
+      "Watch overflow inside check (cap sums at the target)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Binary Search",
+       "url": "https://usaco.guide/silver/binary-search",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "Codeforces EDU: Binary Search",
+       "url": "https://codeforces.com/edu/course/2/lesson/6",
+       "kind": "cf-edu",
+       "where": "Codeforces EDU (ITMO Academy pilot course)",
+       "minutes": 60
+      },
+      {
+       "title": "cp-algorithms: Binary search",
+       "url": "https://cp-algorithms.com/num_methods/binary_search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "847E",
+       "src": "cf",
+       "name": "Packmen",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1117C",
+       "src": "cf",
+       "name": "Magic Ship",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2013D",
+       "src": "cf",
+       "name": "Minimize the Difference",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1370D",
+       "src": "cf",
+       "name": "Odd-Even Subsequence",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1866G",
+       "src": "cf",
+       "name": "Grouped Carriages",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "818F",
+       "src": "cf",
+       "name": "Level Generation",
+       "rating": 2100,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ternary-search",
+   "name": "Ternary Search & Unimodal Optimisation",
+   "cfTags": [
+    "ternary search"
+   ],
+   "subtopics": [
+    {
+     "id": "ternary-search",
+     "name": "Ternary search on unimodal functions",
+     "tier": 1700,
+     "order": 1,
+     "prereq": [
+      "bs-answer"
+     ],
+     "summary": "Finding the minimum/maximum of a function that strictly decreases then increases (unimodal or convex). Ternary search narrows [l, r] by comparing f(m1) and f(m2); for integer convex functions, binary search on f(x+1) - f(x) is cleaner.",
+     "learn": [
+      "Real version: m1 = l + (r-l)/3, m2 = r - (r-l)/3; drop the worse third; ~100-200 iterations",
+      "Integer version: binary search for the first x with f(x+1) - f(x) >= 0, or ternary until r - l < 3 then brute force",
+      "Requires strict unimodality — plateaus break it; sums of convex functions are convex",
+      "Classic sources: total distance/cost as a function of a meeting point or a target height, number of operations k vs cost",
+      "When f is convex in one variable and you iterate the other, nest the searches",
+      "Prove convexity (or test it with brute force) before relying on it"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Optimizing Unimodal Functions",
+       "url": "https://usaco.guide/gold/ternary-search",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "cp-algorithms: Ternary search",
+       "url": "https://cp-algorithms.com/num_methods/ternary_search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "2009E",
+       "src": "cf",
+       "name": "Klee's SUPER DUPER LARGE Array!!!",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1933E",
+       "src": "cf",
+       "name": "Turtle vs. Rabbit Race: Optimal Trainings",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "439D",
+       "src": "cf",
+       "name": "Devu and his Brother",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1928D",
+       "src": "cf",
+       "name": "Lonely Mountain Dungeons",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "427E",
+       "src": "cf",
+       "name": "Police Patrol",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2063D",
+       "src": "cf",
+       "name": "Game With Triangles",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1355E",
+       "src": "cf",
+       "name": "Restorer Distance",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1538G",
+       "src": "cf",
+       "name": "Gift Set",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1848D",
+       "src": "cf",
+       "name": "Vika and Bonuses",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "626E",
+       "src": "cf",
+       "name": "Simple Skewness",
+       "rating": 2400,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bit-manipulation",
+   "name": "Bit Manipulation",
+   "cfTags": [
+    "bitmasks"
+   ],
+   "subtopics": [
+    {
+     "id": "bit-basics",
+     "name": "Bitwise operations & binary representation",
+     "tier": 900,
+     "order": 1,
+     "prereq": [
+      "impl-basics"
+     ],
+     "summary": "Working with the binary form of integers using &, |, ^, ~, << and >>. Needed for subset masks, parity tricks and every problem that mentions AND/OR/XOR.",
+     "learn": [
+      "Check bit i: (x >> i) & 1; set: x | (1 << i); clear: x & ~(1 << i); toggle: x ^ (1 << i)",
+      "Use 1LL << i for i >= 31; __builtin_popcount(ll), __builtin_ctz, __lg / 63 - __builtin_clzll for highest bit",
+      "x & (x - 1) removes the lowest set bit; x & -x isolates it; x is a power of two iff x && !(x & (x-1))",
+      "a & b <= min(a, b) <= max(a, b) <= a | b",
+      "Binary representation of n has floor(log2 n) + 1 bits; any number is a sum of distinct powers of two",
+      "Operator precedence: & | ^ bind weaker than == — always parenthesise"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Intro to Bitwise Operators",
+       "url": "https://usaco.guide/silver/intro-bitwise",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Bit representation",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.1 (p. 95)",
+       "minutes": 5
+      },
+      {
+       "title": "CPH: Bit operations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.2 (p. 96)",
+       "minutes": 10
+      },
+      {
+       "title": "Bitwise operations for beginners (Errichto)",
+       "url": "https://codeforces.com/blog/entry/73490",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Bit manipulation",
+       "url": "https://cp-algorithms.com/algebra/bit-manipulation.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1527A",
+       "src": "cf",
+       "name": "And Then There Were K",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1421A",
+       "src": "cf",
+       "name": "XORwice",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1688A",
+       "src": "cf",
+       "name": "Cirno's Perfect Bitmasks Classroom",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1635A",
+       "src": "cf",
+       "name": "Min Or Sum",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1829C",
+       "src": "cf",
+       "name": "Mr. Perfectly Fine",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1559A",
+       "src": "cf",
+       "name": "Mocha and Math",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1594B",
+       "src": "cf",
+       "name": "Special Numbers",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1842B",
+       "src": "cf",
+       "name": "Tenzing and Books",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2205",
+       "src": "cses",
+       "name": "Gray Code",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "bit-xor",
+     "name": "XOR properties & identities",
+     "tier": 1200,
+     "order": 2,
+     "prereq": [
+      "bit-basics"
+     ],
+     "summary": "XOR is addition without carry: x ^ x = 0, x ^ 0 = x, it is associative and commutative and self-inverse. Many problems reduce to parity of bits, prefix XOR, or identities like a + b = (a ^ b) + 2(a & b).",
+     "learn": [
+      "x ^ x = 0 lets you cancel pairs; XOR of a whole array is invariant under swapping",
+      "Prefix XOR: xor(l..r) = px[r] ^ px[l-1]",
+      "a + b = (a ^ b) + 2 * (a & b); a ^ b <= a + b; a ^ b and a + b have the same parity",
+      "If a ^ b = c then a ^ c = b — solve for the unknown by XOR-ing",
+      "Splitting into >= 2 parts with equal XOR: if the total XOR is 0 any split into two works; otherwise the number of parts must be odd and three parts (each equal to the total) suffice, since any three adjacent equal parts merge into one",
+      "Consecutive XOR 0 ^ 1 ^ ... ^ n has a period-4 closed form"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Intro to Bitwise Operators (XOR)",
+       "url": "https://usaco.guide/silver/intro-bitwise",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Bit operations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.2 (p. 96)",
+       "minutes": 10
+      },
+      {
+       "title": "Bitwise operations for beginners (Errichto)",
+       "url": "https://codeforces.com/blog/entry/73490",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1805A",
+       "src": "cf",
+       "name": "We Need the Zero",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1698A",
+       "src": "cf",
+       "name": "XOR Mixup",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1979B",
+       "src": "cf",
+       "name": "XOR Sequences",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "2039C1",
+       "src": "cf",
+       "name": "Shohag Loves XOR (Easy Version)",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1790E",
+       "src": "cf",
+       "name": "Vlad and a Pair of Numbers",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1722G",
+       "src": "cf",
+       "name": "Even-Odd XOR",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1872E",
+       "src": "cf",
+       "name": "Data Structures Fan",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1325D",
+       "src": "cf",
+       "name": "Ehab the Xorcist",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1851F",
+       "src": "cf",
+       "name": "Lisa and the Martians",
+       "rating": 1800,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "bit-contribution",
+     "name": "Per-bit independence & contribution counting",
+     "tier": 1500,
+     "order": 3,
+     "prereq": [
+      "bit-basics",
+      "prefix-1d"
+     ],
+     "summary": "Bitwise operations act on each bit independently, so you can solve the problem separately for each of the ~30 bits and add up contributions (bit b contributes 2^b times the number of pairs/subarrays where it is set). Also: counting how often each bit is set across numbers.",
+     "learn": [
+      "Sum over pairs of (a_i ^ a_j): for each bit, count ones c1 and zeros c0, add c1 * c0 * 2^b",
+      "Sum of AND/OR over subarrays: per bit, count subarrays that are all ones / contain a one",
+      "Operations that preserve the multiset of bits per position (AND/OR swaps) — reason with per-bit counts",
+      "Highest-bit grouping: a_i & a_j >= a_i ^ a_j iff they share the same highest bit",
+      "Counting ones in bit b among 1..n has a closed form (period 2^(b+1))",
+      "Use per-bit prefix counts to answer range AND/OR queries"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Intro to Bitwise Operators",
+       "url": "https://usaco.guide/silver/intro-bitwise",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 10
+      },
+      {
+       "title": "Bitwise operations 2: popcount & bitsets (Errichto)",
+       "url": "https://codeforces.com/blog/entry/73558",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Bit operations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.2 (p. 96)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1420B",
+       "src": "cf",
+       "name": "Rock and Lever",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1514B",
+       "src": "cf",
+       "name": "AND 0, Sum Big",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1601A",
+       "src": "cf",
+       "name": "Array Elimination",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1362C",
+       "src": "cf",
+       "name": "Johnny and Another Rating Drop",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "2020C",
+       "src": "cf",
+       "name": "Bitwise Balancing",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1775C",
+       "src": "cf",
+       "name": "Interesting Sequence",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1368D",
+       "src": "cf",
+       "name": "AND, OR and square sum",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1879D",
+       "src": "cf",
+       "name": "Sum of XOR Functions",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1957D",
+       "src": "cf",
+       "name": "A BIT of an Inequality",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1146",
+       "src": "cses",
+       "name": "Counting Bits",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "bit-greedy",
+     "name": "Greedy bit-by-bit & AND/OR monotonicity",
+     "tier": 1600,
+     "order": 4,
+     "prereq": [
+      "bit-contribution"
+     ],
+     "summary": "Building an answer from the highest bit down: a higher bit is worth more than all lower bits together, so fix bits greedily and check feasibility. Also uses the fact that prefix AND only decreases and prefix OR only increases, changing at most ~30 times.",
+     "learn": [
+      "Greedy from the top bit: try to set bit b in the answer; keep it if the remaining budget/check allows",
+      "2^b > 2^(b-1) + ... + 1 justifies the greedy",
+      "AND over a growing range is non-increasing, OR is non-decreasing — binary search or two pointers apply",
+      "For a fixed right end there are at most log(maxA) distinct OR (or AND) values over left ends",
+      "Combine with masks: candidate answer mask must be a submask/supermask of chosen numbers",
+      "Powers of two: splitting/merging (like binary carries) handled bit by bit"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Intro to Bitwise Operators",
+       "url": "https://usaco.guide/silver/intro-bitwise",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Representing sets",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.3 (p. 98)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1669H",
+       "src": "cf",
+       "name": "Maximal AND",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1918C",
+       "src": "cf",
+       "name": "XOR-distance",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1878E",
+       "src": "cf",
+       "name": "Iva & Pav",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "243A",
+       "src": "cf",
+       "name": "The Brand New Function",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1903D1",
+       "src": "cf",
+       "name": "Maximum And Queries (easy version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1732C1",
+       "src": "cf",
+       "name": "Sheikh (Easy version)",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1303D",
+       "src": "cf",
+       "name": "Fill The Bag",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1946D",
+       "src": "cf",
+       "name": "Birthday Gift",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1934D1",
+       "src": "cf",
+       "name": "XOR Break --- Solo Version",
+       "rating": 2100,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ad-hoc",
+   "name": "Ad Hoc & Observation",
+   "cfTags": [
+    "math",
+    "greedy",
+    "implementation"
+   ],
+   "subtopics": [
+    {
+     "id": "adhoc-observation",
+     "name": "Observations & small-case patterns",
+     "tier": 1000,
+     "order": 1,
+     "prereq": [
+      "search-iterate"
+     ],
+     "summary": "Problems with no standard algorithm: the solution is a key observation about the structure (what the answer can be, what never changes, what is always achievable). The skill is to experiment on small cases until the pattern appears, then prove it.",
+     "learn": [
+      "Work small examples by hand or brute force n <= 8 and print the answers to spot a pattern",
+      "Ask: what is the answer at most? (often 0/1/2) What is a trivial lower/upper bound — is it always achievable?",
+      "Look at extremes: the maximum, the minimum, the first and last elements",
+      "Reformulate: what does one operation really change? What is the final state forced to look like?",
+      "Prove the observation (or at least stress-test it) before submitting",
+      "Keep a personal list of recurring tricks (sum/max conditions, endpoints matter, answer independent of order)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1405B",
+       "src": "cf",
+       "name": "Array Cancellation",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1257B",
+       "src": "cf",
+       "name": "Magic Stick",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1327A",
+       "src": "cf",
+       "name": "Sum of Odd Integers",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1288B",
+       "src": "cf",
+       "name": "Yet Another Meme Problem",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1496B",
+       "src": "cf",
+       "name": "Max and Mex",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1859C",
+       "src": "cf",
+       "name": "Another Permutation Problem",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1373C",
+       "src": "cf",
+       "name": "Pluses and Minuses",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1375C",
+       "src": "cf",
+       "name": "Element Extermination",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1380B",
+       "src": "cf",
+       "name": "Universal Solution",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1358C",
+       "src": "cf",
+       "name": "Celex Update",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1554B",
+       "src": "cf",
+       "name": "Cobb",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1763C",
+       "src": "cf",
+       "name": "Another Array Problem",
+       "rating": 2000,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "adhoc-parity-invariants",
+     "name": "Parity, invariants & monovariants",
+     "tier": 1200,
+     "order": 2,
+     "prereq": [
+      "adhoc-observation"
+     ],
+     "summary": "An invariant is a quantity that operations never change (sum mod 2, XOR, multiset of values at even positions); a monovariant only moves one way. Comparing invariants of the start and target states proves impossibility, and often also tells you exactly when it is possible.",
+     "learn": [
+      "Find what an operation preserves: parity of the sum, sum mod k, total XOR, relative order of some elements",
+      "Parity of positions: swaps of distance 2 keep elements on positions of the same parity",
+      "Sum and max conditions: pairs can be removed iff sum is even and max <= sum - max",
+      "Monovariants (strictly decreasing potential) prove termination and bound the number of steps",
+      "If the invariant matches, usually build the transformation explicitly (connects to constructive)",
+      "Coloring arguments on grids (chessboard coloring) are invariants too"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1851B",
+       "src": "cf",
+       "name": "Parity Sort",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1367B",
+       "src": "cf",
+       "name": "Even Array",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1365B",
+       "src": "cf",
+       "name": "Trouble Sort",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1733C",
+       "src": "cf",
+       "name": "Parity Shuffle Sorting",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1201B",
+       "src": "cf",
+       "name": "Zero Array",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1442A",
+       "src": "cf",
+       "name": "Extreme Subtraction",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1365F",
+       "src": "cf",
+       "name": "Swaps Again",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1754",
+       "src": "cses",
+       "name": "Coin Piles",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "adhoc-mex",
+     "name": "MEX problems",
+     "tier": 1100,
+     "order": 3,
+     "prereq": [
+      "adhoc-observation"
+     ],
+     "summary": "MEX (minimum excluded non-negative integer) appears constantly in Div 2/3 problems. The key facts: MEX = k requires all of 0..k-1 to be present and k absent, only small values matter, and large or duplicate values can be reused freely.",
+     "learn": [
+      "MEX of n numbers is at most n; values > n never change it",
+      "To get MEX >= k you need each of 0..k-1 at least once; extra copies are 'free' resources",
+      "Splitting into two sets: each value needs two copies to count for both sets (mex(A) + mex(B))",
+      "Operations that add x to an element: group values by remainder mod x and greedily fill 0, 1, 2, ...",
+      "Prefix MEX is non-decreasing; maintain it in O(n) total by advancing a pointer over a 'present' array",
+      "Games with MEX: count how often each small value appears (values appearing once are vulnerable)"
+     ],
+     "resources": [
+      {
+       "title": "Mex (mathematics)",
+       "url": "https://en.wikipedia.org/wiki/Mex_(mathematics)",
+       "kind": "other",
+       "where": "Wikipedia",
+       "minutes": 5
+      },
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1497A",
+       "src": "cf",
+       "name": "Meximization",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1566B",
+       "src": "cf",
+       "name": "MIN-MEX Cut",
+       "rating": 800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1406A",
+       "src": "cf",
+       "name": "Subset Mex",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1806B",
+       "src": "cf",
+       "name": "Mex Master",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1567B",
+       "src": "cf",
+       "name": "MEXor Mixup",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "2021B",
+       "src": "cf",
+       "name": "Maximize Mex",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1943A",
+       "src": "cf",
+       "name": "MEX Game 1",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1628A",
+       "src": "cf",
+       "name": "Meximum Array",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1294D",
+       "src": "cf",
+       "name": "MEX maximizing",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1619E",
+       "src": "cf",
+       "name": "MEX and Increments",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1375D",
+       "src": "cf",
+       "name": "Replace by MEX",
+       "rating": 1900,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "adhoc-pigeonhole",
+     "name": "Pigeonhole & bounding the answer",
+     "tier": 1500,
+     "order": 4,
+     "prereq": [
+      "adhoc-observation"
+     ],
+     "summary": "If n items go into fewer than n boxes, two share a box. In contests this turns large inputs into trivial cases (n > m means two equal remainders, so the answer is immediate) and proves that the answer or the search is small, so brute force on the remaining cases is fast.",
+     "learn": [
+      "n > m values mod m: two have equal remainder, so a difference (or a prefix-sum segment) is divisible by m",
+      "Among n + 1 prefix sums mod n, two coincide: some non-empty segment has sum divisible by n",
+      "Bounded number of distinct pair sums: brute force over pairs stops early because a collision must appear quickly",
+      "Answer is small because something grows fast (lcm of 1..k, doubling, factorial) — iterate only up to that bound",
+      "Combine: handle the large case with pigeonhole, the small case with brute force or DP"
+     ],
+     "resources": [
+      {
+       "title": "Pigeonhole principle",
+       "url": "https://en.wikipedia.org/wiki/Pigeonhole_principle",
+       "kind": "other",
+       "where": "Wikipedia",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1855B",
+       "src": "cf",
+       "name": "Longest Divisors Interval",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "2067C",
+       "src": "cf",
+       "name": "Devyatkino",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1305C",
+       "src": "cf",
+       "name": "Kuroni and Impossible Calculation",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1500A",
+       "src": "cf",
+       "name": "Going Home",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "577B",
+       "src": "cf",
+       "name": "Modulo Sum",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1270G",
+       "src": "cf",
+       "name": "Subset with Zero Sum",
+       "rating": 2700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "adhoc-perm-cycles",
+     "name": "Permutation cycles, swaps & inversion parity",
+     "tier": 1300,
+     "order": 5,
+     "prereq": [
+      "adhoc-parity-invariants"
+     ],
+     "summary": "A permutation splits into disjoint cycles (i -> p_i). Sorting by swaps needs n - (number of cycles) swaps, each swap changes the number of inversions by an odd amount, and 3-cycles preserve parity. These facts answer 'minimum swaps', 'is it reachable' and 'what is reachable from i' questions.",
+     "learn": [
+      "Find cycles by following i -> p_i with a visited array; elements on a cycle share everything 'reachable' from them",
+      "Minimum swaps to sort a permutation = n - (number of cycles)",
+      "One swap changes the number of cycles by exactly +-1 and flips the parity of the permutation",
+      "Parity of a permutation = parity of inversions = parity of (n - cycles); 3-cycles are even, so they only reach same-parity permutations",
+      "Duplicates in the array give free parity flips (swap equal elements)",
+      "Bubble sort swaps = number of inversions; adjacent-swap distance between arrays = inversions"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Functional Graphs (cycles)",
+       "url": "https://usaco.guide/silver/func-graphs",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Sorting theory (inversions)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 3.1 (p. 25)",
+       "minutes": 10
+      },
+      {
+       "title": "Parity of a permutation",
+       "url": "https://en.wikipedia.org/wiki/Parity_of_a_permutation",
+       "kind": "other",
+       "where": "Wikipedia",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1249B1",
+       "src": "cf",
+       "name": "Books Exchange (easy version)",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "2008D",
+       "src": "cf",
+       "name": "Sakurako's Hobby",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1249B2",
+       "src": "cf",
+       "name": "Books Exchange (hard version)",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "2033E",
+       "src": "cf",
+       "name": "Sakurako, Kosuke, and the Permutation",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1983D",
+       "src": "cf",
+       "name": "Swap Dilemma",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1768D",
+       "src": "cf",
+       "name": "Lucky Permutation",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1585D",
+       "src": "cf",
+       "name": "Yet Another Sorting Problem",
+       "rating": 1900,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "constructive",
+   "name": "Constructive Algorithms",
+   "cfTags": [
+    "constructive algorithms"
+   ],
+   "subtopics": [
+    {
+     "id": "cons-basics",
+     "name": "Constructive basics",
+     "tier": 900,
+     "order": 1,
+     "prereq": [
+      "adhoc-observation"
+     ],
+     "summary": "Instead of computing a number you output any object (array, string, permutation) with the required property. Start from the simplest pattern that might work, check it on edge cases, and output -1 exactly when an invariant forbids a solution.",
+     "learn": [
+      "Try trivial constructions first: all equal, 1..n, alternating, sorted/reversed",
+      "Decide when the answer is impossible (parity, small n) and handle those cases explicitly",
+      "Build a solution for small n by hand and generalise (often by parity of n or n mod 4)",
+      "Write a checker that validates your output on random tests",
+      "Any valid answer is accepted — avoid over-engineering for optimality that is not asked"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1890A",
+       "src": "cf",
+       "name": "Doremy's Paint 3",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1343B",
+       "src": "cf",
+       "name": "Balanced Array",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1837A",
+       "src": "cf",
+       "name": "Grasshopper on a Line",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1878B",
+       "src": "cf",
+       "name": "Aleksa and Stack",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1831A",
+       "src": "cf",
+       "name": "Twin Permutations",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1335B",
+       "src": "cf",
+       "name": "Construct the String",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1869A",
+       "src": "cf",
+       "name": "Make It Zero",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1520C",
+       "src": "cf",
+       "name": "Not Adjacent Matrix",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1092",
+       "src": "cses",
+       "name": "Two Sets",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "cons-permutations",
+     "name": "Constructing permutations & arrays",
+     "tier": 1200,
+     "order": 2,
+     "prereq": [
+      "cons-basics"
+     ],
+     "summary": "Building permutations or arrays with constraints on adjacent differences, prefix values, fixed points, MEX or inversions. Common patterns: reverse blocks, interleave halves, shift by one, place large and small alternately.",
+     "learn": [
+      "Cyclic shift (2, 3, ..., n, 1) removes all fixed points",
+      "Even numbers then odd numbers (2 4 6 ... 1 3 5 ...) keeps every adjacent difference >= 2 for n >= 4 (n = 2, 3 are impossible)",
+      "Fill positions greedily with the smallest/largest unused value (keep a set of unused values)",
+      "Reverse a suffix/prefix to adjust inversions or a target sum",
+      "Use prefix-max/MEX constraints to decide where a value is forced and fill the rest freely",
+      "Check small n (1, 2, 3) separately — they are often impossible"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1454A",
+       "src": "cf",
+       "name": "Special Permutation",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1992C",
+       "src": "cf",
+       "name": "Gorilla and Permutation",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1506E",
+       "src": "cf",
+       "name": "Restoring the Permutation",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1473C",
+       "src": "cf",
+       "name": "No More Inversions",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1352G",
+       "src": "cf",
+       "name": "Special Permutation",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1364C",
+       "src": "cf",
+       "name": "Ehab and Prefix MEXs",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1658C",
+       "src": "cf",
+       "name": "Shinju and the Lost Permutation",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2123F",
+       "src": "cf",
+       "name": "Minimize Fixed Points",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1070",
+       "src": "cses",
+       "name": "Permutations",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "cons-grids-strings",
+     "name": "Constructing grids & strings",
+     "tier": 1300,
+     "order": 3,
+     "prereq": [
+      "cons-basics"
+     ],
+     "summary": "Filling a grid or writing a string that satisfies local constraints (no equal neighbours, given row/column sums, avoided substrings). Patterns: chessboard colourings, cyclic shifts of rows, block repetition, periodic strings.",
+     "learn": [
+      "Chessboard / striped colourings satisfy many 'adjacent cells differ' constraints",
+      "Shift each row cyclically by a constant to spread ones evenly (row/column count constraints)",
+      "Build a large grid from repeated small blocks (2x2 or 4x4) with offsets",
+      "Strings: periodic constructions (abcabc...) and trying all permutations of a few letters",
+      "Make a local change to an existing valid grid (change one cell per block) to satisfy an extra rule"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1699B",
+       "src": "cf",
+       "name": "Almost Ternary Matrix",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1335D",
+       "src": "cf",
+       "name": "Anti-Sudoku",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1863D",
+       "src": "cf",
+       "name": "Two-Colored Dominoes",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1968E",
+       "src": "cf",
+       "name": "Cells Arrangement",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1208C",
+       "src": "cf",
+       "name": "Magic Grid",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1554D",
+       "src": "cf",
+       "name": "Diane",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1360G",
+       "src": "cf",
+       "name": "A/B Matrix",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1213E",
+       "src": "cf",
+       "name": "Two Small Strings",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1755",
+       "src": "cses",
+       "name": "Palindrome Reorder",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "cons-operations",
+     "name": "Constructing sequences of operations",
+     "tier": 1400,
+     "order": 4,
+     "prereq": [
+      "cons-basics",
+      "adhoc-parity-invariants"
+     ],
+     "summary": "Outputting a list of at most K operations (flip a prefix, swap, apply XOR, reverse) that transforms the input into a target. The limit K hints at the construction: n ops = fix one position per op, 2n ops = two ops per position, 3 ops = a clever fixed recipe.",
+     "learn": [
+      "Read the operation limit as a hint about the per-element budget",
+      "Fix positions one by one from the end (or the start) so that later operations do not disturb them",
+      "Reduce to a canonical form (e.g. all zeros) from both start and target, then reverse the second sequence",
+      "Invariants decide feasibility; the construction must reach every state the invariant allows",
+      "Simulate your operations in the code to double-check the final state"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1381A1",
+       "src": "cf",
+       "name": "Prefix Flip (Easy Version)",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1839C",
+       "src": "cf",
+       "name": "Insert Zero and Invert Prefix",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1750C",
+       "src": "cf",
+       "name": "Complementary XOR",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1421C",
+       "src": "cf",
+       "name": "Palindromifier",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1327C",
+       "src": "cf",
+       "name": "Game with Chips",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1381A2",
+       "src": "cf",
+       "name": "Prefix Flip (Hard Version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1438D",
+       "src": "cf",
+       "name": "Powerful Ksenia",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "cons-math",
+     "name": "Arithmetic & number constructions",
+     "tier": 1300,
+     "order": 5,
+     "prereq": [
+      "cons-basics"
+     ],
+     "summary": "Constructing numbers or arrays with gcd/lcm/divisibility/sum constraints: split n into k parts with a given lcm, find numbers with prescribed remainders, choose values to make a sum vanish. Usually relies on parity or a simple divisor argument.",
+     "learn": [
+      "Use 1s and 2s as fillers; handle n odd / n even / n mod 4 separately",
+      "gcd(x, x+1) = 1; lcm of (k, k, ...) patterns; divisibility by building from the previous term",
+      "Pairs (a, -b) and (b, -a) cancel: pair up elements to make a weighted sum zero",
+      "Choose numbers as multiples of a large base to control remainders",
+      "Verify with a brute-force checker on all small inputs"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1968C",
+       "src": "cf",
+       "name": "Assembly via Remainders",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1708B",
+       "src": "cf",
+       "name": "Difference of GCDs",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1497C1",
+       "src": "cf",
+       "name": "k-LCM (easy version)",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1562C",
+       "src": "cf",
+       "name": "Rings",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1497C2",
+       "src": "cf",
+       "name": "k-LCM (hard version)",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1582D",
+       "src": "cf",
+       "name": "Vupsen, Pupsen and 0",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1316C",
+       "src": "cf",
+       "name": "Primitive Primes",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1656D",
+       "src": "cf",
+       "name": "K-good",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1366D",
+       "src": "cf",
+       "name": "Two Divisors",
+       "rating": 2000,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "cons-bitwise",
+     "name": "Bitwise constructions (XOR/AND/OR)",
+     "tier": 1300,
+     "order": 6,
+     "prereq": [
+      "cons-basics",
+      "bit-xor"
+     ],
+     "summary": "Constructing numbers, pairs or permutations with a prescribed XOR/AND/OR value. Work bit by bit, use complements (x ^ (2^k - 1)) and powers of two as building blocks, and reserve one or two 'free' elements to fix the final XOR.",
+     "learn": [
+      "Complement pairing: x and (2^k - 1) ^ x have AND 0 and OR 2^k - 1",
+      "Fix the XOR at the end: choose n - 1 elements freely, set the last to the XOR you still need (check distinctness/bounds)",
+      "Use large distinct high bits (2^29, 2^30) to make values distinct without disturbing low bits",
+      "Maximising OR under a sum: put 2^b - 1 (all low bits) in one element and the remainder in another",
+      "Permutations maximising alternating AND/OR: place the elements that hold the top bits at the end",
+      "Handle small n and targets of the form 2^m - 1 separately (they often need a special pattern)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Intro to Bitwise Operators",
+       "url": "https://usaco.guide/silver/intro-bitwise",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "Bitwise operations for beginners (Errichto)",
+       "url": "https://codeforces.com/blog/entry/73490",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1758B",
+       "src": "cf",
+       "name": "XOR = Average",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1632B",
+       "src": "cf",
+       "name": "Roof Construction",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1957B",
+       "src": "cf",
+       "name": "A BIT of a Construction",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1988C",
+       "src": "cf",
+       "name": "Increasing Sequence with Fixed OR",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "2035C",
+       "src": "cf",
+       "name": "Alya and Permutation",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1630A",
+       "src": "cf",
+       "name": "And Matching",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1332D",
+       "src": "cf",
+       "name": "Walk on Matrix",
+       "rating": 1700,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "greedy",
+   "name": "Greedy Algorithms",
+   "cfTags": [
+    "greedy"
+   ],
+   "subtopics": [
+    {
+     "id": "greedy-basics",
+     "name": "Greedy basics",
+     "tier": 800,
+     "order": 1,
+     "prereq": [
+      "impl-basics"
+     ],
+     "summary": "Making the locally best choice at each step (take the largest, use the cheapest, act as late as possible) when it can be shown never to hurt. The hard part is knowing when greedy fails; always try to find a counterexample first.",
+     "learn": [
+      "State the greedy rule precisely, then try to break it with a small counterexample",
+      "Classic failure: coin change with arbitrary denominations — that needs DP",
+      "Proof idea 'stays ahead': after each step greedy is at least as good as any other solution",
+      "Moving everything to the median minimises total absolute distance",
+      "When greedy is unclear, brute-force small cases and compare"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Greedy Algorithms",
+       "url": "https://usaco.guide/bronze/intro-greedy",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Coin problem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 6.1 (p. 57)",
+       "minutes": 5
+      }
+     ],
+     "problems": [
+      {
+       "id": "1551A",
+       "src": "cf",
+       "name": "Polycarp and Coins",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1399B",
+       "src": "cf",
+       "name": "Gifts Fixing",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1807B",
+       "src": "cf",
+       "name": "Grab the Candies",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1675B",
+       "src": "cf",
+       "name": "Make It Increasing",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1374C",
+       "src": "cf",
+       "name": "Move Brackets",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1914C",
+       "src": "cf",
+       "name": "Quests",
+       "rating": 1100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1520E",
+       "src": "cf",
+       "name": "Arranging The Sheep",
+       "rating": 1400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "greedy-sorting",
+     "name": "Greedy with sorting",
+     "tier": 1100,
+     "order": 2,
+     "prereq": [
+      "greedy-basics",
+      "sort-basics"
+     ],
+     "summary": "Sort the items by the right key first, then a simple greedy pass becomes optimal: take cheapest items first, pair biggest with smallest, process tasks by deadline. Most Div 2 B/C greedy problems look like this.",
+     "learn": [
+      "Find the processing order (by value, by deadline, by cost) and argue why it is optimal",
+      "Take-as-many-as-possible: sort ascending and add while the budget allows",
+      "Pairing: smallest with largest (two pointers) or adjacent after sorting",
+      "Prefix of the sorted order is often optimal — combine with prefix sums to try every count k",
+      "Minimising sum of |a_i - x|: choose x = median"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Greedy Algorithms with Sorting",
+       "url": "https://usaco.guide/silver/greedy-sorting",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 25
+      },
+      {
+       "title": "CPH: Minimizing sums",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 6.4 (p. 61)",
+       "minutes": 5
+      }
+     ],
+     "problems": [
+      {
+       "id": "1791G1",
+       "src": "cf",
+       "name": "Teleporters (Easy Version)",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1238B",
+       "src": "cf",
+       "name": "Kill `Em All",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1418B",
+       "src": "cf",
+       "name": "Negative Prefixes",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "762B",
+       "src": "cf",
+       "name": "USB vs. PS/2",
+       "rating": 1400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1203E",
+       "src": "cf",
+       "name": "Boxers",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1158A",
+       "src": "cf",
+       "name": "The Party and Sweets",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1296D",
+       "src": "cf",
+       "name": "Fight with Monsters",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1783C",
+       "src": "cf",
+       "name": "Yet Another Tournament",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "321B",
+       "src": "cf",
+       "name": "Ciel and Duel",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1074",
+       "src": "cses",
+       "name": "Stick Lengths",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2183",
+       "src": "cses",
+       "name": "Missing Coin Sum",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "greedy-intervals",
+     "name": "Interval scheduling & covering",
+     "tier": 1400,
+     "order": 3,
+     "prereq": [
+      "greedy-sorting",
+      "sort-compress-events"
+     ],
+     "summary": "Classic interval greedies: choose the maximum number of disjoint intervals (sort by right end), stab all intervals with the fewest points, cover a segment with the fewest intervals, remove the fewest intervals so no point is over-covered.",
+     "learn": [
+      "Max disjoint intervals: sort by right endpoint, take each interval that starts after the last chosen end",
+      "Min points to stab all intervals: sort by right end; place a point at r when the interval is not yet stabbed",
+      "Cover [0, L] with fewest intervals: repeatedly take the interval reaching furthest among those starting <= current end",
+      "Too many covering intervals at a point: drop the one that extends furthest right (set/priority queue)",
+      "Assigning values/rooms to intervals: sweep by left end, priority queue by right end",
+      "Nested segments: sort by l ascending and r descending"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Greedy Algorithms with Sorting (Scheduling)",
+       "url": "https://usaco.guide/silver/greedy-sorting",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Scheduling",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 6.2 (p. 58)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "976C",
+       "src": "cf",
+       "name": "Nested Segments",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1462F",
+       "src": "cf",
+       "name": "The Treasure of The Segments",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1249D1",
+       "src": "cf",
+       "name": "Too Many Segments (easy version)",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1249D2",
+       "src": "cf",
+       "name": "Too Many Segments (hard version)",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "22D",
+       "src": "cf",
+       "name": "Segments",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1701D",
+       "src": "cf",
+       "name": "Permutation Restoration",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1629",
+       "src": "cses",
+       "name": "Movie Festival",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1632",
+       "src": "cses",
+       "name": "Movie Festival II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1164",
+       "src": "cses",
+       "name": "Room Allocation",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "greedy-exchange",
+     "name": "Exchange argument",
+     "tier": 1500,
+     "order": 4,
+     "prereq": [
+      "greedy-sorting",
+      "sort-comparator"
+     ],
+     "summary": "Proving a greedy order by showing that swapping two adjacent items that violate the order never makes the answer better. The comparison of the two orders usually yields the comparator itself (a_i * b_j < a_j * b_i, s + t < t + s).",
+     "learn": [
+      "Take two adjacent items i, j; write cost(i then j) and cost(j then i); the sign of the difference is your comparator",
+      "Classic results: shortest processing time first, sort strings by s + t < t + s, sort by ratio a/b via cross-multiplication",
+      "Projects that raise and lower a resource: positives by requirement ascending, negatives by (requirement + change) descending",
+      "Check the comparator is transitive (strict weak order)",
+      "If no adjacent-swap argument works, the problem probably needs DP on top of the order"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Greedy Algorithms with Sorting",
+       "url": "https://usaco.guide/silver/greedy-sorting",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Tasks and deadlines",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 6.3 (p. 60)",
+       "minutes": 5
+      },
+      {
+       "title": "cp-algorithms: Scheduling jobs on one machine",
+       "url": "https://cp-algorithms.com/schedules/schedule_one_machine.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Scheduling jobs on two machines",
+       "url": "https://cp-algorithms.com/schedules/schedule_two_machines.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms.com",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1607D",
+       "src": "cf",
+       "name": "Blue-Red Permutation",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "632C",
+       "src": "cf",
+       "name": "The Smallest String Concatenation",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "922D",
+       "src": "cf",
+       "name": "Robot Vacuum Cleaner",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "864E",
+       "src": "cf",
+       "name": "Fire",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1203F1",
+       "src": "cf",
+       "name": "Complete the Projects (easy version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1203F2",
+       "src": "cf",
+       "name": "Complete the Projects (hard version)",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1630",
+       "src": "cses",
+       "name": "Tasks and Deadlines",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1631",
+       "src": "cses",
+       "name": "Reading Books",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "greedy-lexicographic",
+     "name": "Lexicographic & digit greedy",
+     "tier": 1200,
+     "order": 5,
+     "prereq": [
+      "greedy-basics"
+     ],
+     "summary": "Making the lexicographically smallest/largest string or number: decide characters from left to right, choosing the best possible character that still allows a valid completion. A monotonic stack often implements the 'remove k characters' family.",
+     "learn": [
+      "Fix positions left to right; at each position pick the best character that keeps the rest feasible",
+      "Removing characters for the smallest result: monotonic stack, pop while top > current and removals remain",
+      "Merging two sequences while keeping internal order (e.g. by parity): two-pointer merge choosing the smaller head",
+      "First differing position decides — improve as early as possible",
+      "Digits: replace the first digit where improvement is possible, then keep improving while it helps"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Greedy Algorithms",
+       "url": "https://usaco.guide/bronze/intro-greedy",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1328C",
+       "src": "cf",
+       "name": "Ternary XOR",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1730C",
+       "src": "cf",
+       "name": "Minimum Notation",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1157B",
+       "src": "cf",
+       "name": "Long Number",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1905C",
+       "src": "cf",
+       "name": "Largest Subsequence",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1251C",
+       "src": "cf",
+       "name": "Minimize The Integer",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1886C",
+       "src": "cf",
+       "name": "Decreasing String",
+       "rating": 1600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "greedy-pq",
+     "name": "Greedy with priority queue / multiset",
+     "tier": 1500,
+     "order": 6,
+     "prereq": [
+      "greedy-sorting"
+     ],
+     "summary": "Greedy choices that need the current best among a changing set: always take the largest remaining value, assign the earliest free room, take the best k items in a prefix. A priority_queue or multiset gives each choice in O(log n).",
+     "learn": [
+      "Sweep in one order (time, position) and keep candidates in a heap keyed by another criterion",
+      "Best k elements of every prefix: min-heap of size k, pop the smallest when it overflows",
+      "Repeatedly take the max, modify it and push it back (marginal gains when splitting into parts)",
+      "multiset supports erase(find(x)) and lower_bound — use it when you need both ends or arbitrary removals",
+      "Concatenate sorting + heap: sort by one parameter, heap over the other (e.g. length vs beauty)",
+      "Merging greedy (Huffman): repeatedly merge the two smallest items; total cost = sum of merge costs is minimised"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Priority Queues",
+       "url": "https://usaco.guide/silver/priority-queues",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Other structures (priority queue)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.5 (p. 41)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Data compression (Huffman coding)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 6.5 (p. 62)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1579D",
+       "src": "cf",
+       "name": "Productive Meeting",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1140C",
+       "src": "cf",
+       "name": "Playlist",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1353D",
+       "src": "cf",
+       "name": "Constructing the Array",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1061D",
+       "src": "cf",
+       "name": "TV Shows",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "2085D",
+       "src": "cf",
+       "name": "Serval and Kaitenzushi Buffet",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1428E",
+       "src": "cf",
+       "name": "Carrots for Rabbits",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1161",
+       "src": "cses",
+       "name": "Stick Division",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "greedy-regret",
+     "name": "Regret greedy (undoable choices)",
+     "tier": 2000,
+     "order": 7,
+     "prereq": [
+      "greedy-pq"
+     ],
+     "summary": "Greedily accept every choice, but keep enough information in a heap to undo the worst earlier choice when a better one arrives. Turns many seemingly DP problems (buy/sell stocks, drink potions, bracket costs) into O(n log n).",
+     "learn": [
+      "Take the item now; if the constraint breaks, remove the worst taken item (heap top)",
+      "Potions: drink everything, if health < 0 spit out the most negative potion drunk so far",
+      "Buy low sell high: push price twice so a sale can later be 'upgraded' to a later sale",
+      "Bracket sequence with costs: start with cheapest bracket, switch the best candidate when balance goes negative",
+      "Proof: the heap keeps the optimal solution for each prefix — think of it as exchange argument applied online"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Priority Queues",
+       "url": "https://usaco.guide/silver/priority-queues",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1526C1",
+       "src": "cf",
+       "name": "Potions (Easy Version)",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1526C2",
+       "src": "cf",
+       "name": "Potions (Hard Version)",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1974G",
+       "src": "cf",
+       "name": "Money Buys Less Happiness Now ",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1271D",
+       "src": "cf",
+       "name": "Portals",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "865D",
+       "src": "cf",
+       "name": "Buy Low Sell High",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "3D",
+       "src": "cf",
+       "name": "Least Cost Bracket Sequence",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "436E",
+       "src": "cf",
+       "name": "Cardboard Box",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "interactive",
+   "name": "Interactive Problems",
+   "cfTags": [
+    "interactive"
+   ],
+   "subtopics": [
+    {
+     "id": "inter-basics",
+     "name": "Interactive protocol & query thinking",
+     "tier": 1300,
+     "order": 1,
+     "prereq": [
+      "impl-basics"
+     ],
+     "summary": "In interactive problems your program talks to a judge: print a query, flush, read the response, and finish within a query limit. The query limit is the main hint about the intended strategy.",
+     "learn": [
+      "Flush after every query: cout << ... << endl (or cout.flush()); read the response immediately",
+      "Stop immediately on a -1 response to avoid Idleness/Wrong Answer confusion",
+      "Count the query budget: n queries, n/2, log n or 2 log n each suggest a different strategy",
+      "Write a local interactor (or simulate the judge in a function) to test",
+      "Adaptive judges may change the hidden answer consistently with previous responses — your strategy must work in the worst case",
+      "Use randomisation when the judge is not adaptive and an expected bound suffices"
+     ],
+     "resources": [
+      {
+       "title": "Interactive Problems: Guide for Participants",
+       "url": "https://codeforces.com/blog/entry/45307",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Interactive and Communication Problems",
+       "url": "https://usaco.guide/adv/interactive",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "2013C",
+       "src": "cf",
+       "name": "Password Cracking",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1407C",
+       "src": "cf",
+       "name": "Chocolate Bunny",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1797C",
+       "src": "cf",
+       "name": "Li Hua and Chess",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1729E",
+       "src": "cf",
+       "name": "Guess the Cycle Size",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1846F",
+       "src": "cf",
+       "name": "Rudolph and Mimic",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1534D",
+       "src": "cf",
+       "name": "Lost Tree",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1617D1",
+       "src": "cf",
+       "name": "Too Many Impostors (easy version)",
+       "rating": 1800,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "inter-binary-search",
+     "name": "Binary search in interactive problems",
+     "tier": 1500,
+     "order": 2,
+     "prereq": [
+      "inter-basics",
+      "bs-answer"
+     ],
+     "summary": "The most common interactive pattern: the hidden object is found by halving the search space with each query. Variants use ternary splits, prefix queries, or need extra care to stay within ceil(log2 n) + c queries.",
+     "learn": [
+      "Query ranges/prefixes so each answer halves the candidate set",
+      "With 20 queries and n = 1e5..1e6, think binary search; with 2 log n think nested or two-phase search",
+      "Ternary split (two queries per step dividing by 3) when each query compares two points",
+      "Cache previous answers to avoid repeating queries across many sub-searches",
+      "Prove the invariant on the candidate interval just like offline binary search"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Interactive Problems (Divide and Conquer)",
+       "url": "https://usaco.guide/adv/interactive",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 15
+      },
+      {
+       "title": "Interactive Problems: Guide for Participants",
+       "url": "https://codeforces.com/blog/entry/45307",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1807E",
+       "src": "cf",
+       "name": "Interview",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1999G1",
+       "src": "cf",
+       "name": "Ruler (easy version)",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1520F1",
+       "src": "cf",
+       "name": "Guess the K-th Zero (Easy version)",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1486C1",
+       "src": "cf",
+       "name": "Guessing the Greatest (easy version)",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1698D",
+       "src": "cf",
+       "name": "Fixed Point Guessing",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1999G2",
+       "src": "cf",
+       "name": "Ruler (hard version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1486C2",
+       "src": "cf",
+       "name": "Guessing the Greatest (hard version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1697D",
+       "src": "cf",
+       "name": "Guess The String",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1624F",
+       "src": "cf",
+       "name": "Interacdive Problem",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1856D",
+       "src": "cf",
+       "name": "More Wrong",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1363D",
+       "src": "cf",
+       "name": "Guess The Maximums",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1520F2",
+       "src": "cf",
+       "name": "Guess the K-th Zero (Hard version)",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "inter-bits-pairs",
+     "name": "Interactive with bit, XOR/AND/OR & pairing queries",
+     "tier": 1800,
+     "order": 3,
+     "prereq": [
+      "inter-basics",
+      "bit-xor"
+     ],
+     "summary": "Queries that return AND/OR/XOR/sum/gcd of hidden values. Typical tricks: a + b = (a ^ b) + 2(a & b) to recover sums, learn bits one by one, find a reference element (zero/max) and query everything against it, or process elements in pairs to save queries.",
+     "learn": [
+      "Recover a + b from (a & b) and (a | b): a + b = (a & b) + (a | b)",
+      "Learn three values from three pairwise sums, then the rest relative to one known value",
+      "Find a special element (0, maximum, position of n) first, then use it as a reference",
+      "Bit-by-bit queries determine each bit of a hidden number in ~log(max) queries",
+      "Pairing/elimination: compare elements in pairs to keep only candidates (tournament style)",
+      "Sum of query limits like n + O(1) tells you each element can be queried about once"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Interactive and Communication Problems",
+       "url": "https://usaco.guide/adv/interactive",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 15
+      },
+      {
+       "title": "Bitwise operations for beginners (Errichto)",
+       "url": "https://codeforces.com/blog/entry/73490",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1543D1",
+       "src": "cf",
+       "name": "RPD and Rap Sheet (Easy Version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1556D",
+       "src": "cf",
+       "name": "Take a Guess",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1780D",
+       "src": "cf",
+       "name": "Bit Guessing Game",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1207E",
+       "src": "cf",
+       "name": "XOR Guessing",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1088D",
+       "src": "cf",
+       "name": "Ehab and another another xor problem",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1451E1",
+       "src": "cf",
+       "name": "Bitwise Queries (Easy Version)",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1521C",
+       "src": "cf",
+       "name": "Nastia and a Hidden Permutation",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1634D",
+       "src": "cf",
+       "name": "Finding Zero",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1762D",
+       "src": "cf",
+       "name": "GCD Queries ",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1451E2",
+       "src": "cf",
+       "name": "Bitwise Queries (Hard Version)",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

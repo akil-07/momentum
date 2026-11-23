@@ -1,0 +1,15 @@
+# systemd user service template for Momentum.
+# Replace /path/to/momentum with the folder you cloned the repo into, then:
+#   cp contrib/momentum.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now momentum
+[Unit]
+Description=Momentum planner server
+After=network-online.target
+
+[Service]
+WorkingDirectory=/path/to/momentum
+ExecStart=/usr/bin/python3 /path/to/momentum/server.py --port 8787
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

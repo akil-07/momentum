@@ -1,0 +1,2068 @@
+{
+ "area": "trees",
+ "topics": [
+  {
+   "id": "tree-fundamentals",
+   "name": "Tree Fundamentals",
+   "cfTags": [
+    "trees",
+    "dfs and similar"
+   ],
+   "subtopics": [
+    {
+     "id": "trees-basics",
+     "name": "Tree basics: rooting, parent, depth, subtree size",
+     "tier": 1100,
+     "order": 1,
+     "prereq": [
+      "@graph-representation"
+     ],
+     "summary": "A tree is a connected acyclic graph with n-1 edges. Rooting it with one DFS gives parent, depth and subtree size of every vertex, which is the starting point of almost every tree problem. Recognise it whenever input gives n-1 edges or a parent array p_2..p_n.",
+     "learn": [
+      "Equivalent definitions: connected + n-1 edges, acyclic + n-1 edges, unique simple path between every pair",
+      "Store as adjacency list; root at 1 and DFS passing the parent (dfs(v,p)) instead of a visited array",
+      "Compute par[v], dep[v]=dep[par]+1 on the way down and sz[v]=1+sum sz[child] on the way back up",
+      "Leaves = non-root vertices of degree 1; count leaves in each subtree bottom-up",
+      "Parent-array input (p_i < i) lets you process vertices n..2 in reverse order with no DFS at all",
+      "Implicit trees: heap numbering (children 2v, 2v+1, parent v/2) for complete binary trees",
+      "Recursion depth up to 2e5 is usually fine in C++ on CF but can overflow in other languages; know the iterative/BFS-order alternative",
+      "Classic greedy: value depth[v]-(sz[v]-1) of choosing a vertex (Linova and Kingdom)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Tree Algorithms",
+       "url": "https://usaco.guide/silver/intro-tree",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 30
+      },
+      {
+       "title": "Competitive Programmer's Handbook: Tree algorithms / Tree traversal",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14 (p. 133), 14.1 (p. 134)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Depth First Search",
+       "url": "https://cp-algorithms.com/graph/depth-first-search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1843C",
+       "src": "cf",
+       "name": "Sum in Binary Tree",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1843D",
+       "src": "cf",
+       "name": "Apple Tree",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1676G",
+       "src": "cf",
+       "name": "White-Black Balanced Subtrees",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1675D",
+       "src": "cf",
+       "name": "Vertical Paths",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1900C",
+       "src": "cf",
+       "name": "Anji's Binary Tree",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "755C",
+       "src": "cf",
+       "name": "PolandBall and Forest",
+       "rating": 1300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1830A",
+       "src": "cf",
+       "name": "Copil Copac Draws Trees",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "839C",
+       "src": "cf",
+       "name": "Journey",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "580C",
+       "src": "cf",
+       "name": "Kefa and Park",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1336A",
+       "src": "cf",
+       "name": "Linova and Kingdom",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1056D",
+       "src": "cf",
+       "name": "Decorate Apple Tree",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1674",
+       "src": "cses",
+       "name": "Subordinates",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-traversal",
+     "name": "Traversal orders: DFS/BFS order, pre/post/in-order",
+     "tier": 1300,
+     "order": 2,
+     "prereq": [
+      "trees-basics"
+     ],
+     "summary": "The order in which DFS or BFS visits vertices carries structure: preorder lists every subtree contiguously, postorder processes children before parents, BFS order is by layer. Problems ask to simulate or check such orders, reconstruct a tree from one, or process vertices layer by layer.",
+     "learn": [
+      "Preorder (entry time) puts each subtree in a contiguous block of length sz[v]; postorder is a valid bottom-up DP order",
+      "BFS from the root gives vertices sorted by depth; processing it in reverse is an iterative replacement for recursive DFS",
+      "Visiting children in sorted order makes the DFS order deterministic (Military Problem)",
+      "Binary trees: pre/in/post order and rebuilding a tree from preorder + inorder",
+      "Multi-source BFS on a tree (from all leaves or several marked vertices) and layer-by-layer leaf peeling",
+      "Checking whether a permutation is a valid DFS order: the parent of p[i+1] must be p[i] or an ancestor of p[i] (the current DFS stack), and every subtree must occupy a contiguous block"
+     ],
+     "resources": [
+      {
+       "title": "Competitive Programmer's Handbook: Tree traversal / Binary trees",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14.1 (p. 134), 14.4 (p. 139)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Graph Traversal",
+       "url": "https://usaco.guide/silver/graph-traversal",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 40
+      },
+      {
+       "title": "cp-algorithms: Breadth First Search",
+       "url": "https://cp-algorithms.com/graph/breadth-first-search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1741D",
+       "src": "cf",
+       "name": "Masha and a Beautiful Tree",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1437D",
+       "src": "cf",
+       "name": "Minimal Height Tree",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1006E",
+       "src": "cf",
+       "name": "Military Problem",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1593E",
+       "src": "cf",
+       "name": "Gardener and Tree",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1611E1",
+       "src": "cf",
+       "name": "Escape The Maze (easy version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1535D",
+       "src": "cf",
+       "name": "Playoff Tournament",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "2002D1",
+       "src": "cf",
+       "name": "DFS Checker (Easy Version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1702",
+       "src": "cses",
+       "name": "Tree Traversals",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "trees-diameter-center",
+     "name": "Diameter, centre and eccentricities",
+     "tier": 1500,
+     "order": 3,
+     "prereq": [
+      "trees-traversal"
+     ],
+     "summary": "The diameter is the longest path in a tree; it is found by two BFS/DFS passes or by a DP that combines the two deepest child chains. The farthest vertex from any v is an endpoint of a diameter, and the centre is the middle of the diameter. Recognise it in \"max distance\", \"farthest vertex\", \"minimise the worst distance\" and chase/tag games.",
+     "learn": [
+      "Two-pass algorithm: farthest vertex a from any vertex, then farthest b from a; path a-b is a diameter",
+      "DP version: best two downward depths per vertex give the longest path through it (works with edge weights >= 0)",
+      "ecc(v) = max(dist(v,a), dist(v,b)) for the diameter endpoints a, b: all eccentricities in O(n)",
+      "Centre = middle vertex (or edge) of the diameter; minimises max distance; radius = ceil(D/2)",
+      "Diameter of a marked subset: same two-pass trick restricted to marked vertices",
+      "Merging two trees by an edge: new diameter = max(d1, d2, ceil(d1/2)+ceil(d2/2)+1) (DSU + diameter)",
+      "Compress equal-coloured components before taking the diameter (Anton and Tree)"
+     ],
+     "resources": [
+      {
+       "title": "Competitive Programmer's Handbook: Diameter / All longest paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14.2 (p. 135), 14.3 (p. 137)",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Introduction to Tree Algorithms (diameter)",
+       "url": "https://usaco.guide/silver/intro-tree",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1881F",
+       "src": "cf",
+       "name": "Minimum Maximum Distance",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1822F",
+       "src": "cf",
+       "name": "Gardening Friends",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1975D",
+       "src": "cf",
+       "name": "Paint the Tree",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1805D",
+       "src": "cf",
+       "name": "A Wide, Wide Graph",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1404B",
+       "src": "cf",
+       "name": "Tree Tag",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1294F",
+       "src": "cf",
+       "name": "Three Paths on a Tree",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "337D",
+       "src": "cf",
+       "name": "Book of Evil",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "455C",
+       "src": "cf",
+       "name": "Civilization",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "734E",
+       "src": "cf",
+       "name": "Anton and Tree",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "592D",
+       "src": "cf",
+       "name": "Super M",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1131",
+       "src": "cses",
+       "name": "Tree Diameter",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1132",
+       "src": "cses",
+       "name": "Tree Distances I",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-greedy",
+     "name": "Greedy on trees (leaves-first, cutting, covering)",
+     "tier": 1500,
+     "order": 4,
+     "prereq": [
+      "trees-basics"
+     ],
+     "summary": "Many Div 2 B-E tree problems are greedy: process leaves first, take deepest vertices, cut a subtree as soon as it satisfies a condition, or push surplus up to the parent. Recognise it when the answer depends on simple local structure (degrees, leaves, depth, subtree sums) and a leaf has only one way to be served.",
+     "learn": [
+      "Leaves-first greedy: a leaf must be handled by its parent, so decide bottom-up (matching, covering, cutting into fixed-size pieces)",
+      "Bipartite colouring by depth parity solves many construction/assignment tasks",
+      "Degree arguments: a vertex of degree >= 3 or the degree of the special vertex decides many games and MEX constructions",
+      "Removing leaves layer by layer (topological peeling) to count rounds",
+      "Sorting children by subtree size / depth and taking the top k",
+      "Exchange arguments for path covers: each vertex passes the extra count to its best child",
+      "Cutting the tree into components with equal xor/sum: greedily cut a subtree as soon as it reaches the target value",
+      "Pairing/matching vertices to minimise or maximise total distance: count how many pairs must cross each edge (min(sz, n-sz) / parity of sz)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Tree Algorithms",
+       "url": "https://usaco.guide/silver/intro-tree",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 20
+      },
+      {
+       "title": "Competitive Programmer's Handbook: Tree algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14 (p. 133)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1627C",
+       "src": "cf",
+       "name": "Not Assigning",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1665C",
+       "src": "cf",
+       "name": "Tree Infection",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "2018C",
+       "src": "cf",
+       "name": "Tree Pruning",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1592C",
+       "src": "cf",
+       "name": "Bakry and Partitioning",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1693B",
+       "src": "cf",
+       "name": "Fake Plastic Trees",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1388C",
+       "src": "cf",
+       "name": "Uncle Bogdan and Country Happiness",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1833G",
+       "src": "cf",
+       "name": "Ksyusha and Chinchilla",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1746D",
+       "src": "cf",
+       "name": "Paths on the Tree",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1363E",
+       "src": "cf",
+       "name": "Tree Shuffling",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1387B1",
+       "src": "cf",
+       "name": "Village (Minimum)",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1385F",
+       "src": "cf",
+       "name": "Removing Leaves",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "trees-games-constructive",
+     "name": "Games, constructive & interactive problems on trees",
+     "tier": 1500,
+     "order": 5,
+     "prereq": [
+      "trees-basics",
+      "trees-diameter-center"
+     ],
+     "summary": "Tree games (moving a token, removing leaves, chasing) are decided by degrees, distances, parity of depths or the diameter; constructive tree tasks ask you to assign weights/labels or build a tree with given properties; interactive tasks let you query distances or LCAs. Recognise them by \"who wins\", \"assign values so that every path...\", \"construct a tree\" or \"this is an interactive problem\" on a tree.",
+     "learn": [
+      "Leaf-removal games: the special vertex being a leaf (degree <= 1) or the parity of n decides the winner (Game On Leaves)",
+      "Token-moving games on trees: compute win/lose for each vertex bottom-up (a vertex wins iff some child loses); for many starting vertices, reroot this DP (Game on Tree)",
+      "Chase games: compare distances and the diameter with the players' speeds (Tree Tag)",
+      "Bipartite colouring by depth parity: path lengths between leaves are even iff leaves share a colour (Edge Weight Assignment); also gives labelings via highest set bits (Treelabeling)",
+      "Constructing values/weights from a given order or partial data: process vertices in BFS/given order and set each value from its parent (Weights Assignment, Sum in the tree)",
+      "MEX/label constructions: put the small labels on edges around one vertex of degree >= 3 so no path contains all of them",
+      "Interactive: ask distances from one vertex, split vertices by depth parity and query the smaller class (<= n/2 queries); pair up leaves using LCA queries (Kuroni and the Celebration)",
+      "Sprague-Grundy on trees: staircase-Nim on vertices at alternate depths (Sagheer and Apple Tree)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Game Theory",
+       "url": "https://usaco.guide/adv/game-theory",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "USACO Guide: Interactive and Communication Problems",
+       "url": "https://usaco.guide/adv/interactive",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "Competitive Programmer's Handbook: Game states / Sprague-Grundy theorem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 25.1 (p. 235), 25.3 (p. 238)",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Introduction to Tree Algorithms",
+       "url": "https://usaco.guide/silver/intro-tree",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1970C1",
+       "src": "cf",
+       "name": "Game on Tree (Easy)",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1611D",
+       "src": "cf",
+       "name": "Weights Assignment For Tree Edges",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1325C",
+       "src": "cf",
+       "name": "Ehab and Path-etic MEXs",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1098A",
+       "src": "cf",
+       "name": "Sum in the tree",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1363C",
+       "src": "cf",
+       "name": "Game On Leaves",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "2006A",
+       "src": "cf",
+       "name": "Iris and Game on the Tree",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1970C2",
+       "src": "cf",
+       "name": "Game on Tree (Medium)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1338B",
+       "src": "cf",
+       "name": "Edge Weight Assignment",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1534D",
+       "src": "cf",
+       "name": "Lost Tree",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1305D",
+       "src": "cf",
+       "name": "Kuroni and the Celebration",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "2053E",
+       "src": "cf",
+       "name": "Resourceful Caterpillar Sequence",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1605D",
+       "src": "cf",
+       "name": "Treelabeling",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1943C",
+       "src": "cf",
+       "name": "Tree Compass",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "812E",
+       "src": "cf",
+       "name": "Sagheer and Apple Tree",
+       "rating": 2300,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-edge-contribution",
+     "name": "Counting over all paths: edge/vertex contribution",
+     "tier": 1700,
+     "order": 6,
+     "prereq": [
+      "trees-basics"
+     ],
+     "summary": "Sums over all pairs of vertices (total distance, number of paths through a vertex, expected values) are computed by counting how many paths use each edge: sz[v]*(n-sz[v]) for the edge above v. Recognise it when the statement sums something over all O(n^2) pairs or paths.",
+     "learn": [
+      "Edge (v, par v) lies on sz[v]*(n-sz[v]) paths; sum of all distances = sum of w*sz*(n-sz)",
+      "Paths through vertex v: combine sizes of its child subtrees and the outside part",
+      "Assign the biggest weights to the edges used by most paths (sort contributions)",
+      "Edge used by cnt leaves below it: halving weight saves w/2*cnt (priority queue greedy)",
+      "Parity tricks: paths of odd length = (#even depth)*(#odd depth)",
+      "With probabilities: linearity of expectation over edges with combinatorial counts C(sz,k)",
+      "MEX/forbidden-vertex path counts via subtree sizes relative to a fixed root"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: DP on Trees - Introduction",
+       "url": "https://usaco.guide/gold/dp-trees",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "Competitive Programmer's Handbook: Tree traversal (subtree sizes by DP)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14.1 (p. 134)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1401D",
+       "src": "cf",
+       "name": "Maximum Distributed Tree",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1824B1",
+       "src": "cf",
+       "name": "LuoTianyi and the Floating Islands (Easy Version)",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1060E",
+       "src": "cf",
+       "name": "Sergey and Subway",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1399E1",
+       "src": "cf",
+       "name": "Weights Division (easy version)",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1454E",
+       "src": "cf",
+       "name": "Number of Simple Paths",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1399E2",
+       "src": "cf",
+       "name": "Weights Division (hard version)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1824B2",
+       "src": "cf",
+       "name": "LuoTianyi and the Floating Islands (Hard Version)",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1527D",
+       "src": "cf",
+       "name": "MEX Tree",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1770E",
+       "src": "cf",
+       "name": "Koxia and Tree",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "trees-centroid",
+     "name": "Centroid of a tree (finding it, properties)",
+     "tier": 1700,
+     "order": 7,
+     "prereq": [
+      "trees-basics"
+     ],
+     "summary": "A centroid is a vertex whose removal leaves components of size at most n/2; every tree has one or two adjacent centroids. Found by walking from the root toward the heavy child. Appears in constructive problems, \"balanced split\" questions and as the building block of centroid decomposition.",
+     "learn": [
+      "Definition: max(n - sz[v], max child sz) <= n/2",
+      "Find it in O(n): compute sz, then walk from the root into the child with sz > n/2",
+      "There are at most two centroids and if two, they are adjacent",
+      "The centroid minimises the sum of distances to all vertices",
+      "Centroid of every subtree: it lies on the path from the subtree centroid of the heavy child up to v (Kay and Snowflake)",
+      "Moving a leaf between the two centroids to make the centroid unique (Link Cut Centroids)",
+      "Adding one leaf moves the centroid by at most one edge; track it incrementally with subtree counts (Two Centroids)",
+      "Interactive search for a hidden vertex: query the centroid of the remaining candidates to discard at least half each time (O(log n) queries)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Centroid Decomposition (Finding the centroid)",
+       "url": "https://usaco.guide/plat/centroid",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      },
+      {
+       "title": "Hybrid Tutorial: Centroid Decomposition (centroid section)",
+       "url": "https://codeforces.com/blog/entry/81661",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1406C",
+       "src": "cf",
+       "name": "Link Cut Centroids",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "685B",
+       "src": "cf",
+       "name": "Kay and Snowflake",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "708C",
+       "src": "cf",
+       "name": "Centroids",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "2106G2",
+       "src": "cf",
+       "name": "Baudelaire (hard version)",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1387B2",
+       "src": "cf",
+       "name": "Village (Maximum)",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1827D",
+       "src": "cf",
+       "name": "Two Centroids",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2079",
+       "src": "cses",
+       "name": "Finding a Centroid",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tree-dp",
+   "name": "DP on Trees",
+   "cfTags": [
+    "trees",
+    "dp"
+   ],
+   "subtopics": [
+    {
+     "id": "trees-dp-basics",
+     "name": "DP on trees (subtree DP)",
+     "tier": 1600,
+     "order": 1,
+     "prereq": [
+      "trees-basics",
+      "@dp-trees"
+     ],
+     "summary": "Subtree DP stores dp[v][state] computed from the children of v in postorder: matching, independent set, colourings, best path through v, counting subsets. Recognise it when the answer decomposes over subtrees and each vertex has a small state (taken/not taken, colour, distance). Full theory lives in the DP area; here the focus is tree mechanics.",
+     "learn": [
+      "State dp[v][0/1] (vertex taken or not) and combine children with sum / max / product",
+      "Longest/best path through v = best two child values (Fair Nut, diameter-like DPs)",
+      "dp[v][d] = number of vertices at distance d in subtree for small k (Distance in Tree)",
+      "Counting subsets/components with products over children (Appleman and Tree)",
+      "Subtree knapsack merge: merging child tables of size sz is O(n^2) total, not O(n^3)",
+      "Min/max game DPs with alternating levels (Serval and Rooted Tree)",
+      "Iterate vertices in reverse BFS order to avoid deep recursion",
+      "Bigger state spaces (dp[v][k] over k chosen vertices / cut edges) are the tree-knapsack pattern: see @dp-tree-knapsack (Berland Federalization, Karen and Supermarket, Diameter Cuts)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: DP on Trees - Introduction",
+       "url": "https://usaco.guide/gold/dp-trees",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "DP on Trees Tutorial",
+       "url": "https://codeforces.com/blog/entry/20935",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 25
+      },
+      {
+       "title": "Competitive Programmer's Handbook: All longest paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14.3 (p. 137)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1997D",
+       "src": "cf",
+       "name": "Maximize the Root",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1528A",
+       "src": "cf",
+       "name": "Parsa's Humongous Tree",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1689C",
+       "src": "cf",
+       "name": "Infected Tree",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1083A",
+       "src": "cf",
+       "name": "The Fair Nut and the Best Path",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "161D",
+       "src": "cf",
+       "name": "Distance in Tree",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1153D",
+       "src": "cf",
+       "name": "Serval and Rooted Tree",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "2050G",
+       "src": "cf",
+       "name": "Tree Destruction",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1929D",
+       "src": "cf",
+       "name": "Sasha and a Walk in the City",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "461B",
+       "src": "cf",
+       "name": "Appleman and Tree",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1101D",
+       "src": "cf",
+       "name": "GCD Counting",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1988D",
+       "src": "cf",
+       "name": "The Omnipotent Monster Killer",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "2014F",
+       "src": "cf",
+       "name": "Sheriff's Defense",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1249F",
+       "src": "cf",
+       "name": "Maximum Weight Subset",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1238F",
+       "src": "cf",
+       "name": "The Maximum Subtree",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1130",
+       "src": "cses",
+       "name": "Tree Matching",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-rerooting",
+     "name": "Rerooting (DP for all roots)",
+     "tier": 1800,
+     "order": 2,
+     "prereq": [
+      "trees-dp-basics",
+      "@dp-rerooting"
+     ],
+     "summary": "Rerooting computes a rooted DP answer for every possible root in O(n): one DFS computes down[v] for subtrees, a second pushes up[v] (the answer of the part outside v's subtree) from parent to child. Recognise it when the problem asks \"for every vertex as root\" or \"choose the best root\".",
+     "learn": [
+      "Pass 1: down[v] from children; pass 2: up[child] from up[v] and the down values of the siblings",
+      "Excluding one child: prefix/suffix aggregates over children, or best and second best for max",
+      "Sum-of-distances rerooting: ans[c] = ans[v] - sz[c] + (n - sz[c])",
+      "Moving the root along an edge changes only that edge's orientation (Choosing Capital)",
+      "Combine with diameter: farthest distance from each vertex via rerooting or via diameter endpoints",
+      "Non-invertible operations (max, gcd) need prefix/suffix, never \"subtract the child\""
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: DP on Trees - Solving For All Roots",
+       "url": "https://usaco.guide/gold/all-roots",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "Competitive Programmer's Handbook: All longest paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14.3 (p. 137)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "219D",
+       "src": "cf",
+       "name": "Choosing Capital for Treeland",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1822F",
+       "src": "cf",
+       "name": "Gardening Friends",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1324F",
+       "src": "cf",
+       "name": "Maximum White Subtree",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1092F",
+       "src": "cf",
+       "name": "Tree with Maximum Cost",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1882D",
+       "src": "cf",
+       "name": "Tree XOR",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1970C3",
+       "src": "cf",
+       "name": "Game on Tree (Hard)",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "337D",
+       "src": "cf",
+       "name": "Book of Evil",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1187E",
+       "src": "cf",
+       "name": "Tree Painting",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "543D",
+       "src": "cf",
+       "name": "Road Improvement",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "708C",
+       "src": "cf",
+       "name": "Centroids",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1132",
+       "src": "cses",
+       "name": "Tree Distances I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1133",
+       "src": "cses",
+       "name": "Tree Distances II",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tree-queries",
+   "name": "Tree Queries & Decompositions",
+   "cfTags": [
+    "trees",
+    "data structures",
+    "divide and conquer"
+   ],
+   "subtopics": [
+    {
+     "id": "trees-euler-tour",
+     "name": "Euler tour / subtree flattening + range queries",
+     "tier": 1800,
+     "order": 1,
+     "prereq": [
+      "trees-traversal",
+      "@ds-fenwick",
+      "@ds-segtree-basic"
+     ],
+     "summary": "Recording entry time tin[v] and exit time tout[v] maps every subtree to a contiguous range, so subtree updates/queries become range operations on an array with a BIT or segment tree. Also u is an ancestor of v iff tin[u] <= tin[v] <= tout[u]. Recognise it in \"add to / query the subtree of v\" problems.",
+     "learn": [
+      "tin/tout from one DFS; subtree of v = positions [tin[v], tin[v]+sz[v]-1]",
+      "Ancestor test in O(1) with tin/tout (Tree Queries 1328E)",
+      "Subtree sum / point update -> BIT; subtree assign or add -> lazy segment tree",
+      "Root-to-v path sums via the trick +x at tin, -x at tout (path queries with BIT)",
+      "Vertices of a given depth inside a subtree: list tins per depth and binary search",
+      "Distinct values in subtrees: offline with small-to-large or sweep over the flattened array",
+      "Bitmask of colours in a segment tree when number of colours <= 60 (New Year Tree)",
+      "Offline growing trees: build the final tree first, then replay operations on its Euler order (A Growing Tree)",
+      "Advanced: Mo's algorithm on trees uses the 2n-length Euler tour (each vertex at tin and tout) so a path becomes a range (@ds-mo-algorithm); a segment tree over the Euler tour with depth info maintains a dynamic diameter"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: (Optional) Euler Tour Technique",
+       "url": "https://usaco.guide/gold/tree-euler",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "Competitive Programmer's Handbook: Subtrees and paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 18.2 (p. 164)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1328E",
+       "src": "cf",
+       "name": "Tree Queries",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1899G",
+       "src": "cf",
+       "name": "Unusual Entertainment",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "383C",
+       "src": "cf",
+       "name": "Propagating tree",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "877E",
+       "src": "cf",
+       "name": "Danil and a Part-time Job",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1891F",
+       "src": "cf",
+       "name": "A Growing Tree",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "620E",
+       "src": "cf",
+       "name": "New Year Tree",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "343D",
+       "src": "cf",
+       "name": "Water Tree",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "570D",
+       "src": "cf",
+       "name": "Tree Requests",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1916E",
+       "src": "cf",
+       "name": "Happy Life in University",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "375D",
+       "src": "cf",
+       "name": "Tree and Queries",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1137",
+       "src": "cses",
+       "name": "Subtree Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1138",
+       "src": "cses",
+       "name": "Path Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1139",
+       "src": "cses",
+       "name": "Distinct Colors",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-binary-lifting",
+     "name": "Binary lifting (k-th ancestor, jump pointers)",
+     "tier": 1900,
+     "order": 2,
+     "prereq": [
+      "trees-basics",
+      "@func-graph-lifting"
+     ],
+     "summary": "Store up[j][v] = 2^j-th ancestor of v; then any k-th ancestor is reached in O(log n) by its binary representation, and aggregates (min, max, sum) along the jumped edges can be stored alongside. The same idea works on any successor function (functional graphs, \"next\" pointers on arrays). Recognise it when you must jump far up a tree or along next-pointers many times.",
+     "learn": [
+      "up[0][v]=par[v], up[j][v]=up[j-1][up[j-1][v]]; LOG ~ 18-20 for n <= 2e5/1e6",
+      "k-th ancestor: for each set bit j of k jump up[j]",
+      "Binary-search on the ancestor chain: highest ancestor satisfying a monotone condition",
+      "Store path aggregates mx[j][v] (max edge, sum) together with the jump table",
+      "Online-built trees: a new leaf can fill its own table immediately (Tree 932D, Gold Transfer)",
+      "Jumping on arrays: next[i] = end of a greedy segment, then count jumps for range queries (Cut, Minimal Segment Cover)",
+      "Memory: [LOG][n] layout is cache-friendlier than [n][LOG] for the table build"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Binary Jumping",
+       "url": "https://usaco.guide/plat/binary-jump",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "Competitive Programmer's Handbook: Finding ancestors / Successor paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 18.1 (p. 163), 16.3 (p. 154)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: LCA - Binary Lifting",
+       "url": "https://cp-algorithms.com/graph/lca_binary_lifting.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "739B",
+       "src": "cf",
+       "name": "Alyona and a tree",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1142B",
+       "src": "cf",
+       "name": "Lynyrd Skynyrd",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "208E",
+       "src": "cf",
+       "name": "Blood Cousins",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1516D",
+       "src": "cf",
+       "name": "Cut",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "932D",
+       "src": "cf",
+       "name": "Tree",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1535E",
+       "src": "cf",
+       "name": "Gold Transfer",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1175E",
+       "src": "cf",
+       "name": "Minimal Segment Cover",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "2033G",
+       "src": "cf",
+       "name": "Sakurako and Chefir",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1687",
+       "src": "cses",
+       "name": "Company Queries I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1750",
+       "src": "cses",
+       "name": "Planets Queries I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1191",
+       "src": "cses",
+       "name": "Cyclic Array",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-lca",
+     "name": "Lowest common ancestor (binary lifting, Euler + sparse table)",
+     "tier": 1900,
+     "order": 3,
+     "prereq": [
+      "trees-binary-lifting",
+      "trees-euler-tour",
+      "@ds-sparse-table"
+     ],
+     "summary": "The LCA of u and v is their deepest common ancestor; it splits the u-v path in two, giving dist(u,v) = dep[u]+dep[v]-2*dep[lca]. Computed with binary lifting (O(log n) per query) or Euler tour + sparse table (O(1) per query). Needed for any path query on a static tree.",
+     "learn": [
+      "Binary lifting LCA: lift the deeper vertex to equal depth, then lift both while ancestors differ",
+      "Euler tour of size 2n-1 + RMQ on depth with a sparse table gives O(1) LCA",
+      "dist(u,v) = dep[u]+dep[v]-2*dep[lca(u,v)] (weighted: use root distances)",
+      "LCA of a set = LCA of the vertices with min and max tin (Company 1062E)",
+      "Checking whether a set of vertices lies on one path (Passable Paths)",
+      "LCA under a changed root r = the deepest of lca(u,v), lca(u,r), lca(v,r)",
+      "Tarjan offline LCA with DSU when all queries are known"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: (Optional) LCA with Euler Tour",
+       "url": "https://usaco.guide/gold/lca-euler",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "Competitive Programmer's Handbook: Lowest common ancestor",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 18.3 (p. 167)",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: LCA with Euler tour + segment tree",
+       "url": "https://cp-algorithms.com/graph/lca.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Tarjan's offline LCA",
+       "url": "https://cp-algorithms.com/graph/lca_tarjan.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1702G1",
+       "src": "cf",
+       "name": "Passable Paths (easy version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "832D",
+       "src": "cf",
+       "name": "Misha, Grisha and Underground",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1702G2",
+       "src": "cf",
+       "name": "Passable Paths (hard version)",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1304E",
+       "src": "cf",
+       "name": "1-Trees and Queries",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "519E",
+       "src": "cf",
+       "name": "A and B and Lecture Rooms",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1062E",
+       "src": "cf",
+       "name": "Company",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "916E",
+       "src": "cf",
+       "name": "Jamie and Tree",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1688",
+       "src": "cses",
+       "name": "Company Queries II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1135",
+       "src": "cses",
+       "name": "Distance Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-path-queries",
+     "name": "Distances & path queries, tree difference arrays",
+     "tier": 1900,
+     "order": 4,
+     "prereq": [
+      "trees-lca"
+     ],
+     "summary": "Path questions on a static tree are answered by splitting at the LCA: prefix values from the root give path sums, binary lifting gives path max, and \"add x on path u-v\" is done offline with a difference on the tree (+x at u and v, -x at lca and its parent, then subtree sums). Recognise it in many paths/queries with updates applied before the answers are asked.",
+     "learn": [
+      "Path sum = pre[u]+pre[v]-2*pre[lca]+val[lca] with root prefix sums",
+      "Path max/min of edge weights with binary-lifting aggregates (MST for each edge)",
+      "Tree difference array for vertex paths: +1 u, +1 v, -1 lca, -1 par(lca); for edges: +1 u, +1 v, -2 lca",
+      "Depth-limited subtree updates offline with a difference array indexed by depth during DFS",
+      "Root-path stack + binary search for prefix conditions along the current path",
+      "Max-subarray-sum on a path needs mergeable segment info stored in lifting tables (Omsk Metro)",
+      "Graph with n+k edges: tree + few extra edges -> LCA distance plus Dijkstra from extra endpoints",
+      "k-th vertex on the path u-v: if k <= dep[u]-dep[lca] it is the k-th ancestor of u, otherwise an ancestor of v (binary lifting)",
+      "Count marked vertices on a path (or on the path to a query root) with an Euler-tour BIT of root-path counts + LCA (Tree 1111E)",
+      "Min/max edge on paths over many queries can also be answered with a Kruskal reconstruction tree (@mst-kruskal-tree)"
+     ],
+     "resources": [
+      {
+       "title": "Competitive Programmer's Handbook: Subtrees and paths / LCA",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 18.2 (p. 164), 18.3 (p. 167)",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Binary Jumping",
+       "url": "https://usaco.guide/plat/binary-jump",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1714G",
+       "src": "cf",
+       "name": "Path Prefixes",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1843F1",
+       "src": "cf",
+       "name": "Omsk Metro (simple version)",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "191C",
+       "src": "cf",
+       "name": "Fools and Roads",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1076E",
+       "src": "cf",
+       "name": "Vasya and a Tree",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "609E",
+       "src": "cf",
+       "name": "Minimum spanning tree for each edge",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1843F2",
+       "src": "cf",
+       "name": "Omsk Metro (hard version)",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1051F",
+       "src": "cf",
+       "name": "The Shortest Statement",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1111E",
+       "src": "cf",
+       "name": "Tree",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1135",
+       "src": "cses",
+       "name": "Distance Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1136",
+       "src": "cses",
+       "name": "Counting Paths",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "trees-small-to-large",
+     "name": "Small-to-large merging (DSU on tree / sack)",
+     "tier": 2100,
+     "order": 5,
+     "prereq": [
+      "trees-euler-tour"
+     ],
+     "summary": "When every subtree needs a set/map of its contents, merge the smaller child structure into the larger: each element moves O(log n) times, giving O(n log n) or O(n log^2 n). The \"sack\" variant keeps the heavy child's data and re-adds light subtrees using the Euler order. Recognise it in per-subtree statistics (distinct colours, most frequent colour, counts per depth).",
+     "learn": [
+      "Swap so you always insert the smaller container into the bigger one (std::swap of sets/maps is O(1))",
+      "Each element moves O(log n) times because the container it lands in at least doubles",
+      "Sack: process light children and clear them, process heavy child and keep, then add light subtrees via tin range",
+      "Answer offline queries attached to vertices while v's data is \"live\"",
+      "Store per-depth maps to answer \"k-th descendants\" queries (Blood Cousins Return, Tree Requests)",
+      "Path-xor sets with small-to-large to detect zero-xor paths greedily (XOR Tree)",
+      "Same idea outside trees: merging DSU components, merging sorted vectors (@ds-small-to-large)",
+      "Depth-indexed arrays: inherit the deepest child's array (long-path decomposition) and merge others by depth for O(n) total (Dominant Indices)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Small-To-Large Merging",
+       "url": "https://usaco.guide/plat/merging",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "[Tutorial] Sack (dsu on tree)",
+       "url": "https://codeforces.com/blog/entry/44351",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      },
+      {
+       "title": "Competitive Programmer's Handbook: Offline algorithms (merging data structures)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 18.4 (p. 170)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1923E",
+       "src": "cf",
+       "name": "Count Paths",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "208E",
+       "src": "cf",
+       "name": "Blood Cousins",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "570D",
+       "src": "cf",
+       "name": "Tree Requests",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "600E",
+       "src": "cf",
+       "name": "Lomsat gelral",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1009F",
+       "src": "cf",
+       "name": "Dominant Indices",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "246E",
+       "src": "cf",
+       "name": "Blood Cousins Return",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "375D",
+       "src": "cf",
+       "name": "Tree and Queries",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1709E",
+       "src": "cf",
+       "name": "XOR Tree",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "741D",
+       "src": "cf",
+       "name": "Arpa’s letter-marked tree and Mehrdad’s Dokhtar-kosh paths",
+       "rating": 2900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1139",
+       "src": "cses",
+       "name": "Distinct Colors",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-hld",
+     "name": "Heavy-light decomposition",
+     "tier": 2300,
+     "order": 6,
+     "prereq": [
+      "trees-lca",
+      "@ds-lazy-propagation"
+     ],
+     "summary": "HLD splits the tree into heavy chains so that every root-to-vertex path crosses O(log n) chains; laid out contiguously in one array, any path becomes O(log n) segments for a segment tree, giving O(log^2 n) path updates/queries (and subtree queries with the same order). Recognise it when both path updates and path queries are online.",
+     "learn": [
+      "Heavy child = child with largest subtree; light edges halve the subtree size, so <= log n per path",
+      "DFS visiting the heavy child first makes each chain and each subtree contiguous",
+      "Path query: while heads differ, jump the deeper head and query [pos[head], pos[v]]",
+      "Edge values: store the weight of edge (par v, v) at v and skip the LCA",
+      "Combine with lazy segment tree for path assign/add, and with subtree ranges at the same time",
+      "Heavy paths also help interactive/structural problems (descend along the heavy path)",
+      "Alternatives: binary lifting (static, no updates), Euler tour (subtree only), link-cut tree (dynamic)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Heavy-Light Decomposition",
+       "url": "https://usaco.guide/plat/hld",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 45
+      },
+      {
+       "title": "cp-algorithms: Heavy-light decomposition",
+       "url": "https://cp-algorithms.com/graph/hld.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "Easiest HLD with subtree queries",
+       "url": "https://codeforces.com/blog/entry/53170",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "343D",
+       "src": "cf",
+       "name": "Water Tree",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1174F",
+       "src": "cf",
+       "name": "Ehab and the Big Finale",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "593D",
+       "src": "cf",
+       "name": "Happy Tree Party",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1254D",
+       "src": "cf",
+       "name": "Tree Queries",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "487E",
+       "src": "cf",
+       "name": "Tourists",
+       "rating": 3200,
+       "from": "curated"
+      },
+      {
+       "id": "1017G",
+       "src": "cf",
+       "name": "The Tree",
+       "rating": 3200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2134",
+       "src": "cses",
+       "name": "Path Queries II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1138",
+       "src": "cses",
+       "name": "Path Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-centroid-decomposition",
+     "name": "Centroid decomposition",
+     "tier": 2300,
+     "order": 7,
+     "prereq": [
+      "trees-centroid",
+      "trees-lca"
+     ],
+     "summary": "Recursively remove a centroid and recurse into the pieces: the centroid tree has depth O(log n), and every path of the original tree passes through the highest centroid on it. Used to count/optimise over all paths (paths of length k, xor/palindrome paths) and for nearest-marked-vertex queries with updates.",
+     "learn": [
+      "Build: find centroid of current component, mark removed, recurse; total O(n log n)",
+      "Every u-v path goes through the centroid-tree LCA of u and v",
+      "Counting paths: for each centroid gather distances from each child subtree, combine with a global counter, subtract same-subtree pairs",
+      "Online queries: store best[c] for every centroid ancestor c of v (O(log n) ancestors), dist via LCA or stored depths",
+      "Rank assignment by centroid depth gives a valid \"officer rank\" labelling (Ciel the Commander)",
+      "Watch constants: reuse arrays, avoid maps when possible, O(n log^2 n) is the usual budget"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Centroid Decomposition",
+       "url": "https://usaco.guide/plat/centroid",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 45
+      },
+      {
+       "title": "Hybrid Tutorial: Centroid Decomposition",
+       "url": "https://codeforces.com/blog/entry/81661",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "161D",
+       "src": "cf",
+       "name": "Distance in Tree",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "321C",
+       "src": "cf",
+       "name": "Ciel the Commander",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "342E",
+       "src": "cf",
+       "name": "Xenia and Tree",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "914E",
+       "src": "cf",
+       "name": "Palindromes in a Tree",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "293E",
+       "src": "cf",
+       "name": "Close Vertices",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "715C",
+       "src": "cf",
+       "name": "Digit Tree",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "833D",
+       "src": "cf",
+       "name": "Red-Black Cobweb",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "776F",
+       "src": "cf",
+       "name": "Sherlock's bet to Moriarty",
+       "rating": 2800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2079",
+       "src": "cses",
+       "name": "Finding a Centroid",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2080",
+       "src": "cses",
+       "name": "Fixed-Length Paths I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2081",
+       "src": "cses",
+       "name": "Fixed-Length Paths II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trees-hashing",
+     "name": "Tree isomorphism & tree hashing",
+     "tier": 2300,
+     "order": 8,
+     "prereq": [
+      "trees-dp-basics",
+      "trees-centroid",
+      "@hash-polynomial"
+     ],
+     "summary": "Rooted trees are isomorphic iff their canonical forms match: assign each vertex an id from the sorted list of its children's ids (collision-free with a map) or a randomized hash. For unrooted trees root at the centre/centroid(s). Recognise it in symmetry, counting distinct subtrees and \"same shape\" questions.",
+     "learn": [
+      "AHU canonical form: map sorted vector of child ids -> new id, O(n log n), no collisions",
+      "Random hashing: h(v) = f(sum of g(h(child))) with a random/strong mixing function; avoid plain polynomial hashes (hackable)",
+      "Unrooted isomorphism: compare rooted forms at the one or two centres (or centroids)",
+      "Symmetric trees: at most one child class may occur an odd number of times, and it must itself be symmetric (Symmetree)",
+      "Rerooting + hashing to get the hash of the tree rooted at every vertex",
+      "Count distinct subtree shapes with a set of ids"
+     ],
+     "resources": [
+      {
+       "title": "Hashing root trees",
+       "url": "https://codeforces.com/blog/entry/113465",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: String Hashing (hash function design)",
+       "url": "https://usaco.guide/gold/hashing",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "Competitive Programmer's Handbook: String hashing",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.3 (p. 245)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1800G",
+       "src": "cf",
+       "name": "Symmetree",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1182D",
+       "src": "cf",
+       "name": "Complete Mirror",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1252F",
+       "src": "cf",
+       "name": "Regular Forestation",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1794E",
+       "src": "cf",
+       "name": "Labeling the Tree with Distances",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "763D",
+       "src": "cf",
+       "name": "Timofey and a flat tree",
+       "rating": 2900,
+       "from": "curated"
+      },
+      {
+       "id": "718D",
+       "src": "cf",
+       "name": "Andrew and Chemistry",
+       "rating": 2900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1700",
+       "src": "cses",
+       "name": "Tree Isomorphism I",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1701",
+       "src": "cses",
+       "name": "Tree Isomorphism II",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "trees-virtual-tree",
+     "name": "Virtual (auxiliary) trees",
+     "tier": 2400,
+     "order": 9,
+     "prereq": [
+      "trees-lca",
+      "trees-euler-tour"
+     ],
+     "summary": "Given k important vertices, the virtual tree keeps only them and the LCAs of tin-adjacent pairs (at most 2k-1 vertices), with edges compressed into paths. Running a tree DP on it makes the total cost proportional to the sum of k over all queries/colours. Recognise it when many queries each mark a small subset or when you process each colour class separately.",
+     "learn": [
+      "Sort marked vertices by tin, add LCAs of adjacent pairs, dedupe: <= 2k-1 vertices",
+      "Build edges with a stack in tin order (or by sorting again and linking to LCA of consecutive)",
+      "Compressed edge length = depth difference, used for distance/weight sums",
+      "Per-colour virtual trees: sum over colours of counts is n, so total O(n log n)",
+      "Typical DP on it: minimum cut separating marked vertices, counting paths with unique colours",
+      "Alternative for some problems: small-to-large or DSU-on-colours",
+      "Size of the minimal subtree (Steiner tree) spanning a set = half the sum of dist between cyclically tin-adjacent vertices; maintain it under insert/delete with a std::set ordered by tin (Archaeology)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Virtual Tree",
+       "url": "https://usaco.guide/plat/VT",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      }
+     ],
+     "problems": [
+      {
+       "id": "1923E",
+       "src": "cf",
+       "name": "Count Paths",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1681F",
+       "src": "cf",
+       "name": "Unique Occurrences",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1292D",
+       "src": "cf",
+       "name": "Chaotic V.",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "613D",
+       "src": "cf",
+       "name": "Kingdom and its Cities",
+       "rating": 2800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1320E",
+       "src": "cf",
+       "name": "Treeland and Viruses",
+       "rating": 3000,
+       "from": "curated"
+      },
+      {
+       "id": "176E",
+       "src": "cf",
+       "name": "Archaeology",
+       "rating": 3100,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

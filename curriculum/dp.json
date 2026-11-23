@@ -1,0 +1,3673 @@
+{
+ "area": "dp",
+ "topics": [
+  {
+   "id": "dp",
+   "name": "Dynamic Programming",
+   "cfTags": [
+    "dp",
+    "bitmasks",
+    "trees",
+    "probabilities",
+    "games",
+    "matrices",
+    "combinatorics",
+    "divide and conquer"
+   ],
+   "subtopics": [
+    {
+     "id": "dp-intro",
+     "name": "DP fundamentals (1D)",
+     "tier": 1100,
+     "order": 1,
+     "prereq": [],
+     "summary": "Dynamic programming = solve a problem by combining answers of smaller overlapping subproblems stored in a table. The very first DP problems are 1D: dp[i] depends on a few earlier dp[j] (stairs/Fibonacci style, 'take or skip element i'). Recognise it when brute-force recursion recomputes the same states and the answer for a prefix only depends on a small summary of that prefix.",
+     "learn": [
+      "Define the state in words first (dp[i] = best answer for the first i elements / for value i), then the transition, base cases and answer cell",
+      "Top-down memoisation (recursion + cache) vs bottom-up iteration: same complexity, bottom-up avoids stack overflow",
+      "Complexity = number of states x cost of one transition; check it against n before coding",
+      "Classic shapes: dp[i] = f(dp[i-1], dp[i-2]) (stairs), take/skip element i (house robber, Boredom), jump lengths (Long Jumps)",
+      "Counting DP: add the ways of all predecessors and reduce mod 1e9+7 at every step",
+      "Reconstructing the optimal solution: store the argmax/parent choice and walk back from the answer cell",
+      "Pitfalls: wrong base case, off-by-one between 0- and 1-indexed prefixes, using int where sums overflow",
+      "Push (forward: dp[i] updates dp[i+k]) vs pull (backward: dp[i] reads dp[i-k]) formulations - pick whichever makes the transition easier"
+     ],
+     "resources": [
+      {
+       "title": "Introduction to DP",
+       "url": "https://usaco.guide/gold/intro-dp",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "CPH 7 Dynamic programming (intro) / 7.1 Coin problem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7 (p. 65)",
+       "minutes": 25
+      },
+      {
+       "title": "Introduction to Dynamic Programming",
+       "url": "https://cp-algorithms.com/dynamic_programming/intro-to-dp.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "AtCoder Educational DP Contest (26 classic DP tasks)",
+       "url": "https://atcoder.jp/contests/dp/tasks",
+       "kind": "other",
+       "where": "AtCoder DP contest",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "1472C",
+       "src": "cf",
+       "name": "Long Jumps",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1195C",
+       "src": "cf",
+       "name": "Basketball Exercise",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "698A",
+       "src": "cf",
+       "name": "Vacations",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1245C",
+       "src": "cf",
+       "name": "Constanze's Machine",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "455A",
+       "src": "cf",
+       "name": "Boredom",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "545C",
+       "src": "cf",
+       "name": "Woodcutters",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1272D",
+       "src": "cf",
+       "name": "Remove One Element",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "166E",
+       "src": "cf",
+       "name": "Tetrahedron",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1418C",
+       "src": "cf",
+       "name": "Mortal Kombat Tower",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1633",
+       "src": "cses",
+       "name": "Dice Combinations",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1637",
+       "src": "cses",
+       "name": "Removing Digits",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-grid",
+     "name": "Paths on grids",
+     "tier": 1300,
+     "order": 2,
+     "prereq": [
+      "dp-intro"
+     ],
+     "summary": "Count or optimise paths in a 2D grid that only move right/down (or similar monotone moves): dp[i][j] from dp[i-1][j] and dp[i][j-1]. Also covers 2 x n / few-row grids handled column by column. Recognise it by a grid with monotone moves or a 2-row board.",
+     "learn": [
+      "dp[i][j] = cost(i,j) + best(dp[i-1][j], dp[i][j-1]); obstacles set dp to 0 / INF",
+      "Count paths mod p; minimal / lexicographically smallest path via layer-by-layer BFS on anti-diagonals",
+      "Two paths at once (meeting / crossing): dp from all four corners, or dp on (step, row1, row2)",
+      "2 x n boards: state = which cells of the current column are used, process column by column",
+      "Range of reachable sums (min and max) is enough when every intermediate value is reachable (Zero Path)",
+      "Step-count DP on grids: dp[k][i][j] = best walk of exactly k steps",
+      "Counting monotone paths that avoid k obstacles: sort the obstacles and dp[i] = paths to obstacle i avoiding earlier ones (binomials + inclusion-exclusion), O(k^2)"
+     ],
+     "resources": [
+      {
+       "title": "Paths on Grids",
+       "url": "https://usaco.guide/gold/paths-grids",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "CPH 7.3 Paths in a grid",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.3 (p. 71)",
+       "minutes": 10
+      },
+      {
+       "title": "Finding the largest zero submatrix",
+       "url": "https://cp-algorithms.com/dynamic_programming/zero_matrix.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1766C",
+       "src": "cf",
+       "name": "Hamiltonian Wall",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1234C",
+       "src": "cf",
+       "name": "Pipes",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "429B",
+       "src": "cf",
+       "name": "Working out",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1695C",
+       "src": "cf",
+       "name": "Zero Path",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1517D",
+       "src": "cf",
+       "name": "Explorer Space",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1680E",
+       "src": "cf",
+       "name": "Moving Chips",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "559C",
+       "src": "cf",
+       "name": "Gerald and Giant Chess",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1739E",
+       "src": "cf",
+       "name": "Cleaning Robot",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1638",
+       "src": "cses",
+       "name": "Grid Paths",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-3359",
+       "src": "cses",
+       "name": "Minimal Grid Path",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1078",
+       "src": "cses",
+       "name": "Grid Paths II",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-coin-unbounded",
+     "name": "Coin problems & unbounded knapsack",
+     "tier": 1300,
+     "order": 3,
+     "prereq": [
+      "dp-intro"
+     ],
+     "summary": "Coin problems ask for the minimum number of coins / number of ways to form a sum when each coin can be used any number of times. Counting ordered sequences (compositions) and unordered multisets needs different loop orders. Recognise it when items are reusable and the target is a sum/length.",
+     "learn": [
+      "Minimum coins: dp[x] = min over coins c of dp[x-c] + 1; greedy is wrong for arbitrary coin sets",
+      "Ordered ways (sequences): outer loop over x, inner over coins",
+      "Unordered ways (combinations): outer loop over coins, inner over x ascending - each multiset counted once",
+      "Unbounded knapsack: iterate capacity ascending so an item can be reused",
+      "Unreachable states: initialise with INF / -INF and guard transitions",
+      "Recognise disguised coins: cut a ribbon into pieces of length a, b, c; write n as a sum of palindromes / 2020s and 2021s"
+     ],
+     "resources": [
+      {
+       "title": "Knapsack DP",
+       "url": "https://usaco.guide/gold/knapsack",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 45
+      },
+      {
+       "title": "CPH 7.1 Coin problem",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.1 (p. 65)",
+       "minutes": 25
+      },
+      {
+       "title": "Knapsack Problem (complete knapsack section)",
+       "url": "https://cp-algorithms.com/dynamic_programming/knapsack.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1475B",
+       "src": "cf",
+       "name": "New Year's Number",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1934B",
+       "src": "cf",
+       "name": "Yet Another Coin Problem",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "189A",
+       "src": "cf",
+       "name": "Cut Ribbon",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1673C",
+       "src": "cf",
+       "name": "Palindrome Basis",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "283C",
+       "src": "cf",
+       "name": "Coin Troubles",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1634",
+       "src": "cses",
+       "name": "Minimizing Coins",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1635",
+       "src": "cses",
+       "name": "Coin Combinations I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1636",
+       "src": "cses",
+       "name": "Coin Combinations II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-multistate",
+     "name": "Extra state dimensions (last choice, flags, counts)",
+     "tier": 1500,
+     "order": 4,
+     "prereq": [
+      "dp-intro"
+     ],
+     "summary": "Many problems need more than dp[i]: you add a dimension for the last action taken, how many operations were used, a remainder, or a boolean flag ('already started/finished the special segment'). Recognise it when the best choice at i depends on something about the past that a single number cannot summarise but that has few possible values.",
+     "learn": [
+      "Ask 'what do I need to remember about the prefix to decide the next step?' - each such fact becomes a dimension",
+      "Finite-state machine DP: states like before/inside/after a chosen segment (e.g. multiply one subarray by x, Kadane with phases)",
+      "dp[i][last] for colouring / no-two-equal-adjacent constraints; dp[i][k] for 'used k operations so far'",
+      "Remainder dimension: dp[i][r] with r = sum mod m",
+      "Memory: roll arrays (keep only dp[i-1]) when the state space is n x big",
+      "Keep the number of states x transitions under ~1e8",
+      "Circular arrays: fix the state of the first element (try each option) and force the last element to be consistent, or double the array"
+     ],
+     "resources": [
+      {
+       "title": "Introduction to DP",
+       "url": "https://usaco.guide/gold/intro-dp",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "CPH 7.1 Coin problem (state design)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.1 (p. 65)",
+       "minutes": 15
+      },
+      {
+       "title": "AtCoder Educational DP Contest (26 classic DP tasks)",
+       "url": "https://atcoder.jp/contests/dp/tasks",
+       "kind": "other",
+       "where": "AtCoder DP contest",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "1105C",
+       "src": "cf",
+       "name": "Ayoub and Lost Array",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1498C",
+       "src": "cf",
+       "name": "Planar Reflections",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1476C",
+       "src": "cf",
+       "name": "Longest Simple Cycle",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1324E",
+       "src": "cf",
+       "name": "Sleeping Schedule",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1392D",
+       "src": "cf",
+       "name": "Omkar and Bed Wars",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1286A",
+       "src": "cf",
+       "name": "Garland",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1221D",
+       "src": "cf",
+       "name": "Make The Fence Great Again",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1155D",
+       "src": "cf",
+       "name": "Beautiful Array",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1197D",
+       "src": "cf",
+       "name": "Yet Another Subarray Problem",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1799D1",
+       "src": "cf",
+       "name": "Hot Start Up (easy version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1012C",
+       "src": "cf",
+       "name": "Hills",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1077F1",
+       "src": "cf",
+       "name": "Pictures with Kittens (easy version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1433F",
+       "src": "cf",
+       "name": "Zero Remainder Sum",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1746",
+       "src": "cses",
+       "name": "Array Description",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2413",
+       "src": "cses",
+       "name": "Counting Towers",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-lis",
+     "name": "Longest increasing subsequence",
+     "tier": 1500,
+     "order": 5,
+     "prereq": [
+      "dp-intro",
+      "@bs-sorted"
+     ],
+     "summary": "LIS: the longest strictly increasing subsequence. O(n^2) dp[i] = 1 + max dp[j] (j<i, a_j<a_i), or O(n log n) by keeping the smallest tail for each length with binary search (or a BIT over values). Many problems reduce to LIS after sorting or transforming (Dilworth: minimum number of non-increasing chains = LIS).",
+     "learn": [
+      "O(n^2) definition first; then tails[] + lower_bound for O(n log n)",
+      "Strict vs non-decreasing: lower_bound vs upper_bound",
+      "BIT / segment tree over compressed values gives LIS ending at each i and counts of LIS",
+      "Which elements belong to some / every LIS: combine LIS ending at i and starting at i",
+      "2D LIS (envelopes): sort by first key asc and second desc, then LIS on the second",
+      "Dilworth: partition into fewest decreasing sequences = length of longest increasing one",
+      "Minimum changes to make an array increasing: transform a_i - i and use non-decreasing LIS"
+     ],
+     "resources": [
+      {
+       "title": "Longest Increasing Subsequence",
+       "url": "https://usaco.guide/gold/lis",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "CPH 7.2 Longest increasing subsequence",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.2 (p. 70)",
+       "minutes": 10
+      },
+      {
+       "title": "Longest increasing subsequence",
+       "url": "https://cp-algorithms.com/sequences/longest_increasing_subsequence.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "340D",
+       "src": "cf",
+       "name": "Bubble Sort Graph",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "977F",
+       "src": "cf",
+       "name": "Consecutive Subsequence",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1582F1",
+       "src": "cf",
+       "name": "Korney Korneevich and XOR (easy version)",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1296E2",
+       "src": "cf",
+       "name": "String Coloring (hard version)",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "486E",
+       "src": "cf",
+       "name": "LIS of Sequence",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1437E",
+       "src": "cf",
+       "name": "Make It Increasing",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "650D",
+       "src": "cf",
+       "name": "Zip-line",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1145",
+       "src": "cses",
+       "name": "Increasing Subsequence",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-lcs-edit",
+     "name": "LCS, edit distance & two-sequence DP",
+     "tier": 1500,
+     "order": 6,
+     "prereq": [
+      "dp-grid"
+     ],
+     "summary": "DP over two (or three) sequences with state dp[i][j] = answer for prefixes a[0..i), b[0..j). Longest common subsequence, edit (Levenshtein) distance, interleaving of strings, shortest common supersequence. Recognise it when two strings/arrays are aligned or merged.",
+     "learn": [
+      "LCS: dp[i][j] = dp[i-1][j-1]+1 if a_i=b_j else max(dp[i-1][j], dp[i][j-1])",
+      "Edit distance: insert / delete / replace transitions, dp[i][0]=i, dp[0][j]=j",
+      "Interleaving / merging two strings into a third: dp[i][j] over used prefixes",
+      "Variants: maximise 4*LCS - |c| - |d| over substrings (reset to 0 like Kadane)",
+      "Extra dimension for bracket balance (shortest regular supersequence) or for a lucky substring automaton",
+      "LCS of permutations reduces to DAG longest path / LIS",
+      "Precompute next-occurrence tables nxt[i][c] for subsequence matching against several patterns"
+     ],
+     "resources": [
+      {
+       "title": "Paths on Grids (LCS section)",
+       "url": "https://usaco.guide/gold/paths-grids",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "CPH 7.5 Edit distance",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.5 (p. 74)",
+       "minutes": 10
+      },
+      {
+       "title": "AtCoder Educational DP Contest (26 classic DP tasks)",
+       "url": "https://atcoder.jp/contests/dp/tasks",
+       "kind": "other",
+       "where": "AtCoder DP contest",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "2050E",
+       "src": "cf",
+       "name": "Three Strings",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1446B",
+       "src": "cf",
+       "name": "Catching Cheaters",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "463D",
+       "src": "cf",
+       "name": "Gargari and Permutations",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "346B",
+       "src": "cf",
+       "name": "Lucky Common Subsequence",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1272F",
+       "src": "cf",
+       "name": "Two Bracket Sequences",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1303E",
+       "src": "cf",
+       "name": "Erase Subsequences",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1149B",
+       "src": "cf",
+       "name": "Three Religions",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "10D",
+       "src": "cf",
+       "name": "LCIS",
+       "rating": 2800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1639",
+       "src": "cses",
+       "name": "Edit Distance",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-3403",
+       "src": "cses",
+       "name": "Longest Common Subsequence",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-strings",
+     "name": "DP on strings & subsequence counting",
+     "tier": 1500,
+     "order": 7,
+     "prereq": [
+      "dp-lcs-edit"
+     ],
+     "summary": "Counting or optimising over subsequences/substrings of one string: count occurrences of a pattern as a subsequence, count distinct subsequences, choose characters to change so a pattern appears, or match against a KMP automaton. Recognise it by 'subsequence', 'number of ways the string can contain ...', or replacement characters like '?'.",
+     "learn": [
+      "Count pattern 'abc' as a subsequence: dp over prefix length of the pattern matched so far",
+      "'?' characters: multiply by alphabet choices (3^k) and keep counts per matched prefix",
+      "Distinct subsequences: subtract the contribution of the previous occurrence of the same character",
+      "Automaton DP: state = KMP / Aho prefix-function state; dp[i][state] counts strings avoiding / containing a pattern",
+      "Partition a string into pieces with costs (compress with repeated substrings via LCP table)",
+      "Add characters to the front or back: interval-like dp over the matched window"
+     ],
+     "resources": [
+      {
+       "title": "Introduction to DP",
+       "url": "https://usaco.guide/gold/intro-dp",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "Prefix function (building the automaton)",
+       "url": "https://cp-algorithms.com/string/prefix-function.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      },
+      {
+       "title": "CPH 26 String algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26 (p. 243)",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1178B",
+       "src": "cf",
+       "name": "WOW Factor",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1084C",
+       "src": "cf",
+       "name": "The Fair Nut and String",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "2005C",
+       "src": "cf",
+       "name": "Lazy Narek",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1096D",
+       "src": "cf",
+       "name": "Easy Problem",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1183H",
+       "src": "cf",
+       "name": "Subsequences (hard version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1426F",
+       "src": "cf",
+       "name": "Number of Subsequences",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1409F",
+       "src": "cf",
+       "name": "Subsequences of Length Two",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1163D",
+       "src": "cf",
+       "name": "Mysterious Code",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1120C",
+       "src": "cf",
+       "name": "Compress String",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1336C",
+       "src": "cf",
+       "name": "Kaavi and Magic Spell",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1015F",
+       "src": "cf",
+       "name": "Bracket Substring",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-partition",
+     "name": "Partition into segments",
+     "tier": 1500,
+     "order": 8,
+     "prereq": [
+      "dp-intro"
+     ],
+     "summary": "Split an array (or string) into consecutive segments, each with a cost or validity condition: dp[i] = best over the last segment's start j of dp[j] + cost(j, i). The core of many 'divide into groups/blocks' problems; later optimised with prefix structures, deques, CHT or divide & conquer.",
+     "learn": [
+      "dp[i] over prefixes; transition enumerates the last segment [j, i)",
+      "Block given by its first element (length = a_j): forward transitions dp[j] -> dp[j + a_j + 1]",
+      "Sort first so groups are contiguous (teams with bounded difference), then partition",
+      "Limit on the number of segments: dp[k][i] - O(k n^2) baseline before optimisation",
+      "Delete segments with equal endpoints: keep best dp value per value of a_j",
+      "Know the follow-up optimisations: prefix max, monotone queue, segment tree, CHT, D&C, Aliens"
+     ],
+     "resources": [
+      {
+       "title": "Introduction to DP",
+       "url": "https://usaco.guide/gold/intro-dp",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "Dynamic Programming Optimizations (overview table)",
+       "url": "https://codeforces.com/blog/entry/8219",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      },
+      {
+       "title": "AtCoder Educational DP Contest (26 classic DP tasks)",
+       "url": "https://atcoder.jp/contests/dp/tasks",
+       "kind": "other",
+       "where": "AtCoder DP contest",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "1842C",
+       "src": "cf",
+       "name": "Tenzing and Balls",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1881E",
+       "src": "cf",
+       "name": "Block Sequence",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1741E",
+       "src": "cf",
+       "name": "Sending a Sequence Over the Network",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1625C",
+       "src": "cf",
+       "name": "Road Optimization",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1133E",
+       "src": "cf",
+       "name": "K Balanced Teams",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1256E",
+       "src": "cf",
+       "name": "Yet Another Division Into Teams",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1699D",
+       "src": "cf",
+       "name": "Almost Triple Deletions",
+       "rating": 2300,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-knapsack-01",
+     "name": "0-1 knapsack",
+     "tier": 1600,
+     "order": 9,
+     "prereq": [
+      "dp-coin-unbounded"
+     ],
+     "summary": "Choose a subset of items, each used at most once, to maximise value under a capacity. dp[w] = best value with total weight w, iterating w downwards so each item is used once. Recognise it whenever you pick a subset subject to a sum constraint and n x capacity is small.",
+     "learn": [
+      "dp[i][w] = best using the first i items with weight w; 1D version iterates w from high to low",
+      "Swap value and weight when weights are huge but values are small (dp[v] = min weight to get value v)",
+      "Extra dimensions: count of chosen items, two resources (2D knapsack), sum mod m",
+      "Pre-process each item first (e.g. cost of turning 1 into b_i by BFS/DP) then knapsack over the results",
+      "Restrict the useful capacity (e.g. answer bounded by sum of something small, pigeonhole mod m)",
+      "Recover the chosen set with parent pointers or a boolean take[i][w] table",
+      "Order trick: when items must be taken in time order with money that accumulates (Money Buys Happiness), dp over value with min cost is the right dimension"
+     ],
+     "resources": [
+      {
+       "title": "Knapsack DP",
+       "url": "https://usaco.guide/gold/knapsack",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 45
+      },
+      {
+       "title": "CPH 7.4 Knapsack problems",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.4 (p. 72)",
+       "minutes": 20
+      },
+      {
+       "title": "Knapsack Problem",
+       "url": "https://cp-algorithms.com/dynamic_programming/knapsack.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "AtCoder Educational DP Contest (26 classic DP tasks)",
+       "url": "https://atcoder.jp/contests/dp/tasks",
+       "kind": "other",
+       "where": "AtCoder DP contest",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "1633D",
+       "src": "cf",
+       "name": "Make Them Equal",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1974E",
+       "src": "cf",
+       "name": "Money Buys Happiness",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "366C",
+       "src": "cf",
+       "name": "Dima and Salad",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "19B",
+       "src": "cf",
+       "name": "Checkout Assistant",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "730J",
+       "src": "cf",
+       "name": "Bottles",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1458B",
+       "src": "cf",
+       "name": "Glass Half Spilled",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "837D",
+       "src": "cf",
+       "name": "Round Subset",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1158",
+       "src": "cses",
+       "name": "Book Shop",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-subset-sum",
+     "name": "Subset sum & partition into two sets",
+     "tier": 1600,
+     "order": 10,
+     "prereq": [
+      "dp-knapsack-01"
+     ],
+     "summary": "Boolean knapsack: which sums are reachable using a subset of the items, or in how many ways. Used to split a set into two equal halves, check feasibility of a target sum, or decide which values a structure can produce. Recognise it when only reachability of sums matters, not value.",
+     "learn": [
+      "reach[s] |= reach[s - a_i], iterating s downward; counting version adds ways",
+      "Equal partition: total must be even and total/2 reachable",
+      "Merge of permutations / decomposition into blocks often reduces to subset sum of block lengths",
+      "Counting partitions into two equal sets: divide by 2 (or fix the first element)",
+      "Sum bound S makes it O(n S); with sqrt distinct values or bitsets it becomes faster (see bitset & bounded knapsack)",
+      "Removing one element to break a perfect partition: use parity / gcd arguments together with the DP",
+      "Counting knapsack is reversible: to remove item w from a ways[] table run ways[s] -= ways[s-w] for s ascending (Destroy the Colony)"
+     ],
+     "resources": [
+      {
+       "title": "Knapsack DP",
+       "url": "https://usaco.guide/gold/knapsack",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 45
+      },
+      {
+       "title": "CPH 7.4 Knapsack problems (possible sums)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.4 (p. 72)",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1516C",
+       "src": "cf",
+       "name": "Baby Ehab Partitions Again",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1381B",
+       "src": "cf",
+       "name": "Unmerge",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1856E1",
+       "src": "cf",
+       "name": "PermuTree (easy version)",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "577B",
+       "src": "cf",
+       "name": "Modulo Sum",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "687C",
+       "src": "cf",
+       "name": "The Values You Can Make",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1032E",
+       "src": "cf",
+       "name": "The Unbearable Lightness of Weights",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1111D",
+       "src": "cf",
+       "name": "Destroy the Colony",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1745",
+       "src": "cses",
+       "name": "Money Sums",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1093",
+       "src": "cses",
+       "name": "Two Sets II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-dag",
+     "name": "DP on DAGs & graphs",
+     "tier": 1600,
+     "order": 11,
+     "prereq": [
+      "dp-intro",
+      "@dag-toposort"
+     ],
+     "summary": "Every DP is a DAG of states; explicit graph problems on a DAG (longest path, number of paths, best path value) are solved by processing vertices in topological order. Graphs with cycles need SCC condensation or a Dijkstra-like order. Recognise it by directed acyclic structure, 'number of routes', or relaxations in a fixed order.",
+     "learn": [
+      "Topological order (Kahn / DFS) then dp[v] from predecessors; memoised DFS also works",
+      "Longest path, number of shortest paths, min/max path weight on DAGs",
+      "State = (vertex, extra info): (vertex, letter) for most frequent letter on a path, (vertex, used k edges)",
+      "Detect cycles: if a cycle is reachable the answer may be infinite",
+      "Shortest-path DAG: dp along the order of Dijkstra/BFS distances",
+      "Cycles: condense SCCs first, then DP on the condensation DAG"
+     ],
+     "resources": [
+      {
+       "title": "CPH 16.2 Directed graphs - Dynamic programming",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 16.2 (p. 151)",
+       "minutes": 15
+      },
+      {
+       "title": "Topological Sort (DP section)",
+       "url": "https://usaco.guide/gold/toposort",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      }
+     ],
+     "problems": [
+      {
+       "id": "919D",
+       "src": "cf",
+       "name": "Substring",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "721C",
+       "src": "cf",
+       "name": "Journey",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1674G",
+       "src": "cf",
+       "name": "Remove Directed Edges",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1472G",
+       "src": "cf",
+       "name": "Moving to the Capital",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1137C",
+       "src": "cf",
+       "name": "Museums Tour",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1680",
+       "src": "cses",
+       "name": "Longest Flight Route",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1681",
+       "src": "cses",
+       "name": "Game Routes",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1202",
+       "src": "cses",
+       "name": "Investigation",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-games",
+     "name": "Game DP (win/lose states, minimax)",
+     "tier": 1500,
+     "order": 12,
+     "prereq": [
+      "dp-intro",
+      "dp-dag"
+     ],
+     "summary": "Two-player perfect-information games solved by DP over positions: a state is winning if some move leads to a losing state; scores use minimax (max of my gain minus the opponent's best). Recognise it by 'both play optimally' with a small number of positions; for sums of independent games use Sprague-Grundy.",
+     "learn": [
+      "Winning/losing positions computed in reverse topological order of the game graph",
+      "Minimax for scores: dp[state] = max over moves of (gain - dp[next]) (Removal Game)",
+      "Interval game states dp[l][r] when players take from the ends",
+      "Games on DAG / permutations: process positions in decreasing value order",
+      "Grundy numbers and the mex rule for sums of games; find patterns by brute force on small cases",
+      "Bitmask of already-used moves when a pile cannot repeat a move size"
+     ],
+     "resources": [
+      {
+       "title": "CPH 25 Game theory (game states, Nim, Sprague-Grundy)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 25 (p. 235)",
+       "minutes": 30
+      },
+      {
+       "title": "Game Theory",
+       "url": "https://usaco.guide/adv/game-theory",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "Games on arbitrary graphs",
+       "url": "https://cp-algorithms.com/game_theory/games_on_graphs.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "Sprague-Grundy theorem. Nim",
+       "url": "https://cp-algorithms.com/game_theory/sprague-grundy-nim.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1382B",
+       "src": "cf",
+       "name": "Sequential Nim",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1738C",
+       "src": "cf",
+       "name": "Even Number Addicts",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1033C",
+       "src": "cf",
+       "name": "Permutation Game",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "917B",
+       "src": "cf",
+       "name": "MADMAX",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1728D",
+       "src": "cf",
+       "name": "Letter Picking",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1987D",
+       "src": "cf",
+       "name": "World is Mine",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "768E",
+       "src": "cf",
+       "name": "Game of Stones",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1628D1",
+       "src": "cf",
+       "name": "Game on Sum (Easy Version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "2005E1",
+       "src": "cf",
+       "name": "Subtangle Game (Easy Version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "850C",
+       "src": "cf",
+       "name": "Arpa and a game with Mojtaba",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1729",
+       "src": "cses",
+       "name": "Stick Game",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1097",
+       "src": "cses",
+       "name": "Removal Game",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1730",
+       "src": "cses",
+       "name": "Nim Game I",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-trees",
+     "name": "DP on trees",
+     "tier": 1600,
+     "order": 13,
+     "prereq": [
+      "dp-intro",
+      "@trees-traversal"
+     ],
+     "summary": "Root the tree and compute dp[v] from the dp values of v's children in a post-order DFS: maximum matching, independent set, best path through v, counting colourings. Recognise it by a tree where the answer for a subtree only depends on a small summary of each child subtree.",
+     "learn": [
+      "dp[v][0/1] = v taken / not taken (independent set, matching, vertex cover)",
+      "Best path through v = top two child values combined (diameter-like)",
+      "Counting: multiply child contributions; use dp[v][state] with a small state set",
+      "Leaves vs internal nodes in min/max games on trees (Serval and Rooted Tree)",
+      "Process children with sizes for O(n) total; avoid recursion depth issues (iterative DFS for n=2e5)",
+      "Depth-indexed DP (dp over levels) when moves go between consecutive depths"
+     ],
+     "resources": [
+      {
+       "title": "DP on Trees - Introduction",
+       "url": "https://usaco.guide/gold/dp-trees",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "DP on Trees Tutorial",
+       "url": "https://codeforces.com/blog/entry/20935",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      },
+      {
+       "title": "CPH 14 Tree algorithms (14.2 diameter, 14.3 all longest paths)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14 (p. 133)",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "982C",
+       "src": "cf",
+       "name": "Cut 'em all!",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1689C",
+       "src": "cf",
+       "name": "Infected Tree",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1528A",
+       "src": "cf",
+       "name": "Parsa's Humongous Tree",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2070D",
+       "src": "cf",
+       "name": "Tree Jumps",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1693B",
+       "src": "cf",
+       "name": "Fake Plastic Trees",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1083A",
+       "src": "cf",
+       "name": "The Fair Nut and the Best Path",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "161D",
+       "src": "cf",
+       "name": "Distance in Tree",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1929D",
+       "src": "cf",
+       "name": "Sasha and a Walk in the City",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1153D",
+       "src": "cf",
+       "name": "Serval and Rooted Tree",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1988D",
+       "src": "cf",
+       "name": "The Omnipotent Monster Killer",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1249F",
+       "src": "cf",
+       "name": "Maximum Weight Subset",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1032F",
+       "src": "cf",
+       "name": "Vasya and Maximum Matching",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1674",
+       "src": "cses",
+       "name": "Subordinates",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1130",
+       "src": "cses",
+       "name": "Tree Matching",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-counting",
+     "name": "Counting DP (combinatorial)",
+     "tier": 1600,
+     "order": 14,
+     "prereq": [
+      "dp-multistate",
+      "@nt-modular-arithmetic"
+     ],
+     "summary": "Count arrays, strings, permutations or structures with constraints by DP over positions/values, modulo a prime. Often combined with combinatorics (binomials) or the observation that the structure is determined by few parameters. Recognise it by 'count the number of ... modulo 998244353'.",
+     "learn": [
+      "Choose the order of construction that makes constraints local (by position, by value, by length)",
+      "Count good subsequences: dp over values with divisor transitions (Multiplicity)",
+      "Use 'dp[i] = number of ways to finish' when the first element determines a block length",
+      "Fibonacci-like structure hidden in grids/strings (Ivan the Fool)",
+      "Combine dp with binomial coefficients for independent parts; avoid double counting with canonical forms",
+      "Mod arithmetic: add with mod each step, subtract with +mod"
+     ],
+     "resources": [
+      {
+       "title": "Combinatorics",
+       "url": "https://usaco.guide/gold/combo",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "CPH 22 Combinatorics",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 22 (p. 207)",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1452D",
+       "src": "cf",
+       "name": "Radio Towers",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1288C",
+       "src": "cf",
+       "name": "Two Arrays",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1239A",
+       "src": "cf",
+       "name": "Ivan the Fool and the Probability Theory",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1061C",
+       "src": "cf",
+       "name": "Multiplicity",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1528B",
+       "src": "cf",
+       "name": "Kavi on Pairing Duty",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1000D",
+       "src": "cf",
+       "name": "Yet Another Problem On a Subsequence",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1606E",
+       "src": "cf",
+       "name": "Arena",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1027E",
+       "src": "cf",
+       "name": "Inverse Coloring",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1767C",
+       "src": "cf",
+       "name": "Count Binary Strings",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1920E",
+       "src": "cf",
+       "name": "Counting Binary Strings",
+       "rating": 2100,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-probability",
+     "name": "Probability & expected value DP",
+     "tier": 1700,
+     "order": 15,
+     "prereq": [
+      "dp-intro",
+      "@prob-basics",
+      "@nt-modular-inverse"
+     ],
+     "summary": "dp over states holding a probability, or an expected value computed backwards (E[state] = cost + sum p * E[next]). Uses linearity of expectation to split a complicated quantity into simple indicator sums. Recognise it by 'probability', 'expected number of', and answers modulo a prime (use modular inverses).",
+     "learn": [
+      "Forward DP of probabilities: dp[t][state] = probability of being in state after t steps",
+      "Backward DP of expectations from terminal states; self-loops solved algebraically (E = (1 + sum others)/(1-p))",
+      "Linearity of expectation: E[sum] = sum of E[indicator]; contribution technique",
+      "Expected squares / quadratic terms: keep E[len] and E[len^2] together (Let's Play Osu!)",
+      "Output p/q mod 998244353 via modular inverse (Fermat)",
+      "Markov chains: matrix of transition probabilities; Gaussian elimination for general cycles"
+     ],
+     "resources": [
+      {
+       "title": "CPH 24 Probability (24.3 random variables, 24.4 Markov chains)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 24 (p. 225)",
+       "minutes": 30
+      },
+      {
+       "title": "Sums and Expected Value - part 1",
+       "url": "https://codeforces.com/blog/entry/62690",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 25
+      },
+      {
+       "title": "Sums and Expected Value - part 2",
+       "url": "https://codeforces.com/blog/entry/62792",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "839C",
+       "src": "cf",
+       "name": "Journey",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "518D",
+       "src": "cf",
+       "name": "Ilya and Escalator",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "148D",
+       "src": "cf",
+       "name": "Bag of mice",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "540D",
+       "src": "cf",
+       "name": "Bad Luck Island",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "235B",
+       "src": "cf",
+       "name": "Let's Play Osu!",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1753C",
+       "src": "cf",
+       "name": "Wish I Knew How to Sort",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1265E",
+       "src": "cf",
+       "name": "Beautiful Mirrors",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1778D",
+       "src": "cf",
+       "name": "Flexible String Revisit",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1097D",
+       "src": "cf",
+       "name": "Makoto and a Blackboard",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1139D",
+       "src": "cf",
+       "name": "Steps to One",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1540B",
+       "src": "cf",
+       "name": "Tree Array",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1725",
+       "src": "cses",
+       "name": "Dice Probability",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1726",
+       "src": "cses",
+       "name": "Moving Robots",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-interval",
+     "name": "Interval (range) DP",
+     "tier": 1800,
+     "order": 16,
+     "prereq": [
+      "dp-intro"
+     ],
+     "summary": "dp[l][r] = answer for the subarray/substring a[l..r], computed from smaller intervals, usually by choosing a split point or what happens to the endpoints. Matrix-chain, removing/merging adjacent elements, palindromes, bracket colouring. Recognise it when operations merge or delete contiguous blocks and n is about 500 or less.",
+     "learn": [
+      "Iterate by increasing length (or l from n-1 down to 0, r from l up)",
+      "Split transition dp[l][r] = min over k of dp[l][k] + dp[k+1][r] + cost -> O(n^3)",
+      "Endpoint transition: the first element is removed alone or together with some equal element k",
+      "Extra dimension for 'how many equal characters are glued to the left' (Vasya and Binary String)",
+      "Compress equal adjacent elements first (Flood Fill)",
+      "Bracket sequences: interval over the matching pair, with colours of endpoints as extra state",
+      "2D cutting problems (rectangle cutting) generalise the split idea",
+      "Nested-segment selection: compress coordinates, dp over [l, r] using only the segments inside it"
+     ],
+     "resources": [
+      {
+       "title": "Range DP",
+       "url": "https://usaco.guide/gold/dp-ranges",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "AtCoder Educational DP Contest (26 classic DP tasks)",
+       "url": "https://atcoder.jp/contests/dp/tasks",
+       "kind": "other",
+       "where": "AtCoder DP contest",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "245H",
+       "src": "cf",
+       "name": "Queries for Number of Palindromes",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1509C",
+       "src": "cf",
+       "name": "The Sports Festival",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1114D",
+       "src": "cf",
+       "name": "Flood Fill",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "607B",
+       "src": "cf",
+       "name": "Zuma",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "149D",
+       "src": "cf",
+       "name": "Coloring Brackets",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1132F",
+       "src": "cf",
+       "name": "Clear the String",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1025D",
+       "src": "cf",
+       "name": "Recovering BST",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1312E",
+       "src": "cf",
+       "name": "Array Shrinking",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1399F",
+       "src": "cf",
+       "name": "Yet Another Segments Subset",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1107E",
+       "src": "cf",
+       "name": "Vasya and Binary String",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1080",
+       "src": "cses",
+       "name": "Empty String",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1744",
+       "src": "cses",
+       "name": "Rectangle Cutting",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-rerooting",
+     "name": "Rerooting (all roots DP)",
+     "tier": 1800,
+     "order": 17,
+     "prereq": [
+      "dp-trees"
+     ],
+     "summary": "Compute a tree DP for every vertex as the root in O(n): first a down pass (subtree answers), then an up pass that passes each child the answer of 'the rest of the tree'. Recognise it when the question asks the answer for each vertex as root/center, or the best root.",
+     "learn": [
+      "Down pass: sub[v] from children; up pass: up[c] from up[v] and siblings",
+      "Moving the root across edge (v,c) changes the answer by an O(1) formula (Tree with Maximum Cost: res(c) = res(v) + total - 2*size(c))",
+      "Non-invertible combine (max): prefix and suffix maxima of children",
+      "Sum of distances to all vertices, eccentricity / farthest vertex for every node",
+      "Edge direction costs (Choosing Capital): count reversed edges on the root path"
+     ],
+     "resources": [
+      {
+       "title": "DP on Trees - Solving For All Roots",
+       "url": "https://usaco.guide/gold/all-roots",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "CPH 14.3 All longest paths",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 14.3 (p. 137)",
+       "minutes": 10
+      },
+      {
+       "title": "Problems related to rerooting",
+       "url": "https://codeforces.com/blog/entry/68142",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "219D",
+       "src": "cf",
+       "name": "Choosing Capital for Treeland",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1822F",
+       "src": "cf",
+       "name": "Gardening Friends",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1324F",
+       "src": "cf",
+       "name": "Maximum White Subtree",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1092F",
+       "src": "cf",
+       "name": "Tree with Maximum Cost",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1882D",
+       "src": "cf",
+       "name": "Tree XOR",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "337D",
+       "src": "cf",
+       "name": "Book of Evil",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1187E",
+       "src": "cf",
+       "name": "Tree Painting",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "543D",
+       "src": "cf",
+       "name": "Road Improvement",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1132",
+       "src": "cses",
+       "name": "Tree Distances I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1133",
+       "src": "cses",
+       "name": "Tree Distances II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-bitmask",
+     "name": "Bitmask DP",
+     "tier": 1800,
+     "order": 18,
+     "prereq": [
+      "dp-intro",
+      "@bit-basics"
+     ],
+     "summary": "When n <= ~20, a subset of items can be the DP state stored as a bitmask: dp[mask] or dp[mask][last]. Travelling salesman / Hamiltonian paths, assignment, packing into bins, choosing a subset of roles. Recognise it by tiny n (n <= 20, or k <= 20 'types') and a set-dependent cost.",
+     "learn": [
+      "dp[mask][v] = best path visiting exactly mask and ending at v -> O(2^n n^2)",
+      "Assignment / ordering: dp[mask] where popcount(mask) = position being filled",
+      "Packing into bins (Elevator Rides): store (rides, current load) as a pair in dp[mask]",
+      "Enumerate submasks with s = (s-1) & mask; all masks + submasks is O(3^n)",
+      "Bitmask over small primes / parity vectors (Square Subsets)",
+      "Bitmask over characters / roles combined with sorting (Team Building)",
+      "Counting cycles: fix the lowest vertex as start to avoid double counting"
+     ],
+     "resources": [
+      {
+       "title": "Bitmask DP",
+       "url": "https://usaco.guide/gold/dp-bitmasks",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "CPH 10.5 Bit manipulation - Dynamic programming",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.5 (p. 102)",
+       "minutes": 15
+      },
+      {
+       "title": "Submask enumeration",
+       "url": "https://cp-algorithms.com/algebra/all-submasks.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "580D",
+       "src": "cf",
+       "name": "Kefa and Dishes",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "16E",
+       "src": "cf",
+       "name": "Fish",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "453B",
+       "src": "cf",
+       "name": "Little Pony and Harmony Chest",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "895C",
+       "src": "cf",
+       "name": "Square Subsets",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1185G1",
+       "src": "cf",
+       "name": "Playlist for Polycarp (easy version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "11D",
+       "src": "cf",
+       "name": "A Simple Task",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1238E",
+       "src": "cf",
+       "name": "Keyboard Purchase",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1215E",
+       "src": "cf",
+       "name": "Marbles",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1316E",
+       "src": "cf",
+       "name": "Team Building",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1550E",
+       "src": "cf",
+       "name": "Stringforces",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1690",
+       "src": "cses",
+       "name": "Hamiltonian Flights",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1653",
+       "src": "cses",
+       "name": "Elevator Rides",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-prefix-opt",
+     "name": "Prefix-sum / prefix-max optimisation",
+     "tier": 1900,
+     "order": 19,
+     "prereq": [
+      "dp-partition"
+     ],
+     "summary": "When a transition sums or maximises dp over a contiguous range of previous states (dp[i] = sum_{j in [l_i, r_i]} dp_prev[j]), keep prefix sums or prefix maxima of the previous layer to make each transition O(1). Recognise it by an O(n^3) or O(n^2 k) DP whose inner loop runs over a range.",
+     "learn": [
+      "Range-sum transitions: maintain pref[] of the previous layer, dp[i] = pref[r] - pref[l-1]",
+      "Range-max transitions with a monotone left bound: prefix max array",
+      "Process layers one at a time; reuse arrays",
+      "Difference arrays for 'add dp[j] to a range of next states' (forward transitions)",
+      "Harmonic-sum loops: jumps of length k, k+1, ... give O(n sqrt n)",
+      "Typical: lift/elevator moves, chip jumps with increasing step, values in a range"
+     ],
+     "resources": [
+      {
+       "title": "Dynamic Programming Optimizations (overview table)",
+       "url": "https://codeforces.com/blog/entry/8219",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      },
+      {
+       "title": "CPH 9.1 Static array queries (prefix sums)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.1 (p. 84)",
+       "minutes": 10
+      },
+      {
+       "title": "Knapsack DP",
+       "url": "https://usaco.guide/gold/knapsack",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "474D",
+       "src": "cf",
+       "name": "Flowers",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "479E",
+       "src": "cf",
+       "name": "Riding in a Lift",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1067A",
+       "src": "cf",
+       "name": "Array Without Local Maximums",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1427C",
+       "src": "cf",
+       "name": "The Hard Work of Paparazzi",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1716D",
+       "src": "cf",
+       "name": "Chip Move",
+       "rating": 2000,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-knapsack-bounded",
+     "name": "Bounded knapsack (limited copies)",
+     "tier": 1900,
+     "order": 20,
+     "prereq": [
+      "dp-knapsack-01"
+     ],
+     "summary": "Each item type i may be taken up to k_i times. Naive is O(W sum k_i); binary splitting turns it into O(W sum log k_i) 0-1 items, and a monotone deque per residue gives O(nW). Also the sqrt trick: a multiset with total S has only O(sqrt S) distinct values.",
+     "learn": [
+      "Binary splitting: split k into 1,2,4,...,rest so every count 0..k is representable",
+      "Monotone queue optimisation: for each remainder mod w_i, take a sliding-window max",
+      "Distinct values in a multiset with sum S are at most ~sqrt(2S) - group equal values",
+      "Bounded subset-sum reachability: track 'minimum copies used' per sum in O(nW)",
+      "Huge weights with few distinct values: scale by lcm / greedily fix most copies, then DP the rest"
+     ],
+     "resources": [
+      {
+       "title": "Knapsack DP",
+       "url": "https://usaco.guide/gold/knapsack",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 45
+      },
+      {
+       "title": "Knapsack Problem (multiple knapsack)",
+       "url": "https://cp-algorithms.com/dynamic_programming/knapsack.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "CPH 7.4 Knapsack problems",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.4 (p. 72)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "106C",
+       "src": "cf",
+       "name": "Buns",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1132E",
+       "src": "cf",
+       "name": "Knapsack",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "95E",
+       "src": "cf",
+       "name": "Lucky Country",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "755F",
+       "src": "cf",
+       "name": "PolandBall and Gifts",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1856E2",
+       "src": "cf",
+       "name": "PermuTree (hard version)",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1159",
+       "src": "cses",
+       "name": "Book Shop II",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-digit",
+     "name": "Digit DP",
+     "tier": 1900,
+     "order": 21,
+     "prereq": [
+      "dp-intro"
+     ],
+     "summary": "Count (or sum over) numbers in [L, R] whose decimal/binary digits satisfy a property by building the number digit by digit with a 'tight' flag (still equal to the bound's prefix). Answer = f(R) - f(L-1). Recognise it by huge ranges (1e18) and a digit-based condition.",
+     "learn": [
+      "State: position, tight flag, started (leading zeros) flag, plus property info (sum, count, remainder, last digit)",
+      "Count f(N) for numbers <= N, then f(R) - f(L-1)",
+      "Memoise only the non-tight states so they are reused across bounds",
+      "Remainder modulo lcm of digits (Beautiful Numbers: mod 2520)",
+      "Binary digit DP for bitwise constraints (XOR/AND with limits), possibly with several tight flags",
+      "Return pairs (count, sum) to compute sums of numbers instead of counts"
+     ],
+     "resources": [
+      {
+       "title": "Digit DP",
+       "url": "https://usaco.guide/gold/digit-dp",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "Digit DP",
+       "url": "https://codeforces.com/blog/entry/53960",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "914C",
+       "src": "cf",
+       "name": "Travelling Salesman and Special Numbers",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1036C",
+       "src": "cf",
+       "name": "Classy Numbers",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "628D",
+       "src": "cf",
+       "name": "Magic Numbers",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1073E",
+       "src": "cf",
+       "name": "Segment Sum",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1670F",
+       "src": "cf",
+       "name": "Jee, You See?",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "55D",
+       "src": "cf",
+       "name": "Beautiful numbers",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2220",
+       "src": "cses",
+       "name": "Counting Numbers",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-matrix-expo",
+     "name": "Matrix exponentiation for linear DP",
+     "tier": 1900,
+     "order": 22,
+     "prereq": [
+      "dp-intro",
+      "@nt-binary-exponentiation"
+     ],
+     "summary": "A DP whose transition is linear and identical at every step (dp_{t+1} = M dp_t) can be advanced T steps in O(k^3 log T) with fast matrix power. Also counts walks of length T in a graph and works in (min,+) semiring for shortest walks of exact length. Recognise it by T up to 1e18 and a small state count.",
+     "learn": [
+      "Write the transition as a k x k matrix; answer = M^T * initial vector",
+      "Fibonacci / linear recurrences of order k, sums of recurrences (augment with an accumulator row)",
+      "Number of walks of length T = (adjacency)^T; shortest walk with exactly T edges via (min,+) product",
+      "Exponent recurrences (product-oriented) - work modulo p-1 for exponents",
+      "Piecewise constant transitions: exponentiate each segment separately (Okabe)",
+      "Segment tree of matrices for range updates of linear recurrences"
+     ],
+     "resources": [
+      {
+       "title": "Matrix Exponentiation",
+       "url": "https://usaco.guide/plat/matrix-expo",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "CPH 23.2 Linear recurrences",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 23.2 (p. 220)",
+       "minutes": 15
+      },
+      {
+       "title": "CPH 23.3 Graphs and matrices",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 23.3 (p. 222)",
+       "minutes": 10
+      },
+      {
+       "title": "Number of paths of fixed length / shortest paths of fixed length",
+       "url": "https://cp-algorithms.com/graph/fixed_length_paths.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "691E",
+       "src": "cf",
+       "name": "Xor-sequences",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "222E",
+       "src": "cf",
+       "name": "Decoding Genome",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1970E2",
+       "src": "cf",
+       "name": "Trails (Medium)",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1117D",
+       "src": "cf",
+       "name": "Magic Gems",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "821E",
+       "src": "cf",
+       "name": "Okabe and El Psy Kongroo",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1970E3",
+       "src": "cf",
+       "name": "Trails (Hard)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1182E",
+       "src": "cf",
+       "name": "Product Oriented Recurrence",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "718C",
+       "src": "cf",
+       "name": "Sasha and Array",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "576D",
+       "src": "cf",
+       "name": "Flights for Regular Customers",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1722",
+       "src": "cses",
+       "name": "Fibonacci Numbers",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1096",
+       "src": "cses",
+       "name": "Throwing Dice",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1723",
+       "src": "cses",
+       "name": "Graph Paths I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1724",
+       "src": "cses",
+       "name": "Graph Paths II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-data-structures",
+     "name": "DP with segment tree / BIT",
+     "tier": 1900,
+     "order": 23,
+     "prereq": [
+      "dp-partition",
+      "@ds-segtree-basic",
+      "@ds-fenwick"
+     ],
+     "summary": "Transitions that take max/sum of dp over a set of previous states defined by value ranges or arbitrary ranges are answered with a Fenwick tree or segment tree (point update, range query), and range-add lazy trees when the cost of the last segment changes as i moves. Recognise it by an O(n^2) DP whose inner loop is 'best dp[j] with key in a range'.",
+     "learn": [
+      "Index the tree by value (compressed) for 'increasing' constraints: dp[i] = 1 + max query(< a_i)",
+      "Counting increasing subsequences of length k with k BITs",
+      "Segment tree over j with lazy range-add when cost(j, i) changes by +1 on a range as i advances (distinct counts with last occurrence)",
+      "Sweep over intervals sorted by endpoint, query best dp before the start",
+      "Matrix / small-state DP stored in segment tree nodes for point updates",
+      "Prefix sums of a as keys: dp over prefix sums with BIT over compressed sums",
+      "Weighted interval scheduling: sort by end, dp[i] = max(dp[i-1], w_i + dp[last interval ending before l_i]) with binary search or a BIT over coordinates"
+     ],
+     "resources": [
+      {
+       "title": "CPH 9.2 Binary indexed tree",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.2 (p. 86)",
+       "minutes": 15
+      },
+      {
+       "title": "CPH 9.3 Segment tree",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.3 (p. 89)",
+       "minutes": 20
+      },
+      {
+       "title": "Dynamic Programming Optimizations (overview table)",
+       "url": "https://codeforces.com/blog/entry/8219",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "597C",
+       "src": "cf",
+       "name": "Subsequences",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1932F",
+       "src": "cf",
+       "name": "Feed Cats",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1216F",
+       "src": "cf",
+       "name": "Wi-Fi",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1667B",
+       "src": "cf",
+       "name": "Optimal Partition",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1482E",
+       "src": "cf",
+       "name": "Skyline Photo",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1106E",
+       "src": "cf",
+       "name": "Lunar New Year and Red Envelopes",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1799D2",
+       "src": "cf",
+       "name": "Hot Start Up (hard version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1557D",
+       "src": "cf",
+       "name": "Ezzat and Grid",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1788E",
+       "src": "cf",
+       "name": "Sum Over Zero",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1304F1",
+       "src": "cf",
+       "name": "Animal Observation (easy version)",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1609E",
+       "src": "cf",
+       "name": "William The Oblivious",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1748",
+       "src": "cses",
+       "name": "Increasing Subsequence II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1140",
+       "src": "cses",
+       "name": "Projects",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-monotonic",
+     "name": "Monotonic queue / stack optimisation",
+     "tier": 2000,
+     "order": 24,
+     "prereq": [
+      "dp-prefix-opt",
+      "@ds-monotonic-deque",
+      "@ds-monotonic-stack"
+     ],
+     "summary": "dp[i] = max over a sliding window j in [i-k, i-1] of dp[j] + f(i): keep a monotone deque of candidates for O(n). Monotonic stacks handle transitions to the previous greater/smaller element. Recognise it by window-bounded transitions or 'jump only to positions where all between are lower/higher'.",
+     "learn": [
+      "Sliding window maximum deque: push back after popping worse elements, pop front when out of window",
+      "Layered DP (choose k items with gap constraints): one deque per layer -> O(nk)",
+      "Window size depends on time difference (Watching Fireworks: window = d * dt)",
+      "Monotonic stack keeps candidate predecessors for 'previous smaller' transitions",
+      "Two-pointer + deque for 'segment max - min <= s' validity in partition DP",
+      "Bounded knapsack in O(nW): group capacities by residue mod w_i and run a sliding-window max over each residue class"
+     ],
+     "resources": [
+      {
+       "title": "Sliding Window",
+       "url": "https://usaco.guide/gold/sliding-window",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "CPH 8.3 Sliding window minimum",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 8.3 (p. 81)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH 8.2 Nearest smaller elements",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 8.2 (p. 79)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1313C2",
+       "src": "cf",
+       "name": "Skyscrapers (hard version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "940E",
+       "src": "cf",
+       "name": "Cashback",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "487B",
+       "src": "cf",
+       "name": "Strip",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1077F2",
+       "src": "cf",
+       "name": "Pictures with Kittens (hard version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "372C",
+       "src": "cf",
+       "name": "Watching Fireworks is Fun",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1407D",
+       "src": "cf",
+       "name": "Discrete Centrifugal Jumps",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-3314",
+       "src": "cses",
+       "name": "Mountain Range",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-exchange",
+     "name": "Exchange argument + DP",
+     "tier": 2000,
+     "order": 25,
+     "prereq": [
+      "dp-knapsack-01",
+      "@greedy-exchange"
+     ],
+     "summary": "When the order in which chosen items are processed matters, an exchange argument fixes a canonical order (by deadline, by a_i + b_i, by size), and a knapsack-like DP then picks the subset. Recognise it by 'choose a subset and an order' with deadlines, thresholds, or pairwise comparisons.",
+     "learn": [
+      "Prove the order: swap adjacent items and compare the cost; sort by the derived key",
+      "After sorting, run 0-1 knapsack over items in that order (deadline as capacity)",
+      "Split items into 'always good' (greedy) and 'risky' (DP) groups",
+      "Sort by size descending so pairing/assignment becomes a prefix DP",
+      "Rating changes / contest problems: sort by gain, DP over count and total"
+     ],
+     "resources": [
+      {
+       "title": "CPH 6.3 Tasks and deadlines",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 6.3 (p. 60)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH 7.4 Knapsack problems",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.4 (p. 72)",
+       "minutes": 10
+      },
+      {
+       "title": "[Tutorial] Non-trivial DP Tricks and Techniques (zscoder)",
+       "url": "https://codeforces.com/blog/entry/47764",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 45
+      }
+     ],
+     "problems": [
+      {
+       "id": "1398D",
+       "src": "cf",
+       "name": "Colored Rectangles",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "864E",
+       "src": "cf",
+       "name": "Fire",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1154F",
+       "src": "cf",
+       "name": "Shovels Shop",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1203F2",
+       "src": "cf",
+       "name": "Complete the Projects (hard version)",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1056F",
+       "src": "cf",
+       "name": "Write The Contest",
+       "rating": 2500,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-tree-knapsack",
+     "name": "Tree knapsack & subtree merging",
+     "tier": 2100,
+     "order": 26,
+     "prereq": [
+      "dp-trees",
+      "dp-knapsack-01"
+     ],
+     "summary": "dp[v][k] = best value in v's subtree using k chosen vertices/cuts, merged child by child like a knapsack. Bounding loops by subtree sizes makes the total O(n^2) (or O(nk)), not O(n^3). Recognise it by 'choose exactly k vertices/edges in a tree' or 'cut the tree into parts of size k'.",
+     "learn": [
+      "Merge child into parent: new[i+j] = combine(dp[v][i], dp[c][j]) for i <= size(v), j <= size(c)",
+      "The size-bounded loop is O(n^2) total - every pair of vertices is merged once at their LCA",
+      "With a cap k: loop to min(size, k) for O(nk)",
+      "Extra state 'is v's parent edge kept / is v chosen' (coupon dependencies, Karen and Supermarket)",
+      "Subset sum of child subtree sizes at each node (PermuTree)",
+      "Depth-indexed dp merged by small-to-large / long-path decomposition is the next step (see @trees-small-to-large, e.g. 1009F Dominant Indices)"
+     ],
+     "resources": [
+      {
+       "title": "DP on Trees - Combining Subtrees",
+       "url": "https://usaco.guide/adv/comb-sub",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "DP on Trees - Introduction",
+       "url": "https://usaco.guide/gold/dp-trees",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 40
+      },
+      {
+       "title": "DP on Trees Tutorial",
+       "url": "https://codeforces.com/blog/entry/20935",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "440D",
+       "src": "cf",
+       "name": "Berland Federalization",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "815C",
+       "src": "cf",
+       "name": "Karen and Supermarket",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1499F",
+       "src": "cf",
+       "name": "Diameter Cuts",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "735E",
+       "src": "cf",
+       "name": "Ostap and Tree",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1280D",
+       "src": "cf",
+       "name": "Miss Punyverse",
+       "rating": 2500,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-broken-profile",
+     "name": "Broken profile / row-mask DP",
+     "tier": 2100,
+     "order": 27,
+     "prereq": [
+      "dp-bitmask",
+      "dp-grid"
+     ],
+     "summary": "Grid DP for narrow boards (one dimension <= ~10): the state is a bitmask describing the boundary ('profile') between processed and unprocessed cells. Tilings with dominoes, placing pieces under row constraints. Processing cell by cell (broken profile) gives O(nm 2^m).",
+     "learn": [
+      "Row-by-row: dp[row][mask] with transitions over compatible next masks (precompute)",
+      "Cell-by-cell broken profile: mask stores which of the next m cells are already covered",
+      "Count tilings with dominoes (2 x n, n x m)",
+      "If n is big but the narrow side has 2-3 rows, transitions are tiny; if both are big there is often a pattern (505: n >= 4 impossible)",
+      "Transpose the grid so the narrow side is the mask"
+     ],
+     "resources": [
+      {
+       "title": "Broken Profile DP",
+       "url": "https://usaco.guide/adv/dp-broken-profile",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "CPH 7.6 Counting tilings",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 7.6 (p. 75)",
+       "minutes": 10
+      },
+      {
+       "title": "DP on Broken Profile",
+       "url": "https://cp-algorithms.com/dynamic_programming/profile-dynamics.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1051D",
+       "src": "cf",
+       "name": "Bicolorings",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1391D",
+       "src": "cf",
+       "name": "505",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "342D",
+       "src": "cf",
+       "name": "Xenia and Dominoes",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "77D",
+       "src": "cf",
+       "name": "Domino Carpet",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "845F",
+       "src": "cf",
+       "name": "Guards In The Storehouse",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2181",
+       "src": "cses",
+       "name": "Counting Tilings",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-open-close",
+     "name": "Open-close intervals, insertion & connected-component DP",
+     "tier": 2200,
+     "order": 28,
+     "prereq": [
+      "dp-counting"
+     ],
+     "summary": "Insert elements in sorted order and track how many 'open groups' (unfinished intervals or connected components) exist: each new element opens a group, closes one, extends one or merges two. Counts permutations/partitions where the cost depends on max - min of groups or on adjacent comparisons. Recognise it by permutations with neighbour constraints or group imbalance limits.",
+     "learn": [
+      "Sort values; state = (processed, open groups, accumulated cost)",
+      "Cost of all open groups grows by (gap to next value) x (number of open groups) - makes total imbalance additive",
+      "Connected-component DP: new element creates a component, attaches to an end, or merges two components",
+      "Account for fixed endpoints (first/last element) separately",
+      "Typical: permutations where |p_i - p_{i+1}| != 1, building sequences with turn-on rules",
+      "Relative-order (insertion) DP for permutations with given </> pattern: dp[i][j] = last element is the j-th smallest of the first i, transitions are prefix/suffix sums of dp[i-1]",
+      "Interval nesting/opening counts (Increase Sequence): state = number of currently open segments, each position opens/closes at most one"
+     ],
+     "resources": [
+      {
+       "title": "Additional DP Optimizations and Techniques (connected-component DP)",
+       "url": "https://usaco.guide/adv/dp-more",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "DP with connected components, a simple way to understand it",
+       "url": "https://codeforces.com/blog/entry/92602",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 25
+      },
+      {
+       "title": "[Tutorial] Non-trivial DP Tricks and Techniques (zscoder)",
+       "url": "https://codeforces.com/blog/entry/47764",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 45
+      },
+      {
+       "title": "AtCoder Educational DP Contest - T Permutation (relative-order DP)",
+       "url": "https://atcoder.jp/contests/dp/tasks/dp_t",
+       "kind": "other",
+       "where": "AtCoder DP contest task T",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "466D",
+       "src": "cf",
+       "name": "Increase Sequence",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1515E",
+       "src": "cf",
+       "name": "Phoenix and Computers",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "626F",
+       "src": "cf",
+       "name": "Group Projects",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "704B",
+       "src": "cf",
+       "name": "Ant Man",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "367E",
+       "src": "cf",
+       "name": "Sereja and Intervals",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1665",
+       "src": "cses",
+       "name": "Coding Company",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1075",
+       "src": "cses",
+       "name": "Permutations II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-sos",
+     "name": "SOS DP (sum over subsets)",
+     "tier": 2200,
+     "order": 29,
+     "prereq": [
+      "dp-bitmask"
+     ],
+     "summary": "Compute F[mask] = sum (or max/min/OR) of A[sub] over all submasks of mask for all 2^n masks in O(n 2^n) by processing one bit at a time. Its inverse (Mobius) and superset version are used for counting pairs with AND/OR conditions. Recognise it by 'for every mask, aggregate over its submasks/supermasks' on values up to 2^20-2^22.",
+     "learn": [
+      "for bit in 0..n-1: for mask: if mask has bit, F[mask] += F[mask ^ (1<<bit)]",
+      "Superset sums: flip the condition (mask lacks bit)",
+      "Mobius inversion = subtract instead of add; with inclusion-exclusion gives exact AND counts",
+      "Keep top-2 indices per mask for 'max over pairs with i < j' (Bits and Pieces)",
+      "Compatibility (a & b = 0): query the submasks of ~a",
+      "Complexity O(n 2^n) memory 2^n ints - fits for n <= 22",
+      "Digit-wise generalisation: SOS over decimal digits (sum over all numbers whose every digit is >= ...), as in Varying Kibibits"
+     ],
+     "resources": [
+      {
+       "title": "Sum over Subsets DP",
+       "url": "https://usaco.guide/plat/dp-sos",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 35
+      },
+      {
+       "title": "SOS Dynamic Programming [Tutorial]",
+       "url": "https://codeforces.com/blog/entry/45223",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "165E",
+       "src": "cf",
+       "name": "Compatible Numbers",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1234F",
+       "src": "cf",
+       "name": "Yet Another Substring Reverse",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "449D",
+       "src": "cf",
+       "name": "Jzzhu and Numbers",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1620G",
+       "src": "cf",
+       "name": "Subsequences Galore",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1208F",
+       "src": "cf",
+       "name": "Bits And Pieces",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "383E",
+       "src": "cf",
+       "name": "Vowels",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "772D",
+       "src": "cf",
+       "name": "Varying Kibibits",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "1326F2",
+       "src": "cf",
+       "name": "Wise Men (Hard Version)",
+       "rating": 3200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1654",
+       "src": "cses",
+       "name": "Bit Problem",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-bitset",
+     "name": "Bitset optimisation",
+     "tier": 2200,
+     "order": 30,
+     "prereq": [
+      "dp-subset-sum",
+      "dp-knapsack-bounded",
+      "@bitset-basics"
+     ],
+     "summary": "Boolean DPs whose transition is a shift-and-OR (subset sum reach |= reach << w) run 64x faster with std::bitset: O(nW/64). Combine with grouping equal values (sqrt distinct sizes) for O(W sqrt W / 64). Recognise it by a boolean DP that is slightly too slow at around 1e10 bit-operations.",
+     "learn": [
+      "reach |= reach << w for each item; template-size trick to choose bitset size at runtime",
+      "Group equal item sizes and binary-split their counts before shifting",
+      "Cycle lengths of a permutation -> subset sum over few distinct lengths",
+      "Bitset for 'earn or unlock' style reachability where values double as resources",
+      "Also speeds up transitive closure / reachability counting (Reachable Nodes)",
+      "Offline divide and conquer over a segment tree + bitset knapsack to answer which maxima are reachable (Addition on Segments)"
+     ],
+     "resources": [
+      {
+       "title": "Bitsets",
+       "url": "https://usaco.guide/plat/bitsets",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 35
+      },
+      {
+       "title": "CPH 10.4 Bit optimizations",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10.4 (p. 100)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1854B",
+       "src": "cf",
+       "name": "Earn or Unlock",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "981E",
+       "src": "cf",
+       "name": "Addition on Segments",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "755F",
+       "src": "cf",
+       "name": "PolandBall and Gifts",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1856E2",
+       "src": "cf",
+       "name": "PermuTree (hard version)",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "356D",
+       "src": "cf",
+       "name": "Bags and Coins",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "1444D",
+       "src": "cf",
+       "name": "Rectangular Polyline",
+       "rating": 2900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1706",
+       "src": "cses",
+       "name": "School Excursion",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-cht",
+     "name": "Convex hull trick & Li Chao tree",
+     "tier": 2200,
+     "order": 31,
+     "prereq": [
+      "dp-partition"
+     ],
+     "summary": "Transitions of the form dp[i] = min_j (m_j x_i + b_j) + c_i (lines indexed by j, queried at x_i) are answered with a convex hull of lines (monotone slopes: deque, O(n)) or a Li Chao segment tree / line container (arbitrary order, O(n log n)). Recognise it by a cost that expands into a product of a j-term and an i-term.",
+     "learn": [
+      "Expand the cost: (s_i - s_j)^2 = s_i^2 - 2 s_i s_j + s_j^2 -> line with slope -2s_j, intercept dp_j + s_j^2",
+      "Monotone slopes and queries: pointer walk on a deque (O(n))",
+      "Monotone slopes, arbitrary queries: binary search on the hull",
+      "Arbitrary slopes: Li Chao tree or KACTL LineContainer (multiset with intersection points)",
+      "Overflow: compare intersections with __int128 or long double",
+      "Li Chao merging on trees (small-to-large) for subtree queries"
+     ],
+     "resources": [
+      {
+       "title": "Convex Hull Trick",
+       "url": "https://usaco.guide/plat/convex-hull-trick",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 40
+      },
+      {
+       "title": "LineContainer",
+       "url": "https://usaco.guide/adv/line-container",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 25
+      },
+      {
+       "title": "Convex hull trick and Li Chao tree",
+       "url": "https://cp-algorithms.com/geometry/convex_hull_trick.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "Dynamic Programming Optimizations (overview table)",
+       "url": "https://codeforces.com/blog/entry/8219",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "319C",
+       "src": "cf",
+       "name": "Kalila and Dimna in the Logging Industry",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "311B",
+       "src": "cf",
+       "name": "Cats Transport",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1083E",
+       "src": "cf",
+       "name": "The Fair Nut and Rectangles",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1715E",
+       "src": "cf",
+       "name": "Long Way Home",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "660F",
+       "src": "cf",
+       "name": "Bear and Bowling 4",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "631E",
+       "src": "cf",
+       "name": "Product Sum",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1179D",
+       "src": "cf",
+       "name": "Fedor Runs for President",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "932F",
+       "src": "cf",
+       "name": "Escape Through Leaf",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2084",
+       "src": "cses",
+       "name": "Monster Game I",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2085",
+       "src": "cses",
+       "name": "Monster Game II",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-dnc-opt",
+     "name": "Divide & conquer optimisation",
+     "tier": 2300,
+     "order": 32,
+     "prereq": [
+      "dp-partition"
+     ],
+     "summary": "For layered DPs dp[k][i] = min_{j<i} dp[k-1][j] + C(j, i) where the optimal j is monotone in i (C satisfies the quadrangle inequality), compute each layer by recursion on the middle i with a restricted j range: O(k n log n). Recognise it by 'split into k groups' with a cost like sum of squares or number of distinct elements.",
+     "learn": [
+      "Check opt(i) <= opt(i+1) (quadrangle inequality / intuition: later endpoints never want earlier splits)",
+      "compute(l, r, optl, optr): solve mid, recurse left with [optl, opt(mid)], right with [opt(mid), optr]",
+      "Cost C(j, i) in O(1) via prefix sums, or amortised with a Mo-like moving window (distinct counts)",
+      "Total O(k n log n); combine with Aliens trick to remove the k factor",
+      "Segment tree with lazy add is an alternative for 'distinct elements' costs (The Bakery)",
+      "Expected-cost or number-theoretic costs (Levels and Regions, Artistic Partition) still work as long as C(j, i) is O(1) after precomputation and opt is monotone"
+     ],
+     "resources": [
+      {
+       "title": "Divide & Conquer - DP",
+       "url": "https://usaco.guide/plat/DC-DP",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 35
+      },
+      {
+       "title": "Divide and Conquer DP",
+       "url": "https://cp-algorithms.com/dynamic_programming/divide-and-conquer-dp.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "Dynamic Programming Optimizations (overview table)",
+       "url": "https://codeforces.com/blog/entry/8219",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "833B",
+       "src": "cf",
+       "name": "The Bakery",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "643C",
+       "src": "cf",
+       "name": "Levels and Regions",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1527E",
+       "src": "cf",
+       "name": "Partition Game",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "868F",
+       "src": "cf",
+       "name": "Yet Another Minimization Problem",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "321E",
+       "src": "cf",
+       "name": "Ciel and Gondolas",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1603D",
+       "src": "cf",
+       "name": "Artistic Partition",
+       "rating": 3000,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2086",
+       "src": "cses",
+       "name": "Subarray Squares",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2087",
+       "src": "cses",
+       "name": "Houses and Schools",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-knuth",
+     "name": "Knuth optimisation",
+     "tier": 2400,
+     "order": 33,
+     "prereq": [
+      "dp-interval",
+      "dp-dnc-opt"
+     ],
+     "summary": "For interval DPs dp[l][r] = min_{l<=k<r} dp[l][k] + dp[k+1][r] + C(l, r) where opt[l][r-1] <= opt[l][r] <= opt[l+1][r], restricting k to that range makes the total O(n^2) instead of O(n^3). Classic: optimal merging of adjacent piles, optimal BST, splitting a stick.",
+     "learn": [
+      "Store opt[l][r]; iterate k only in [opt[l][r-1], opt[l+1][r]]",
+      "Sufficient: C is monotone on inclusion and satisfies the quadrangle inequality",
+      "Amortised sum over each diagonal telescopes to O(n) -> O(n^2) total",
+      "Also applies to some layered DPs dp[k][i] with opt[k-1][i] <= opt[k][i] <= opt[k][i+1]",
+      "When unsure, verify monotonicity of opt empirically with a brute force",
+      "Layered form: dp[k][i] = min_j dp[k-1][j] + C(j, i) with opt[k-1][i] <= opt[k][i] <= opt[k][i+1] gives O(n^2) total instead of O(k n log n) (Ciel and Gondolas)"
+     ],
+     "resources": [
+      {
+       "title": "Additional DP Optimizations and Techniques (Knuth's optimization)",
+       "url": "https://usaco.guide/adv/dp-more",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "Knuth's Optimization",
+       "url": "https://cp-algorithms.com/dynamic_programming/knuth-optimization.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "Dynamic Programming Optimizations (overview table)",
+       "url": "https://codeforces.com/blog/entry/8219",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1101F",
+       "src": "cf",
+       "name": "Trucks and Cities",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "321E",
+       "src": "cf",
+       "name": "Ciel and Gondolas",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2088",
+       "src": "cses",
+       "name": "Knuth Division",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "dp-slope-trick",
+     "name": "Slope trick",
+     "tier": 2400,
+     "order": 34,
+     "prereq": [
+      "dp-multistate",
+      "@ds-priority-queue"
+     ],
+     "summary": "When dp_i(x) as a function of the value x is convex and piecewise linear, store only the points where its slope changes (in priority queues) instead of the whole array. Operations like 'add |x - a|' or 'prefix min' become O(log n) heap updates. Classic: make an array non-decreasing with minimum total change.",
+     "learn": [
+      "Represent a convex piecewise-linear function by multisets of breakpoints left/right of the minimum",
+      "Add |x - a|: push a to both heaps, move the top across if needed, update the minimum value",
+      "Prefix minimum (non-decreasing constraint): clear the right heap",
+      "Make strictly increasing: replace a_i with a_i - i",
+      "Lazy shifts for 'x can move by up to d' transitions",
+      "Original O(n^2) version: dp over compressed values with prefix minima - learn it first",
+      "Buy Low Sell High pattern: a min-heap with re-insertion is slope trick on the profit function (also a regret greedy)"
+     ],
+     "resources": [
+      {
+       "title": "Slope Trick",
+       "url": "https://usaco.guide/adv/slope-trick",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 40
+      },
+      {
+       "title": "[Tutorial] Slope Trick",
+       "url": "https://codeforces.com/blog/entry/47821",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      },
+      {
+       "title": "Slope trick explained",
+       "url": "https://codeforces.com/blog/entry/77298",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "13C",
+       "src": "cf",
+       "name": "Sequence",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "713C",
+       "src": "cf",
+       "name": "Sonya and Problem Wihtout a Legend",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "865D",
+       "src": "cf",
+       "name": "Buy Low Sell High",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1534G",
+       "src": "cf",
+       "name": "A New Beginning",
+       "rating": 3300,
+       "from": "curated"
+      },
+      {
+       "id": "1209H",
+       "src": "cf",
+       "name": "Moving Walkways",
+       "rating": 3300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2132",
+       "src": "cses",
+       "name": "Increasing Array II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "dp-aliens",
+     "name": "Aliens trick (Lagrangian relaxation)",
+     "tier": 2500,
+     "order": 35,
+     "prereq": [
+      "dp-dnc-opt",
+      "@bs-answer"
+     ],
+     "summary": "If the best answer with exactly k items/segments, f(k), is convex in k, remove the k dimension: add a penalty lambda per item, solve the unconstrained DP (tracking the count used), and binary search lambda until the count is k; answer = g(lambda) + lambda k. Turns O(nk) into O(n log C).",
+     "learn": [
+      "Prove or believe convexity of f(k) (often from a flow / exchange argument)",
+      "DP returns (value, count); break ties consistently (min count) to handle collinear points",
+      "Binary search integer lambda; final answer uses k, not the returned count",
+      "Combine with CHT / monotone structures for the inner unconstrained DP",
+      "Recognise: 'exactly k segments / operations', k up to n, and O(nk) too slow"
+     ],
+     "resources": [
+      {
+       "title": "Lagrangian Relaxation",
+       "url": "https://usaco.guide/adv/lagrange",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 35
+      },
+      {
+       "title": "Incredibly beautiful DP optimization from N^3 to N log^2 N",
+       "url": "https://codeforces.com/blog/entry/49691",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "958E2",
+       "src": "cf",
+       "name": "Guard Duty (medium)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "643C",
+       "src": "cf",
+       "name": "Levels and Regions",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1661F",
+       "src": "cf",
+       "name": "Teleporters",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1279F",
+       "src": "cf",
+       "name": "New Year and Handle Change",
+       "rating": 2800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "739E",
+       "src": "cf",
+       "name": "Gosha is hunting",
+       "rating": 3000,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+/* contest radar card + live-round protocol overlay */
+.radar-boost { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--r-lg); background: var(--tertiary-container); color: var(--on-tertiary-container); }
+.radar-boost > .msr { font-size: 28px; color: var(--tertiary); }
+.radar-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.radar-row { display: flex; flex-direction: column; gap: 10px; padding: 14px; border-radius: var(--r-lg); background: var(--surface-container); }
+.radar-row.on { background: var(--secondary-container); color: var(--on-secondary-container); }
+.radar-row.on .muted { color: inherit; opacity: .8; }
+.radar-row.live { box-shadow: inset 0 0 0 2px var(--primary); }
+.radar-top { display: flex; gap: 10px; align-items: flex-start; }
+.radar-name { display: block; overflow-wrap: anywhere; }
+.radar-chips { margin-top: 6px; gap: 4px; }
+.radar-chips .chip.mini { margin-left: 0; }
+.radar-live { color: var(--error); }
+.radar-warm { display: flex; flex-wrap: wrap; gap: 6px; }
+.radar-warm .chip.mini { margin-left: 0; height: 28px; text-decoration: none; color: var(--on-surface); }
+
+.cm-overlay { position: fixed; z-index: 90; left: 0; right: 0; bottom: 0; max-height: 100dvh; overflow-y: auto; display: flex; flex-direction: column; gap: 14px;
+  padding: calc(20px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom)); background: var(--surface-container-high); color: var(--on-surface);
+  border-radius: var(--r-xl) var(--r-xl) 0 0; box-shadow: 0 -8px 32px color-mix(in srgb, var(--shadow, #000) 25%, transparent); }
+@media (min-width: 720px) { .cm-overlay { margin: 0 auto; width: min(640px, 100vw); bottom: 16px; border-radius: var(--r-xl); padding-top: 20px; } }
+.cm-head { display: flex; align-items: flex-start; gap: 8px; }
+.cm-head .title { overflow-wrap: anywhere; }
+.cm-clock { font-size: clamp(48px, 16vw, 84px); line-height: 1; font-weight: 750; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; text-align: center; color: var(--primary); }
+.cm-clock.late { color: var(--error); }
+.cm-note { margin: 0; text-align: center; color: var(--on-surface-variant); }
+.cm-cps { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.cm-cp { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 4px; border-radius: var(--r-lg); background: var(--surface-container-highest); color: var(--on-surface); transition: background .2s, border-radius .35s var(--ease-spatial); }
+.cm-cp b { font-size: 22px; }
+.cm-cp span { font-size: 12px; font-variant-numeric: tabular-nums; opacity: .8; }
+.cm-cp.cur { box-shadow: inset 0 0 0 2px var(--primary); border-radius: var(--r-full); }
+.cm-cp.ok { background: var(--primary); color: var(--on-primary); }
+.cm-cp.warn { background: color-mix(in srgb, #f2a600 32%, var(--surface-container-highest)); }
+.cm-cp.late { background: var(--error-container); color: var(--on-error-container); }
+.cm-cp:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.cm-hint { color: var(--on-surface-variant); text-align: center; }
+.cm-rule { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-radius: var(--r-lg); background: var(--surface-container-highest); }
+.cm-rule.late { background: var(--error); color: var(--on-error); }
+.cm-done { display: flex; flex-direction: column; gap: 8px; }
+.cm-done p { margin: 0; }
+.cm-links { justify-content: center; }
+.cm-links a, .radar-row a.btn { text-decoration: none; }
+.cm-pill { all: unset; cursor: pointer; position: fixed; z-index: 90; left: 0; right: 0; margin: 0 auto; width: fit-content; top: calc(12px + env(safe-area-inset-top)); display: flex; align-items: center; gap: 6px;
+  padding: 10px 18px; border-radius: var(--r-full); background: var(--primary); color: var(--on-primary); font-variant-numeric: tabular-nums; box-shadow: 0 4px 16px color-mix(in srgb, #000 25%, transparent); }
+.cm-pill.late { background: var(--error); color: var(--on-error); }

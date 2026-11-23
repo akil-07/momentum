@@ -1,0 +1,3474 @@
+{
+ "area": "ds",
+ "topics": [
+  {
+   "id": "ds-linear",
+   "name": "Stacks, Queues, Deques & Linked Lists",
+   "cfTags": [
+    "data structures",
+    "implementation",
+    "two pointers"
+   ],
+   "subtopics": [
+    {
+     "id": "ds-stack-basics",
+     "name": "Stack simulation & bracket matching",
+     "tier": 1000,
+     "order": 1,
+     "prereq": [],
+     "summary": "A stack (LIFO) processes the most recent unfinished item first. It shows up in bracket/parenthesis sequences, undo operations, \"collapse adjacent equal/opposite items\" simulations and expression parsing. Recognise it when an element only interacts with the latest still-open element.",
+     "learn": [
+      "std::stack / vector push_back+pop_back; check empty() before top()/pop()",
+      "Regular bracket sequence: balance never negative and ends at 0; match each \")\" with the stack top",
+      "Collapse simulations (remove adjacent pairs, colliding objects) are a stack scan in O(n)",
+      "Store indices, not values, on the stack so you can measure lengths/distances (longest valid substring)",
+      "Process collisions/annihilations by grouping (e.g. by parity) and matching with a stack",
+      "Every element is pushed and popped at most once -> amortised O(n)"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Other structures (stack, queue, deque)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.5 (p. 41)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Introduction to Data Structures",
+       "url": "https://usaco.guide/bronze/intro-ds",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Stacks",
+       "url": "https://usaco.guide/gold/stacks",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1374C",
+       "src": "cf",
+       "name": "Move Brackets",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "26B",
+       "src": "cf",
+       "name": "Regular Bracket Sequence",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "612C",
+       "src": "cf",
+       "name": "Replace To Make Regular Bracket Sequence",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1279C",
+       "src": "cf",
+       "name": "Stack of Presents",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "81A",
+       "src": "cf",
+       "name": "Plug-in",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "343B",
+       "src": "cf",
+       "name": "Alternating Current",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1861C",
+       "src": "cf",
+       "name": "Queries for the Array",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "5C",
+       "src": "cf",
+       "name": "Longest Regular Bracket Sequence",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "911E",
+       "src": "cf",
+       "name": "Stack Sorting",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1525C",
+       "src": "cf",
+       "name": "Robot Collisions",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1092D1",
+       "src": "cf",
+       "name": "Great Vova Wall (Version 1)",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "ds-monotonic-stack",
+     "name": "Monotonic stack / nearest smaller values",
+     "tier": 1500,
+     "order": 2,
+     "prereq": [
+      "ds-stack-basics"
+     ],
+     "summary": "Keep a stack whose values are monotone; when a new element arrives, pop everything it \"beats\". This gives, for every index, the nearest smaller/greater element to the left/right in O(n). It appears in largest-rectangle, \"sum over all subarrays of max/min\", visibility/jump and contribution-counting problems.",
+     "learn": [
+      "Nearest smaller to the left: pop while top >= a[i]; the remaining top is the answer",
+      "Run it left-to-right and right-to-left to get the span [L_i, R_i] where a[i] is the minimum/maximum",
+      "Contribution technique: sum of max over all subarrays = sum a[i]*(i-L_i)*(R_i-i); break ties with < on one side and <= on the other",
+      "Largest rectangle in histogram and maximal all-ones sub-rectangle (row-by-row histograms)",
+      "Stack + DP: dp[i] computed from the element popped / the new top (skyscrapers, skyline, jumps)",
+      "Count \"rounds until stable\" style processes (Psychos in a line) with stack-stored step counts",
+      "The same stack pass builds the Cartesian tree (parent = the larger of the nearest smaller neighbours) - see the Cartesian tree sub-topic"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Nearest smaller elements",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 8.2 (p. 79)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Stacks (nearest smaller values)",
+       "url": "https://usaco.guide/gold/stacks",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "cp-algorithms: Minimum stack / Minimum queue",
+       "url": "https://cp-algorithms.com/data_structures/stack_queue_modification.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "91B",
+       "src": "cf",
+       "name": "Queue",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1313C1",
+       "src": "cf",
+       "name": "Skyscrapers (easy version)",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1779D",
+       "src": "cf",
+       "name": "Boris and His Amazing Haircut",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "280B",
+       "src": "cf",
+       "name": "Maximum Xor Secondary",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "547B",
+       "src": "cf",
+       "name": "Mike and Feet",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "817D",
+       "src": "cf",
+       "name": "Imbalanced Array",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1313C2",
+       "src": "cf",
+       "name": "Skyscrapers (hard version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "319B",
+       "src": "cf",
+       "name": "Psychos in a Line",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "777E",
+       "src": "cf",
+       "name": "Hanoi Factory",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "601B",
+       "src": "cf",
+       "name": "Lipshitz Sequence",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1482E",
+       "src": "cf",
+       "name": "Skyline Photo",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1407D",
+       "src": "cf",
+       "name": "Discrete Centrifugal Jumps",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1092D2",
+       "src": "cf",
+       "name": "Great Vova Wall (Version 2)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1645",
+       "src": "cses",
+       "name": "Nearest Smaller Values",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1142",
+       "src": "cses",
+       "name": "Advertisement",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1147",
+       "src": "cses",
+       "name": "Maximum Building I",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1148",
+       "src": "cses",
+       "name": "Maximum Building II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-queue-deque",
+     "name": "Queues & deques (simulation)",
+     "tier": 1000,
+     "order": 3,
+     "prereq": [],
+     "summary": "A queue (FIFO) serves items in arrival order; a deque allows push/pop at both ends. They are used for round-based simulations, BFS, rotating sequences and greedy constructions that append to the front or back.",
+     "learn": [
+      "std::queue for FIFO simulation; std::deque supports push/pop_front/back and random access in O(1)",
+      "Rotations: pop_front then push_back simulates a cyclic shift; detect when the process becomes periodic",
+      "Greedy deque building: decide per element whether it goes to the front or back",
+      "Keep a set/array of \"currently in the queue\" flags to avoid duplicates",
+      "Bound the number of simulation steps (or detect cycles) before brute-forcing"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Other structures (deque, queue)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.5 (p. 41)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Introduction to Data Structures",
+       "url": "https://usaco.guide/bronze/intro-ds",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1234B1",
+       "src": "cf",
+       "name": "Social Network (easy version)",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1579E1",
+       "src": "cf",
+       "name": "Permutation Minimization by Deque",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1234B2",
+       "src": "cf",
+       "name": "Social Network (hard version)",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "546C",
+       "src": "cf",
+       "name": "Soldier and Cards",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1066C",
+       "src": "cf",
+       "name": "Books Queries",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1179A",
+       "src": "cf",
+       "name": "Valeriy and Deque",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1579E2",
+       "src": "cf",
+       "name": "Array Optimization by Deque",
+       "rating": 1700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "ds-monotonic-deque",
+     "name": "Monotonic deque / sliding window min-max",
+     "tier": 1600,
+     "order": 4,
+     "prereq": [
+      "ds-queue-deque",
+      "ds-monotonic-stack"
+     ],
+     "summary": "A deque kept monotone gives the minimum/maximum of every window of a sliding range in amortised O(1). It speeds up DPs of the form dp[i] = min(dp[j]) + cost over j in a window, and two-pointer problems that need the window extreme.",
+     "learn": [
+      "Push back after popping worse elements from the back; pop front when the index leaves the window",
+      "Store indices in the deque, not values",
+      "Sliding window DP: dp[i] = min_{i-k<=j<i} dp[j] + c_i in O(n) instead of O(nk)",
+      "Two pointers with window max-min <= K: two deques (one for max, one for min)",
+      "Min-queue from two min-stacks: push onto the in-stack, pop from the out-stack (refill by moving everything when empty) - works for any associative op, e.g. gcd",
+      "Alternative: a queue built from two min-stacks, or a multiset when you also need deletions by value",
+      "Sliding median/cost needs two multisets (or order statistics), not a deque"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Sliding window minimum",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 8.3 (p. 81)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Sliding Window",
+       "url": "https://usaco.guide/gold/sliding-window",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 25
+      },
+      {
+       "title": "cp-algorithms: Minimum queue",
+       "url": "https://cp-algorithms.com/data_structures/stack_queue_modification.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1941E",
+       "src": "cf",
+       "name": "Rudolf and k Bridges",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "616D",
+       "src": "cf",
+       "name": "Longest k-Good Segment",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1918D",
+       "src": "cf",
+       "name": "Blocking Elements",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1077F1",
+       "src": "cf",
+       "name": "Pictures with Kittens (easy version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "940E",
+       "src": "cf",
+       "name": "Cashback",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "487B",
+       "src": "cf",
+       "name": "Strip",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1905D",
+       "src": "cf",
+       "name": "Cyclic MEX",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "372C",
+       "src": "cf",
+       "name": "Watching Fireworks is Fun",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1077F2",
+       "src": "cf",
+       "name": "Pictures with Kittens (hard version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1644",
+       "src": "cses",
+       "name": "Maximum Subarray Sum II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1141",
+       "src": "cses",
+       "name": "Playlist",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2428",
+       "src": "cses",
+       "name": "Subarray Distinct Values",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1076",
+       "src": "cses",
+       "name": "Sliding Median",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1077",
+       "src": "cses",
+       "name": "Sliding Cost",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-linked-list",
+     "name": "Linked lists (array-based) & deletions",
+     "tier": 1600,
+     "order": 5,
+     "prereq": [
+      "ds-queue-deque"
+     ],
+     "summary": "Doubly linked lists stored in prev[]/next[] arrays allow O(1) deletion of an element while keeping neighbours. They are the tool for \"repeatedly delete elements and look at the new neighbours\" simulations, often combined with a set/priority queue of candidates.",
+     "learn": [
+      "nxt[i], prv[i] arrays; deleting i: nxt[prv[i]] = nxt[i], prv[nxt[i]] = prv[i]",
+      "Use sentinels 0 and n+1 to avoid boundary checks",
+      "Only the neighbours of deleted elements change -> re-check only them each round (amortised O(n))",
+      "Combine with a std::set / priority_queue of \"active\" candidates (largest, closest, ...)",
+      "Josephus-type problems: linked list for small n, order-statistics tree/BIT for large n",
+      "std::list exists but array-based lists are faster and easier to index"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Other structures",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.5 (p. 41)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: More Operations on Sorted Sets (combine with sets)",
+       "url": "https://usaco.guide/gold/intro-sorted-sets",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "670E",
+       "src": "cf",
+       "name": "Correct Bracket Sequence Editor",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1154E",
+       "src": "cf",
+       "name": "Two Teams",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1922D",
+       "src": "cf",
+       "name": "Berserk Monsters",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1482D",
+       "src": "cf",
+       "name": "Playlist",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "899E",
+       "src": "cf",
+       "name": "Segments Removal",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2162",
+       "src": "cses",
+       "name": "Josephus Problem I",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2163",
+       "src": "cses",
+       "name": "Josephus Problem II",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "ds-cartesian-tree",
+     "name": "Cartesian tree & divide-and-conquer on the maximum",
+     "tier": 2100,
+     "order": 6,
+     "prereq": [
+      "ds-monotonic-stack",
+      "ds-sparse-table"
+     ],
+     "summary": "The Cartesian tree of an array has the maximum (or minimum) at the root and the left/right parts as subtrees; it is built in O(n) with a monotonic stack. Problems that recurse \"split at the maximum, solve both sides\" or count subarrays whose max/min sits at a given index are DP or counting on this tree, often combined with iterating over the smaller side.",
+     "learn": [
+      "Build with one stack pass: pop smaller elements, the last popped becomes the left child, the new element becomes the right child of the stack top",
+      "Node i owns the range (L_i, R_i) between its nearest greater elements; subtree = that range",
+      "Recursion f(l, r) = solve(l, m-1) + solve(m+1, r) with m = argmax via sparse table is the same tree, built top-down",
+      "Iterate over the smaller of the two sides at each node: total O(n log n) (special segments, max = sum conditions)",
+      "Tree DP on the Cartesian tree counts arrays with a given \"position of maximum\" structure",
+      "Offline queries on the recursion (f(l, r)) become sums over nearest-greater spans with a BIT sweep"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Solve RMQ by finding LCA (Cartesian tree construction)",
+       "url": "https://cp-algorithms.com/graph/rmq_linear.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Treap (Cartesian tree), building in O(n)",
+       "url": "https://cp-algorithms.com/data_structures/treap.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Nearest smaller elements",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 8.2 (p. 79)",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1691D",
+       "src": "cf",
+       "name": "Max GEQ Sum",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1913D",
+       "src": "cf",
+       "name": "Array Collapse",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1156E",
+       "src": "cf",
+       "name": "Special Segments of Permutation",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1748E",
+       "src": "cf",
+       "name": "Yet Another Array Counting Problem",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1849E",
+       "src": "cf",
+       "name": "Max to the Right of Min",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1117G",
+       "src": "cf",
+       "name": "Recursive Queries",
+       "rating": 2500,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ds-stl",
+   "name": "Heaps, Sets, Maps & Hashing",
+   "cfTags": [
+    "data structures",
+    "greedy",
+    "hashing",
+    "sortings"
+   ],
+   "subtopics": [
+    {
+     "id": "ds-sets-maps",
+     "name": "Sets & maps basics (counting, distinct)",
+     "tier": 900,
+     "order": 1,
+     "prereq": [],
+     "summary": "std::set keeps distinct sorted keys, std::map associates a value with each key (frequency counts, last positions, id->name). These solve \"have I seen this?\", \"how many times?\" and \"group equal things\" questions in O(log n).",
+     "learn": [
+      "set.insert/erase/count/find in O(log n); size() gives the number of distinct elements",
+      "map<key,int> cnt; cnt[x]++ for frequencies; iterate in sorted order of keys",
+      "Group by a normalised key: pair of reduced ratio, difference a_i - i, sorted string, etc.",
+      "Count pairs with equal key: for each element add cnt[key] before inserting",
+      "Use map<long long,...> when keys exceed int; beware operator[] inserting default values"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Set structures",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.2 (p. 37)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Map structures",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.3 (p. 38)",
+       "minutes": 8
+      },
+      {
+       "title": "USACO Guide: Introduction to Sets & Maps",
+       "url": "https://usaco.guide/bronze/intro-sets",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1722C",
+       "src": "cf",
+       "name": "Word Game",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1703B",
+       "src": "cf",
+       "name": "ICPC Balloons",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "2000C",
+       "src": "cf",
+       "name": "Numeric String Template",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1790D",
+       "src": "cf",
+       "name": "Matryoshkas",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1800D",
+       "src": "cf",
+       "name": "Remove Two Letters",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1974C",
+       "src": "cf",
+       "name": "Beautiful Triple Pairs",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1506D",
+       "src": "cf",
+       "name": "Epic Transformation",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1296C",
+       "src": "cf",
+       "name": "Yet Another Walking Robot",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1621",
+       "src": "cses",
+       "name": "Distinct Numbers",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1640",
+       "src": "cses",
+       "name": "Sum of Two Values",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-hashmap",
+     "name": "Hash maps & anti-hash tests",
+     "tier": 1300,
+     "order": 2,
+     "prereq": [
+      "ds-sets-maps"
+     ],
+     "summary": "unordered_map/unordered_set give expected O(1) lookups, but on Codeforces they can be hacked with keys that all collide, giving O(n^2) and TLE. Know when to use them, how to make them safe (custom random hash), or simply fall back to map / sorting.",
+     "learn": [
+      "Default std::hash for integers is identity -> adversarial inputs (multiples of a bucket prime) blow up unordered_map",
+      "Fix: custom hash with splitmix64 + a random seed from chrono; or gp_hash_table with a custom hash",
+      "Call reserve() to avoid rehashing; avoid unordered_map for pair keys without a good hash",
+      "Often a sorted vector + binary search or coordinate compression is both safer and faster",
+      "Typical uses: count equal prefix sums / pairs with given difference (a_i - i), sum of k values (meet in the middle)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: (Optional) Hashmaps",
+       "url": "https://usaco.guide/gold/hashmaps",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      },
+      {
+       "title": "Blowing up unordered_map, and how to stop getting hacked on it (neal)",
+       "url": "https://codeforces.com/blog/entry/62393",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1520D",
+       "src": "cf",
+       "name": "Same Differences",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "4C",
+       "src": "cf",
+       "name": "Registration System",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1915E",
+       "src": "cf",
+       "name": "Romantic Glasses",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "650A",
+       "src": "cf",
+       "name": "Watchmen",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1850G",
+       "src": "cf",
+       "name": "The Morning Star",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1536C",
+       "src": "cf",
+       "name": "Diluc and Kaeya",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1748C",
+       "src": "cf",
+       "name": "Zero-Sum Prefixes",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1642",
+       "src": "cses",
+       "name": "Sum of Four Values",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1640",
+       "src": "cses",
+       "name": "Sum of Two Values",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-priority-queue",
+     "name": "Priority queues / heaps",
+     "tier": 1200,
+     "order": 3,
+     "prereq": [
+      "ds-sets-maps"
+     ],
+     "summary": "A binary heap returns the current largest (or smallest) element in O(log n). It powers greedy algorithms that repeatedly take the best available option, \"regret\" greedies that undo the worst earlier choice, event simulation and Dijkstra.",
+     "learn": [
+      "priority_queue<T> is a max-heap; use greater<T> or push negatives for a min-heap",
+      "Greedy with regret: take everything, and when a constraint breaks pop the worst taken item",
+      "Process items sorted by one key while a heap holds the best candidates by another key",
+      "Merge k sorted lists / k smallest sums with a heap of frontier states",
+      "Lazy deletion: keep a \"deleted\" marker or a second heap instead of erasing from the middle",
+      "Marginal-gain greedy: push the improvement of splitting/upgrading an item, always take the largest"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Other structures (priority queue)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.5 (p. 41)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Priority Queues",
+       "url": "https://usaco.guide/silver/priority-queues",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1800C1",
+       "src": "cf",
+       "name": "Powering the Hero (easy version)",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1800C2",
+       "src": "cf",
+       "name": "Powering the Hero (hard version)",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1526C1",
+       "src": "cf",
+       "name": "Potions (Easy Version)",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1526C2",
+       "src": "cf",
+       "name": "Potions (Hard Version)",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1140C",
+       "src": "cf",
+       "name": "Playlist",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1353D",
+       "src": "cf",
+       "name": "Constructing the Array",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1974G",
+       "src": "cf",
+       "name": "Money Buys Less Happiness Now",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "2085D",
+       "src": "cf",
+       "name": "Serval and Kaitenzushi Buffet",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1271D",
+       "src": "cf",
+       "name": "Portals",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1428E",
+       "src": "cf",
+       "name": "Carrots for Rabbits",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "865D",
+       "src": "cf",
+       "name": "Buy Low Sell High",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "3D",
+       "src": "cf",
+       "name": "Least Cost Bracket Sequence",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1164",
+       "src": "cses",
+       "name": "Room Allocation",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1161",
+       "src": "cses",
+       "name": "Stick Division",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-ordered-set",
+     "name": "Ordered sets & multisets (lower_bound tricks)",
+     "tier": 1500,
+     "order": 4,
+     "prereq": [
+      "ds-sets-maps"
+     ],
+     "summary": "Sorted containers support \"smallest element >= x\", \"largest element < x\", deleting one copy and iterating neighbours, all in O(log n). They solve matching/assignment greedies, dynamic nearest-neighbour queries and maintaining the max gap or the median.",
+     "learn": [
+      "s.lower_bound(x) / upper_bound(x); prev(it) for the largest element < x; check it != begin()/end()",
+      "Use the member s.lower_bound, never std::lower_bound(s.begin(), s.end()) (that is O(n))",
+      "multiset::erase(value) removes ALL copies; erase(s.find(value)) removes one",
+      "Maintain gaps between consecutive points: on insert/delete update a multiset of differences",
+      "Greedy matching: for each item take the smallest available partner >= need and erase it",
+      "Two multisets (low/high halves) keep the median / sum of k smallest under insertions and deletions",
+      "map<int,int> of position -> value for sparse arrays and \"next occurrence\" queries"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Iterators and ranges",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.4 (p. 39)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: More Operations on Sorted Sets",
+       "url": "https://usaco.guide/gold/intro-sorted-sets",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "USACO Guide: (Optional) Sorted Sets with Custom Comparators",
+       "url": "https://usaco.guide/gold/custom-cpp-stl",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1883D",
+       "src": "cf",
+       "name": "In Love",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1041C",
+       "src": "cf",
+       "name": "Coffee Break",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1029C",
+       "src": "cf",
+       "name": "Maximal Intersection",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1157E",
+       "src": "cf",
+       "name": "Minimum Array",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1474C",
+       "src": "cf",
+       "name": "Array Destruction",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1801B",
+       "src": "cf",
+       "name": "Buying gifts",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1968F",
+       "src": "cf",
+       "name": "Equal XOR Segments",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "69E",
+       "src": "cf",
+       "name": "Subsegments",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "2009G1",
+       "src": "cf",
+       "name": "Yunli's Subarray Queries (easy version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1902D",
+       "src": "cf",
+       "name": "Robot Queries",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1862G",
+       "src": "cf",
+       "name": "The Great Equalizer",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1418D",
+       "src": "cf",
+       "name": "Trash Problem",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1091",
+       "src": "cses",
+       "name": "Concert Tickets",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1163",
+       "src": "cses",
+       "name": "Traffic Lights",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1073",
+       "src": "cses",
+       "name": "Towers",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1632",
+       "src": "cses",
+       "name": "Movie Festival II",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1188",
+       "src": "cses",
+       "name": "Bit Inversions",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-interval-set",
+     "name": "Maintaining disjoint intervals in a set (ODT / Chtholly)",
+     "tier": 1800,
+     "order": 5,
+     "prereq": [
+      "ds-ordered-set"
+     ],
+     "summary": "Store a partition of the line into maximal segments with the same value in a std::set/map keyed by left endpoint. Range-assign operations split at l and r and merge everything in between, giving amortised O((n+q) log n). Also covers \"skip already-processed positions\" with a set of alive indices.",
+     "learn": [
+      "split(pos): find the segment containing pos and cut it into [l,pos-1] and [pos,r]; always split(r+1) before split(l)",
+      "Assign on [l,r]: split, erase all segments inside, insert one new segment -> number of segments stays amortised small",
+      "Chtholly tree (ODT) complexity relies on random/assign-heavy queries; do not use it when there are no assignments",
+      "Set of unprocessed indices: repeatedly s.lower_bound(l) and erase until > r -> each index removed once",
+      "Combine with a BIT to add contributions per removed/merged segment (colorful operations)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: More Operations on Sorted Sets",
+       "url": "https://usaco.guide/gold/intro-sorted-sets",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      },
+      {
+       "title": "Codeforces Round #449 editorial (problem 896C, origin of the Chtholly tree / ODT)",
+       "url": "https://codeforces.com/blog/entry/56135",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "356A",
+       "src": "cf",
+       "name": "Knight Tournament",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1791F",
+       "src": "cf",
+       "name": "Range Update Point Query",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1690G",
+       "src": "cf",
+       "name": "Count the Trains",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "2000H",
+       "src": "cf",
+       "name": "Ksyusha and the Loaded Set",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "915E",
+       "src": "cf",
+       "name": "Physical Education Lessons",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1638E",
+       "src": "cf",
+       "name": "Colorful Operations",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "896C",
+       "src": "cf",
+       "name": "Willem, Chtholly and Seniorious",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "ds-pbds",
+     "name": "Order-statistics tree (pb_ds) & inversion counting",
+     "tier": 1600,
+     "order": 6,
+     "prereq": [
+      "ds-ordered-set"
+     ],
+     "summary": "GNU pb_ds tree with tree_order_statistics_node_update is a set that also answers find_by_order(k) (k-th smallest) and order_of_key(x) (# elements < x) in O(log n). It replaces a BIT in counting inversions, ranks, dynamic medians and Josephus-style deletions.",
+     "learn": [
+      "#include <ext/pb_ds/assoc_container.hpp>; typedef tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update> ordered_set",
+      "For a multiset store pair(value, unique id) or use less_equal (but erase is then broken)",
+      "Inversions (distinct values): before inserting a_i, the number of earlier elements greater than a_i is (count inserted so far) - order_of_key(a_i + 1)",
+      "k-th alive element after deletions (Josephus, list removals)",
+      "Same queries can be done with a BIT over compressed values (often faster and safer)"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Other structures (policy-based data structures)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 4.5 (p. 41)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Point Update Range Sum (Order Statistic Tree section)",
+       "url": "https://usaco.guide/gold/PURS",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      },
+      {
+       "title": "C++ STL: Policy based data structures",
+       "url": "https://codeforces.com/blog/entry/11080",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1676H2",
+       "src": "cf",
+       "name": "Maximum Crossings (Hard Version)",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1915F",
+       "src": "cf",
+       "name": "Greetings",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1579E2",
+       "src": "cf",
+       "name": "Array Optimization by Deque",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "459D",
+       "src": "cf",
+       "name": "Pashmak and Parmida's problem",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1660F2",
+       "src": "cf",
+       "name": "Promising String (hard version)",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2163",
+       "src": "cses",
+       "name": "Josephus Problem II",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1076",
+       "src": "cses",
+       "name": "Sliding Median",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1749",
+       "src": "cses",
+       "name": "List Removals",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ds-static-range",
+   "name": "Static Range Queries",
+   "cfTags": [
+    "data structures",
+    "binary search",
+    "two pointers"
+   ],
+   "subtopics": [
+    {
+     "id": "ds-prefix-difference",
+     "name": "Prefix sums, 2D prefix sums & difference arrays",
+     "tier": 1100,
+     "order": 1,
+     "prereq": [
+      "@prefix-1d"
+     ],
+     "summary": "Prefix sums answer range-sum queries on a static array in O(1); difference arrays apply many range additions offline in O(1) each and recover the array with one prefix sum. 2D versions handle sub-rectangle sums. Recognise them whenever queries/updates are on ranges and the array does not change between queries.",
+     "learn": [
+      "pre[i] = pre[i-1] + a[i]; sum(l,r) = pre[r] - pre[l-1]; use long long",
+      "Difference array: d[l] += x, d[r+1] -= x, then prefix-sum d",
+      "Count operations applied to each operation (difference array on the operations themselves)",
+      "2D: P[i][j] = a + P[i-1][j] + P[i][j-1] - P[i-1][j-1]; rectangle by inclusion-exclusion",
+      "Prefix sums + hashmap/count to count subarrays with sum k or sum divisible by m",
+      "Prefix counts per value/bit (per-letter, per-bit prefix arrays) for frequency-on-range queries"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Static array queries (prefix sums)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.1 (p. 84)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Introduction to Prefix Sums",
+       "url": "https://usaco.guide/silver/prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: More on Prefix Sums",
+       "url": "https://usaco.guide/silver/more-prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "816B",
+       "src": "cf",
+       "name": "Karen and Coffee",
+       "rating": 1400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "295A",
+       "src": "cf",
+       "name": "Greg and Array",
+       "rating": 1400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "276C",
+       "src": "cf",
+       "name": "Little Girl and Maximum Sum",
+       "rating": 1500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1398C",
+       "src": "cf",
+       "name": "Good Subarrays",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1722E",
+       "src": "cf",
+       "name": "Counting Rectangles",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "466C",
+       "src": "cf",
+       "name": "Number of Ways",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1343D",
+       "src": "cf",
+       "name": "Constant Palindrome Sum",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2030D",
+       "src": "cf",
+       "name": "QED's Favorite Permutation",
+       "rating": 1700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1646",
+       "src": "cses",
+       "name": "Static Range Sum Queries",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1652",
+       "src": "cses",
+       "name": "Forest Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1662",
+       "src": "cses",
+       "name": "Subarray Divisibility",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1661",
+       "src": "cses",
+       "name": "Subarray Sums II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-sparse-table",
+     "name": "Sparse table / RMQ (idempotent queries)",
+     "tier": 1600,
+     "order": 2,
+     "prereq": [
+      "ds-prefix-difference"
+     ],
+     "summary": "A sparse table precomputes answers on all power-of-two-length ranges in O(n log n) and answers min/max/gcd/and/or queries in O(1) by overlapping two blocks. Use it for static arrays with many queries, frequently together with binary search or two pointers.",
+     "learn": [
+      "st[k][i] = op(st[k-1][i], st[k-1][i + 2^(k-1)]); query with k = __lg(r-l+1)",
+      "O(1) queries only for idempotent operations (min, max, gcd, and, or); sum needs O(log n) or prefix sums",
+      "Binary search on the answer + RMQ: longest subarray with gcd > 1, max - min <= k, etc.",
+      "gcd/and/or over subarrays starting at i take only O(log V) distinct values",
+      "Disjoint sparse table / divide-and-conquer answers any associative op in O(1) (USACO Plat DC-SRQ)",
+      "Memory n log n: use int, and arrange as st[k][i] for cache efficiency"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Static array queries (minimum queries)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.1 (p. 84)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Sparse Table",
+       "url": "https://cp-algorithms.com/data_structures/sparse-table.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Divide & Conquer - SRQ",
+       "url": "https://usaco.guide/plat/DC-SRQ",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Range Minimum Query overview",
+       "url": "https://cp-algorithms.com/sequences/rmq.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 5
+      }
+     ],
+     "problems": [
+      {
+       "id": "1878E",
+       "src": "cf",
+       "name": "Iva & Pav",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1709D",
+       "src": "cf",
+       "name": "Rorororobot",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2050F",
+       "src": "cf",
+       "name": "Maximum modulo equality",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "482B",
+       "src": "cf",
+       "name": "Interesting Array",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1548B",
+       "src": "cf",
+       "name": "Integers Have Friends",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1547F",
+       "src": "cf",
+       "name": "Array Stabilization (GCD version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "359D",
+       "src": "cf",
+       "name": "Pair of Numbers",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "514D",
+       "src": "cf",
+       "name": "R2D2 and Droid Army",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "475D",
+       "src": "cf",
+       "name": "CGCDSSQ",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "689D",
+       "src": "cf",
+       "name": "Friends and Subsequences",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1454F",
+       "src": "cf",
+       "name": "Array Partition",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "675E",
+       "src": "cf",
+       "name": "Trains and Statistic",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1647",
+       "src": "cses",
+       "name": "Static Range Minimum Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1650",
+       "src": "cses",
+       "name": "Range Xor Queries",
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ds-fenwick",
+   "name": "Fenwick Tree (BIT)",
+   "cfTags": [
+    "data structures",
+    "sortings",
+    "divide and conquer"
+   ],
+   "subtopics": [
+    {
+     "id": "ds-fenwick",
+     "name": "Fenwick tree: point update, prefix query, inversions",
+     "tier": 1600,
+     "order": 1,
+     "prereq": [
+      "ds-prefix-difference"
+     ],
+     "summary": "A binary indexed tree supports adding to a position and querying a prefix sum in O(log n) with ~10 lines of code. With coordinate compression it counts elements less than x seen so far, which solves inversion counting and many \"count pairs i<j with condition\" problems.",
+     "learn": [
+      "update: for(; i<=n; i += i&-i); query: for(; i>0; i -= i&-i); 1-indexed!",
+      "Range sum = query(r) - query(l-1); works for any invertible operation (sum, xor)",
+      "Coordinate-compress values first (sort + unique + lower_bound)",
+      "Count pairs i<j with a_j < a_i (inversions) / with prefix-sum conditions by sweeping and querying the BIT",
+      "Sort by one coordinate and use the BIT for the other (2D dominance counting, nested segments)",
+      "Prefix max BIT works only when values only increase"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Binary indexed tree",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.2 (p. 86)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Point Update Range Sum",
+       "url": "https://usaco.guide/gold/PURS",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Fenwick Tree",
+       "url": "https://cp-algorithms.com/data_structures/fenwick.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "652D",
+       "src": "cf",
+       "name": "Nested Segments",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1042D",
+       "src": "cf",
+       "name": "Petya and Array",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "61E",
+       "src": "cf",
+       "name": "Enemy is weak",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1311F",
+       "src": "cf",
+       "name": "Moving Points",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1430E",
+       "src": "cf",
+       "name": "String Reversal",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1167F",
+       "src": "cf",
+       "name": "Scalar Queries",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1648",
+       "src": "cses",
+       "name": "Dynamic Range Sum Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1144",
+       "src": "cses",
+       "name": "Salary Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1748",
+       "src": "cses",
+       "name": "Increasing Subsequence II",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-fenwick-range",
+     "name": "BIT range updates & binary lifting (k-th element)",
+     "tier": 1800,
+     "order": 2,
+     "prereq": [
+      "ds-fenwick"
+     ],
+     "summary": "Storing the difference array in a BIT gives range-add / point-query; two BITs give range-add / range-sum. Descending the BIT bit by bit finds the smallest prefix whose sum reaches k in O(log n), i.e. the k-th smallest element of a multiset of values.",
+     "learn": [
+      "Range add, point query: add(l, x), add(r+1, -x); value = prefix(i)",
+      "Range add, range sum: two BITs B1, B2 with sum(i) = B1(i)*i - B2(i)",
+      "k-th one / k-th smallest: walk pos from the highest power of two, skipping blocks whose sum < k",
+      "Offline sorting of queries + BIT k-th answers \"k-th element among the first m\" queries",
+      "Euler tour + range-add BIT gives subtree updates / path-to-root point queries on trees"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Additional techniques (range updates)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.4 (p. 93)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Fenwick Tree (range update sections)",
+       "url": "https://cp-algorithms.com/data_structures/fenwick.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Range Update Range Query",
+       "url": "https://usaco.guide/plat/RURQ",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1791F",
+       "src": "cf",
+       "name": "Range Update Point Query",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1227D2",
+       "src": "cf",
+       "name": "Optimal Subsequences (Hard Version)",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1354D",
+       "src": "cf",
+       "name": "Multiset",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "383C",
+       "src": "cf",
+       "name": "Propagating tree",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1891F",
+       "src": "cf",
+       "name": "A Growing Tree",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1651",
+       "src": "cses",
+       "name": "Range Update Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1749",
+       "src": "cses",
+       "name": "List Removals",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-2d-bit",
+     "name": "2D BIT & 2D offline counting",
+     "tier": 2100,
+     "order": 3,
+     "prereq": [
+      "ds-fenwick"
+     ],
+     "summary": "A Fenwick tree of Fenwick trees answers point-update / rectangle-sum queries in O(log^2 n) for moderate grids. For large coordinates the standard alternative is offline: sweep one dimension and keep a 1D BIT over the other, or use a BIT of sorted vectors / ordered sets.",
+     "learn": [
+      "update(x,y): nested loops over x += x&-x and y += y&-y; rectangle by inclusion-exclusion",
+      "Memory n*m: only feasible for ~1000x1000 (or with bitsets/xor tricks)",
+      "Offline 2D dominance: sort points and queries by x, sweep with a BIT on y",
+      "Range-update range-query in 2D needs 4 BITs (xor variants need parity tricks)",
+      "Large coordinates online: BIT of sorted vectors (offline-known coordinates) or sqrt decomposition"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Two-dimensionality",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 28.4 (p. 264)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: 2D Range Queries",
+       "url": "https://usaco.guide/plat/2DRQ",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 25
+      },
+      {
+       "title": "cp-algorithms: Fenwick Tree (2D section)",
+       "url": "https://cp-algorithms.com/data_structures/fenwick.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1190D",
+       "src": "cf",
+       "name": "Tokitsukaze and Strange Rectangle",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1194E",
+       "src": "cf",
+       "name": "Count The Rectangles",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "785E",
+       "src": "cf",
+       "name": "Anton and Permutation",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1093E",
+       "src": "cf",
+       "name": "Intersection of Permutations",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "869E",
+       "src": "cf",
+       "name": "The Untended Antiquity",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "12D",
+       "src": "cf",
+       "name": "Ball",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "341D",
+       "src": "cf",
+       "name": "Iahub and Xors",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1739",
+       "src": "cses",
+       "name": "Forest Queries II",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ds-segment-tree",
+   "name": "Segment Trees",
+   "cfTags": [
+    "data structures",
+    "trees",
+    "divide and conquer"
+   ],
+   "subtopics": [
+    {
+     "id": "ds-segtree-basic",
+     "name": "Segment tree: point update, range query",
+     "tier": 1600,
+     "order": 1,
+     "prereq": [
+      "ds-fenwick"
+     ],
+     "summary": "A segment tree stores an associative aggregate (sum, min, max, gcd, ...) for O(n) canonical segments, so point updates and range queries cost O(log n). It is the general-purpose range-query structure used whenever the array changes between queries or the operation is not invertible.",
+     "learn": [
+      "Size 4n recursive or 2n iterative (bottom-up) implementation; know both",
+      "Node stores the aggregate of its segment; combine children with the associative operation",
+      "Store extra info per node: (min, count of min), (gcd, count equal to gcd), bitmask of letters",
+      "Alternating operations per level (Xenia) \u2014 node operation can depend on depth",
+      "Build in O(n); check the identity element for empty ranges (0 for sum, INF for min)",
+      "If only prefix sums are needed and values are invertible, a BIT is shorter"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Segment tree",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.3 (p. 89)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Point Update Range Sum",
+       "url": "https://usaco.guide/gold/PURS",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Segment Tree",
+       "url": "https://cp-algorithms.com/data_structures/segment_tree.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 40
+      },
+      {
+       "title": "Codeforces EDU: Segment Tree, part 1",
+       "url": "https://codeforces.com/edu/course/2/lesson/4",
+       "kind": "cf-edu",
+       "where": "ITMO Academy pilot course, lesson 4",
+       "minutes": 90
+      },
+      {
+       "title": "Efficient and easy segment trees (Al.Cash)",
+       "url": "https://codeforces.com/blog/entry/18051",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1198B",
+       "src": "cf",
+       "name": "Welfare State",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1234D",
+       "src": "cf",
+       "name": "Distinct Characters Queries",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "339D",
+       "src": "cf",
+       "name": "Xenia and Bit Operations",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1611F",
+       "src": "cf",
+       "name": "ATM and Students",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "474F",
+       "src": "cf",
+       "name": "Ant colony",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1649",
+       "src": "cses",
+       "name": "Dynamic Range Minimum Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1648",
+       "src": "cses",
+       "name": "Dynamic Range Sum Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1647",
+       "src": "cses",
+       "name": "Static Range Minimum Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-segtree-combine",
+     "name": "Segment tree with custom node merge",
+     "tier": 1900,
+     "order": 2,
+     "prereq": [
+      "ds-segtree-basic"
+     ],
+     "summary": "Many problems need nodes that store several values merged non-trivially: max subarray sum (sum, best prefix, best suffix, best), bracket matching (unmatched open/close), sorted runs (prefix/suffix length), or a small DP/matrix whose merge is matrix multiplication. Design the node so that merge(left,right) is associative.",
+     "learn": [
+      "Max subarray: node = {sum, pref, suf, best}; merge in O(1)",
+      "Brackets: node = {matched, open, close}; matched += min(left.open, right.close)",
+      "Non-commutative merges: keep order left-then-right; iterative trees need separate left/right accumulators",
+      "Counting non-decreasing subarrays: store length, prefix run, suffix run, count",
+      "Small DP state per node (e.g. 3x3 or 5x5 automaton matrix) merged by (min,+) matrix product",
+      "Write merge once and reuse it for both build/update and query"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: More Applications of Segment Tree (non-commutative combiners)",
+       "url": "https://usaco.guide/plat/segtree-ext",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Segment Tree (finding subsegments with maximal sum)",
+       "url": "https://cp-algorithms.com/data_structures/segment_tree.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "Codeforces EDU: Segment Tree, part 1 (step 2)",
+       "url": "https://codeforces.com/edu/course/2/lesson/4",
+       "kind": "cf-edu",
+       "where": "ITMO Academy pilot course, lesson 4",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "380C",
+       "src": "cf",
+       "name": "Sereja and Brackets",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1514D",
+       "src": "cf",
+       "name": "Cut and Stick",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1567E",
+       "src": "cf",
+       "name": "Non-Decreasing Dilemma",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "85D",
+       "src": "cf",
+       "name": "Sum of Medians",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "145E",
+       "src": "cf",
+       "name": "Lucky Queries",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1609E",
+       "src": "cf",
+       "name": "William The Oblivious",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "750E",
+       "src": "cf",
+       "name": "New Year and Old Subsequence",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1004F",
+       "src": "cf",
+       "name": "Sonya and Bitwise OR",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1149C",
+       "src": "cf",
+       "name": "Tree Generator\u2122",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1190",
+       "src": "cses",
+       "name": "Subarray Sum Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2166",
+       "src": "cses",
+       "name": "Prefix Sum Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2206",
+       "src": "cses",
+       "name": "Pizzeria Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-segtree-walk",
+     "name": "Walking / descending on a segment tree",
+     "tier": 1900,
+     "order": 3,
+     "prereq": [
+      "ds-segtree-basic"
+     ],
+     "summary": "Instead of binary searching outside the tree (O(log^2 n)), descend from the root choosing the child that still contains the answer, in O(log n). This finds the k-th one, the first index with a_i >= x, the first position where a prefix sum exceeds a value, or the leftmost element in [l, r] not divisible by g.",
+     "learn": [
+      "k-th one: if left.count >= k go left else k -= left.count and go right",
+      "First index >= l with a_i >= x: recursive search that skips nodes with max < x",
+      "Combine walks with range restrictions by visiting only O(log n) canonical nodes",
+      "Find max suffix with positive sum (matching problems like Serge and Dining Room)",
+      "Interactive / offline variants: cache node counts to reuse queries"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: More Applications of Segment Tree (walking)",
+       "url": "https://usaco.guide/plat/segtree-ext",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 25
+      },
+      {
+       "title": "cp-algorithms: Segment Tree (searching for the k-th zero / first element greater than x)",
+       "url": "https://cp-algorithms.com/data_structures/segment_tree.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "Codeforces EDU: Segment Tree, part 1 (step 2-3)",
+       "url": "https://codeforces.com/edu/course/2/lesson/4",
+       "kind": "cf-edu",
+       "where": "ITMO Academy pilot course, lesson 4",
+       "minutes": 60
+      }
+     ],
+     "problems": [
+      {
+       "id": "914D",
+       "src": "cf",
+       "name": "Bash and a Tough Math Puzzle",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "899F",
+       "src": "cf",
+       "name": "Letters Removing",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1997E",
+       "src": "cf",
+       "name": "Level Up",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1520F2",
+       "src": "cf",
+       "name": "Guess the K-th Zero (Hard version)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1179C",
+       "src": "cf",
+       "name": "Serge and Dining Room",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1404C",
+       "src": "cf",
+       "name": "Fixed Point Removal",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1143",
+       "src": "cses",
+       "name": "Hotel Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1749",
+       "src": "cses",
+       "name": "List Removals",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-lazy-propagation",
+     "name": "Lazy propagation (range update, range query)",
+     "tier": 2000,
+     "order": 4,
+     "prereq": [
+      "ds-segtree-basic"
+     ],
+     "summary": "Lazy propagation postpones range updates by storing a pending tag in each node and pushing it to children only when needed, so both range updates and range queries cost O(log n). Common tags: range add, range assign, range flip/xor per bit, multiply, and combinations of them.",
+     "learn": [
+      "Each node: aggregate + lazy tag; push(node) before descending; pull(node) after recursing",
+      "Compose tags correctly: assign overrides add; (mul, add) composes as an affine map",
+      "Range xor / flip: store per-bit counts (count of ones in each of ~20 bits)",
+      "Euler tour turns subtree updates on trees into range updates",
+      "Range add + range min/max is the most common combo (max overlap of intervals, dp with ranges)",
+      "26 lazy trees (one per letter) or counting sort per range for string range-sort problems"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Lazy propagation",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 28.1 (p. 258)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Range Update Range Query",
+       "url": "https://usaco.guide/plat/RURQ",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Segment Tree (range updates / lazy propagation)",
+       "url": "https://cp-algorithms.com/data_structures/segment_tree.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "Codeforces EDU: Segment Tree, part 2",
+       "url": "https://codeforces.com/edu/course/2/lesson/5",
+       "kind": "cf-edu",
+       "where": "ITMO Academy pilot course, lesson 5",
+       "minutes": 90
+      }
+     ],
+     "problems": [
+      {
+       "id": "242E",
+       "src": "cf",
+       "name": "XOR on Segment",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "877E",
+       "src": "cf",
+       "name": "Danil and a Part-time Job",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1555E",
+       "src": "cf",
+       "name": "Boring Segments",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "343D",
+       "src": "cf",
+       "name": "Water Tree",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "620E",
+       "src": "cf",
+       "name": "New Year Tree",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "52C",
+       "src": "cf",
+       "name": "Circular RMQ",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1295E",
+       "src": "cf",
+       "name": "Permutation Separation",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "558E",
+       "src": "cf",
+       "name": "A Simple Task",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "718C",
+       "src": "cf",
+       "name": "Sasha and Array",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1114F",
+       "src": "cf",
+       "name": "Please, another Queries on Array?",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "446C",
+       "src": "cf",
+       "name": "DZY Loves Fibonacci Numbers",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1735",
+       "src": "cses",
+       "name": "Range Updates and Sums",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1736",
+       "src": "cses",
+       "name": "Polynomial Queries",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1651",
+       "src": "cses",
+       "name": "Range Update Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-segtree-compress-dynamic",
+     "name": "Coordinate compression & dynamic (sparse) segment trees",
+     "tier": 2000,
+     "order": 5,
+     "prereq": [
+      "ds-segtree-basic"
+     ],
+     "summary": "When indices are huge (up to 1e9) either compress the coordinates offline or create nodes on demand (dynamic segment tree, O(q log C) nodes). A very common pattern is a segment tree indexed by value or prefix-sum, used to speed up DP transitions dp[i] = best over j with some key condition.",
+     "learn": [
+      "Offline: collect all coordinates/queries, sort+unique, map to 0..m-1",
+      "Dynamic tree: children created lazily (pointer or index arrays), root covers [0, C)",
+      "Segment tree over values for dp[i] = max over earlier j with key_j < key_i (LIS-like)",
+      "Segment tree over prefix sums for dp with sign conditions (sum > 0, sum = 0)",
+      "Careful with interval endpoints when compressing ranges (compress l and r+1)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Sparse Segment Trees",
+       "url": "https://usaco.guide/plat/sparse-segtree",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      },
+      {
+       "title": "CPH: Dynamic trees (dynamic segment tree)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 28.2 (p. 261)",
+       "minutes": 10
+      },
+      {
+       "title": "CPH: Additional techniques (index compression)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 9.4 (p. 93)",
+       "minutes": 5
+      }
+     ],
+     "problems": [
+      {
+       "id": "474E",
+       "src": "cf",
+       "name": "Pillars",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1667B",
+       "src": "cf",
+       "name": "Optimal Partition",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1788E",
+       "src": "cf",
+       "name": "Sum Over Zero",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1557D",
+       "src": "cf",
+       "name": "Ezzat and Grid",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "817F",
+       "src": "cf",
+       "name": "MEX Queries",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "915E",
+       "src": "cf",
+       "name": "Physical Education Lessons",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1144",
+       "src": "cses",
+       "name": "Salary Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-merge-sort-tree",
+     "name": "Merge sort tree & wavelet ideas",
+     "tier": 2100,
+     "order": 6,
+     "prereq": [
+      "ds-segtree-basic"
+     ],
+     "summary": "Each segment-tree node stores the sorted list of its segment (or another structure such as a BIT/set). A query splits into O(log n) nodes and binary searches each, answering \"how many values in a[l..r] are <= x\" in O(log^2 n) online. Wavelet trees and persistent trees are faster alternatives for the same k-th / count queries.",
+     "learn": [
+      "Build by merging children: O(n log n) memory and time",
+      "Count values < x in [l, r]: sum of lower_bound over O(log n) nodes",
+      "k-th smallest in range: binary search on the answer with the count query (O(log^3)) or use persistent/wavelet tree",
+      "Node can hold any structure (set, BIT, convex hull) -> \"segment tree of X\"",
+      "Fractional cascading reduces queries to O(log n) (rarely needed)"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Data structures (segment tree nodes containing structures)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 28.3 (p. 263)",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Segment Tree (saving the entire subarrays in each vertex)",
+       "url": "https://cp-algorithms.com/data_structures/segment_tree.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Wavelet Tree",
+       "url": "https://usaco.guide/adv/wavelet",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "961E",
+       "src": "cf",
+       "name": "Tufurama",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "538F",
+       "src": "cf",
+       "name": "A Heap of Heaps",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "813E",
+       "src": "cf",
+       "name": "Army Creation",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "323C",
+       "src": "cf",
+       "name": "Two permutations",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "840D",
+       "src": "cf",
+       "name": "Destiny",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1793F",
+       "src": "cf",
+       "name": "Rebrending",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "ds-persistent-segtree",
+     "name": "Persistent segment tree",
+     "tier": 2300,
+     "order": 7,
+     "prereq": [
+      "ds-segtree-basic",
+      "ds-segtree-compress-dynamic"
+     ],
+     "summary": "A persistent segment tree copies only the O(log n) nodes changed by each update, keeping every past version. Building versions over prefixes of the array answers k-th smallest in a range, distinct values in a range and \"count of x in [l,r] among elements <= v\" online in O(log n).",
+     "learn": [
+      "Node pool with left/right child indices; update returns a new root",
+      "Version i = tree after inserting a_1..a_i; query(l,r) uses root[r] minus root[l-1]",
+      "k-th smallest in [l,r]: descend both versions simultaneously comparing count differences",
+      "Online distinct-in-range: version r marks only the last occurrence of each value",
+      "Memory: each update creates ~log2(n)+1 nodes, so allocate about (n + q) * 20 nodes (20-40 x n) statically",
+      "Version trees (undo/rollback queries) can also be handled offline by DFS over the version tree"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Dynamic trees (persistent segment tree)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 28.2 (p. 261)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Persistent Data Structures",
+       "url": "https://usaco.guide/adv/persistent",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Segment Tree (persistent segment tree)",
+       "url": "https://cp-algorithms.com/data_structures/segment_tree.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "707D",
+       "src": "cf",
+       "name": "Persistent Bookcase",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1000F",
+       "src": "cf",
+       "name": "One Occurrence",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "786C",
+       "src": "cf",
+       "name": "Till I Collapse",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1080F",
+       "src": "cf",
+       "name": "Katya and Segments Sets",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "323C",
+       "src": "cf",
+       "name": "Two permutations",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "484E",
+       "src": "cf",
+       "name": "Sign on Fence",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1771F",
+       "src": "cf",
+       "name": "Hossam and Range Minimum Query",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1737",
+       "src": "cses",
+       "name": "Range Queries and Copies",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-segtree-beats",
+     "name": "Segment tree beats & amortised segment trees",
+     "tier": 2400,
+     "order": 8,
+     "prereq": [
+      "ds-lazy-propagation"
+     ],
+     "summary": "Some range updates (a_i %= x, a_i = sqrt(a_i), a_i = min(a_i, x), a_i = d(a_i)) cannot be lazily tagged but each element can change only a few times, or changes collapse values together. Recursing until a node is \"settled\" gives amortised O((n+q) log n) or O(n log^2 n) \u2014 the idea behind segment tree beats (Ji driver segtree).",
+     "learn": [
+      "Range mod / sqrt / divisor-count: skip a node if max < x (or all values <= 2); each element changes O(log) times",
+      "Chmin beats: store max, second max and count of max; tag only when second_max < x < max",
+      "Potential-function argument: total work bounded by number of value changes",
+      "Range assign with color-merging amortisation (segments of equal colour)",
+      "Very advanced (beats with history sums) rarely needed below 2600"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Segment Tree Beats",
+       "url": "https://usaco.guide/adv/segtree-beats",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "A simple introduction to \"Segment tree beats\" (jiry_2)",
+       "url": "https://codeforces.com/blog/entry/57319",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "920F",
+       "src": "cf",
+       "name": "SUM and REPLACE",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "438D",
+       "src": "cf",
+       "name": "The Child and Sequence",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "444C",
+       "src": "cf",
+       "name": "DZY Loves Colors",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "793F",
+       "src": "cf",
+       "name": "Julia the snail",
+       "rating": 3000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "679E",
+       "src": "cf",
+       "name": "Bear and Bad Powers of 42",
+       "rating": 3100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "855F",
+       "src": "cf",
+       "name": "Nagini",
+       "rating": 3100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "453E",
+       "src": "cf",
+       "name": "Little Pony and Lord Tirek",
+       "rating": 3100,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ds-offline-sqrt",
+   "name": "Offline Queries, Sweep Line & Sqrt Techniques",
+   "cfTags": [
+    "data structures",
+    "sortings",
+    "two pointers",
+    "brute force",
+    "divide and conquer"
+   ],
+   "subtopics": [
+    {
+     "id": "ds-offline-sweep",
+     "name": "Offline queries & sweep line with BIT/segment tree",
+     "tier": 1700,
+     "order": 1,
+     "prereq": [
+      "ds-fenwick",
+      "ds-ordered-set",
+      "@sort-compress-events"
+     ],
+     "summary": "If all queries are known in advance, sort them (by right endpoint, by x-coordinate, by time) and sweep, maintaining a BIT/segment tree/set that answers each query when the sweep reaches it. Classic: distinct values in a range (keep only the last occurrence), counting nested/intersecting segments, events of intervals.",
+     "learn": [
+      "Event sweep: +1 at l, -1 at r+1, sort events (tie-breaking matters!) to get max overlap/covered points",
+      "Distinct in [l,r]: sort queries by r; when a value reappears clear its previous position in the BIT",
+      "Count points in rectangles / segments containing points: sort by one coordinate, BIT on the other",
+      "Answer queries in reverse (deletions become insertions) when that is easier",
+      "Process segments sorted by left endpoint while a set holds open segments (union of intervals, building graphs)"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Sweep line algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 30 (p. 275)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Sweep Line",
+       "url": "https://usaco.guide/plat/sweep-line",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Range Queries with Sweep Line",
+       "url": "https://usaco.guide/plat/range-sweep",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: More Applications of Segment Tree",
+       "url": "https://usaco.guide/plat/segtree-ext",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1000C",
+       "src": "cf",
+       "name": "Covered Points Count",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1420D",
+       "src": "cf",
+       "name": "Rescue Nibel!",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1462F",
+       "src": "cf",
+       "name": "The Treasure of The Segments",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1278D",
+       "src": "cf",
+       "name": "Segment Tree",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "703D",
+       "src": "cf",
+       "name": "Mishka and Interesting sum",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "369E",
+       "src": "cf",
+       "name": "Valera and Queries",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1401E",
+       "src": "cf",
+       "name": "Divide Square",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1619",
+       "src": "cses",
+       "name": "Restaurant Customers",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1734",
+       "src": "cses",
+       "name": "Distinct Values Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-sqrt-decomposition",
+     "name": "Sqrt decomposition (blocks, heavy/light, batching)",
+     "tier": 2000,
+     "order": 2,
+     "prereq": [
+      "ds-prefix-difference"
+     ],
+     "summary": "Split the array into ~sqrt(n) blocks storing aggregates, so updates and queries touch O(sqrt n) blocks/elements. The same idea appears as \"small parameter -> precompute, large parameter -> brute force\" (threshold on step size or set size) and as rebuilding a structure every sqrt(q) queries.",
+     "learn": [
+      "Blocks of size B ~ sqrt(n): full blocks via aggregate, partial blocks element by element",
+      "Threshold trick: for step k <= sqrt(n) precompute answers, for k > sqrt(n) only n/k terms exist",
+      "Heavy/light sets: sets larger than sqrt(total) are few, handle them specially",
+      "Batching/rebuilding: keep a buffer of recent updates and rebuild every sqrt(q) operations",
+      "Tune B empirically; prefer cache-friendly arrays; sqrt solutions often run near the time limit"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Square root algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 27 (p. 251)",
+       "minutes": 15
+      },
+      {
+       "title": "CPH: Combining algorithms",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 27.1 (p. 252)",
+       "minutes": 5
+      },
+      {
+       "title": "USACO Guide: Square Root Decomposition",
+       "url": "https://usaco.guide/plat/sqrt",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 35
+      },
+      {
+       "title": "cp-algorithms: Sqrt Decomposition",
+       "url": "https://cp-algorithms.com/data_structures/sqrt_decomposition.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1921F",
+       "src": "cf",
+       "name": "Sum of Progression",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "797E",
+       "src": "cf",
+       "name": "Array Queries",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1207F",
+       "src": "cf",
+       "name": "Remainder Problem",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "103D",
+       "src": "cf",
+       "name": "Time to Raid Cowavans",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1580C",
+       "src": "cf",
+       "name": "Train Maintenance",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1806E",
+       "src": "cf",
+       "name": "Tree Master",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "348C",
+       "src": "cf",
+       "name": "Subset Sums",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "455D",
+       "src": "cf",
+       "name": "Serega and Fun",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "13E",
+       "src": "cf",
+       "name": "Holes",
+       "rating": 2700,
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-mo-algorithm",
+     "name": "Mo's algorithm",
+     "tier": 2200,
+     "order": 3,
+     "prereq": [
+      "ds-sqrt-decomposition"
+     ],
+     "summary": "Mo's algorithm answers offline range queries by sorting them in blocks of the left endpoint and moving two pointers, with O(1) or O(log) add/remove operations, for total O((n + q) sqrt n). It is the go-to tool for 'number of distinct / pairs with property / frequency-based value in [l, r]' when no clever sweep exists.",
+     "learn": [
+      "Sort by (l / B, r), alternating r direction per block (odd-even trick) for speed; B ~ n / sqrt(q)",
+      "Implement add(i) and remove(i) that update a global answer and frequency array",
+      "Prefix xors turn \"subarrays with xor k\" into pairs of prefix indices inside the range",
+      "Mo's on trees: Euler tour (in/out times) to linearise paths or subtrees",
+      "Mo's with updates: add a time dimension, block size n^(2/3), complexity O(n^(5/3))",
+      "Hilbert-curve ordering is a faster alternative ordering"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Mo's algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 27.3 (p. 255)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Square Root Decomposition (Mo's algorithm)",
+       "url": "https://usaco.guide/plat/sqrt",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Sqrt Decomposition (Mo's algorithm)",
+       "url": "https://cp-algorithms.com/data_structures/sqrt_decomposition.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "An alternative sorting order for Mo's algorithm (Hilbert order)",
+       "url": "https://codeforces.com/blog/entry/61203",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "220B",
+       "src": "cf",
+       "name": "Little Elephant and Array",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "576C",
+       "src": "cf",
+       "name": "Points on Plane",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "86D",
+       "src": "cf",
+       "name": "Powerful array",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "617E",
+       "src": "cf",
+       "name": "XOR and Favorite Number",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "877F",
+       "src": "cf",
+       "name": "Ann and Books",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "375D",
+       "src": "cf",
+       "name": "Tree and Queries",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "940F",
+       "src": "cf",
+       "name": "Machine Learning",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1734",
+       "src": "cses",
+       "name": "Distinct Values Queries",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-small-to-large",
+     "name": "Small-to-large merging (DSU on tree)",
+     "tier": 2000,
+     "order": 4,
+     "prereq": [
+      "ds-sets-maps",
+      "@trees-traversal"
+     ],
+     "summary": "When merging sets/maps, always insert the smaller one into the larger one: each element moves O(log n) times, so total work is O(n log^2 n) with std::set/map. On trees this computes per-subtree statistics (dominant colour, counts per depth) by merging children into the heaviest child.",
+     "learn": [
+      "swap(a, b) if a.size() < b.size(), then insert b into a (swap of std containers is O(1))",
+      "Tree version (sack): keep the heavy child data, re-add light subtrees",
+      "Maintain auxiliary aggregates (max frequency, sum of dominant colours) during insertion",
+      "Also works for merging DSU components with lists and for merging priority queues",
+      "Alternative linear-time approaches: Euler tour + offline sweep, or long-path decomposition for depth-indexed data",
+      "Segment-tree merging (merging dynamic segment trees of children in total O(n log n)) is the faster cousin for value-indexed data"
+     ],
+     "resources": [
+      {
+       "title": "CPH: Offline algorithms (merging data structures)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 18.4 (p. 170)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Small-To-Large Merging",
+       "url": "https://usaco.guide/plat/merging",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 25
+      },
+      {
+       "title": "[Tutorial] Sack (dsu on tree) by Arpa",
+       "url": "https://codeforces.com/blog/entry/44351",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1923E",
+       "src": "cf",
+       "name": "Count Paths",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "208E",
+       "src": "cf",
+       "name": "Blood Cousins",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "570D",
+       "src": "cf",
+       "name": "Tree Requests",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "600E",
+       "src": "cf",
+       "name": "Lomsat gelral",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1009F",
+       "src": "cf",
+       "name": "Dominant Indices",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "246E",
+       "src": "cf",
+       "name": "Blood Cousins Return",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1709E",
+       "src": "cf",
+       "name": "XOR Tree",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1139",
+       "src": "cses",
+       "name": "Distinct Colors",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "ds-parallel-binsearch",
+     "name": "Parallel binary search",
+     "tier": 2300,
+     "order": 5,
+     "prereq": [
+      "ds-offline-sweep",
+      "@bs-answer",
+      "@dsu-basics"
+     ],
+     "summary": "When every query needs its own binary search over time (\"first moment when condition holds\"), and each check requires replaying the same sequence of updates, run all binary searches simultaneously: in each of O(log T) rounds sort queries by their midpoint, replay the updates once and check every query as the replay passes its midpoint. Total O((T + Q) log T * cost of update).",
+     "learn": [
+      "Recognise: answer for each query is monotone in time / in a threshold, and checking one time costs a full replay of updates",
+      "Per round: bucket queries by mid = (lo + hi) / 2, reset the structure, apply updates 1..T in order and test queries in bucket t after update t",
+      "Usual structures inside: DSU (first time u and v are connected), BIT with range add (meteor-style accumulation), segment tree",
+      "O(log T) rounds; reset the structure each round (DSU re-init, BIT clear)",
+      "Alternatives to compare: persistent structures, Kruskal reconstruction tree, divide and conquer over time with rollback",
+      "Recursive form: solve(lo, hi, queries) applies updates of [lo, mid], splits queries into two lists and recurses (needs undo or careful order)"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Binary search (Parallel Binary Search section)",
+       "url": "https://cp-algorithms.com/num_methods/binary_search.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "Parallel Binary Search [tutorial]",
+       "url": "https://codeforces.com/blog/entry/45578",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1706E",
+       "src": "cf",
+       "name": "Qpwoeirut and Vertices",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "484E",
+       "src": "cf",
+       "name": "Sign on Fence",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1920F2",
+       "src": "cf",
+       "name": "Smooth Sailing (Hard Version)",
+       "rating": 3000,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2101",
+       "src": "cses",
+       "name": "New Roads Queries",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "ds-offline-deletion",
+     "name": "Offline deletion / segment tree over time",
+     "tier": 2400,
+     "order": 6,
+     "prereq": [
+      "ds-segtree-basic",
+      "@dsu-rollback"
+     ],
+     "summary": "If a structure supports insertions and rollback (undo) but not deletions \u2014 like DSU without path compression or a linear basis \u2014 place each element on the O(log q) segment-tree nodes covering its lifetime in the query timeline, then DFS the tree applying and undoing insertions. This gives offline dynamic connectivity and similar results in O(q log q * T).",
+     "learn": [
+      "Each element is alive on a time interval [add, remove); add it to O(log q) canonical nodes",
+      "DFS the time segment tree: apply node items on entry, answer leaf queries, roll back on exit",
+      "DSU with union by size and no path compression supports O(log n) rollback via a change stack",
+      "Works for any \"insert + undo\" structure: DSU, xor basis, knapsack dp array",
+      "Divide-and-conquer on queries (CDQ, see @dc-cdq) is the related technique for offline insertions + queries",
+      "Knapsack variant: items alive on time intervals, or \"take a whole array except one\" (1442D) - add items to segment-tree nodes and copy the dp array on the way down"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Offline Deletion",
+       "url": "https://usaco.guide/adv/offline-del",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Deleting from a data structure in O(T(n) log n)",
+       "url": "https://cp-algorithms.com/data_structures/deleting_in_log_n.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "891C",
+       "src": "cf",
+       "name": "Envy",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "813F",
+       "src": "cf",
+       "name": "Bipartite Checking",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1140F",
+       "src": "cf",
+       "name": "Extending Set of Points",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1217F",
+       "src": "cf",
+       "name": "Forced Online Queries Problem",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1442D",
+       "src": "cf",
+       "name": "Sum",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "601E",
+       "src": "cf",
+       "name": "A Museum Robbery",
+       "rating": 2800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "938G",
+       "src": "cf",
+       "name": "Shortest Path Queries",
+       "rating": 2900,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ds-bbst",
+   "name": "Balanced BSTs (Treaps)",
+   "cfTags": [
+    "data structures"
+   ],
+   "subtopics": [
+    {
+     "id": "ds-treap",
+     "name": "Treaps & implicit treaps (split/merge)",
+     "tier": 2300,
+     "order": 1,
+     "prereq": [
+      "ds-lazy-propagation",
+      "ds-pbds"
+     ],
+     "summary": "A treap is a randomised balanced BST supporting split and merge in expected O(log n). Keyed by implicit position, it becomes a dynamic array supporting cut-and-paste of subarrays, reversals (with a lazy flag), insertions in the middle and range aggregates \u2014 things a segment tree cannot do.",
+     "learn": [
+      "Node: key/size, random priority, left/right, aggregate, lazy tags",
+      "split(t, k) into first k elements and the rest (implicit key = size of left subtree)",
+      "merge(l, r) assumes all of l is before r; choose the root by priority",
+      "Cut-and-paste and reversal: split into three parts, modify/flag the middle, merge back",
+      "Push lazy tags (reverse, add) before split/merge; recompute size and aggregate after",
+      "Alternatives: rope (__gnu_cxx::rope) or sqrt decomposition for some problems"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Treaps",
+       "url": "https://usaco.guide/adv/treaps",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "cp-algorithms: Treap (Cartesian tree)",
+       "url": "https://cp-algorithms.com/data_structures/treap.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "420D",
+       "src": "cf",
+       "name": "Cup Trick",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "85D",
+       "src": "cf",
+       "name": "Sum of Medians",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "38G",
+       "src": "cf",
+       "name": "Queue",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "702F",
+       "src": "cf",
+       "name": "T-Shirts",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2072",
+       "src": "cses",
+       "name": "Cut and Paste",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2073",
+       "src": "cses",
+       "name": "Substring Reversals",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2074",
+       "src": "cses",
+       "name": "Reversals and Sums",
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

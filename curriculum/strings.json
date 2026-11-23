@@ -1,0 +1,3033 @@
+{
+ "area": "strings",
+ "topics": [
+  {
+   "id": "string-basics",
+   "name": "String Basics",
+   "cfTags": [
+    "strings",
+    "implementation",
+    "greedy",
+    "expression parsing"
+   ],
+   "subtopics": [
+    {
+     "id": "str-frequency",
+     "name": "Frequency counting & anagrams",
+     "tier": 800,
+     "order": 1,
+     "prereq": [],
+     "summary": "Count occurrences of each character (array of 26 or a map) and reason only about the multiset of letters. Appears whenever order does not matter: anagrams, rearrangements into palindromes, \"can we make the strings equal by swaps\", distinct-character splits.",
+     "learn": [
+      "Use int cnt[26] (c - 'a') instead of map<char,int> for speed and simplicity",
+      "Two strings are anagrams iff their count arrays are equal; rearrangement questions reduce to comparing counts",
+      "Prefix/suffix distinct counts let you evaluate every split point in O(n * 26) or O(n)",
+      "A multiset can be arranged into a palindrome iff at most one letter has an odd count",
+      "Map one string to another (pattern templates) with two maps to enforce a bijection",
+      "Pitfall: uppercase/lowercase and digits need separate offsets; reset count arrays between test cases in O(26), not O(maxn)"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.1: String terminology",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.1 (p. 243)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Introduction to Sets & Maps",
+       "url": "https://usaco.guide/bronze/intro-sets",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: Hash Maps",
+       "url": "https://usaco.guide/gold/hashmaps",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1883B",
+       "src": "cf",
+       "name": "Chemistry",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1800B",
+       "src": "cf",
+       "name": "Count the Number of Pairs",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1223B",
+       "src": "cf",
+       "name": "Strings Equalization",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1791D",
+       "src": "cf",
+       "name": "Distinct Split",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "2000C",
+       "src": "cf",
+       "name": "Numeric String Template",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1669E",
+       "src": "cf",
+       "name": "2-Letter Strings",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1332C",
+       "src": "cf",
+       "name": "K-Complete Word",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1781C",
+       "src": "cf",
+       "name": "Equal Frequencies",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1755",
+       "src": "cses",
+       "name": "Palindrome Reorder",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1622",
+       "src": "cses",
+       "name": "Creating Strings",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "str-runs",
+     "name": "Runs, blocks & binary strings",
+     "tier": 800,
+     "order": 2,
+     "prereq": [
+      "str-frequency"
+     ],
+     "summary": "Split a string into maximal blocks of equal characters (run-length encoding) and reason about the number of blocks, their lengths and the transitions between them. Very common in 800-1700 problems on binary strings: deleting/merging blocks, counting \"01\"/\"10\" boundaries, cutting a string into pieces, games that remove blocks.",
+     "learn": [
+      "Run-length encode in one pass: vector of (char, length); the number of blocks = 1 + number of i with s[i] != s[i-1]",
+      "Many operations only change block counts by at most 1 or 2: think in terms of boundaries (transitions), not characters",
+      "Binary string sortedness: a sorted 0...01...1 string has at most one \"10\" boundary; count \"10\" transitions to measure distance from sorted",
+      "Games removing blocks: players greedily take the largest remaining block of 1s (sort block lengths)",
+      "Substring counting by the last transition: any substring ending at i whose last two characters differ behaves like the whole prefix (Paranoid String pattern)",
+      "Cyclic strings: rotate so the string starts at a block boundary, then merge the first and last block if equal",
+      "Greedy with a pointer over blocks: delete from the earliest block of length >= 2 to save operations"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.1: String terminology",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.1 (p. 243)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1303A",
+       "src": "cf",
+       "name": "Erasing Zeroes",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1398B",
+       "src": "cf",
+       "name": "Substring Removal Game",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1566B",
+       "src": "cf",
+       "name": "MIN-MEX Cut",
+       "rating": 800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1678B1",
+       "src": "cf",
+       "name": "Tokitsukaze and Good 01-String (easy version)",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "2192A",
+       "src": "cf",
+       "name": "String Rotation Game",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1837B",
+       "src": "cf",
+       "name": "Comparison String",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1971D",
+       "src": "cf",
+       "name": "Binary Cut",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1694B",
+       "src": "cf",
+       "name": "Paranoid String",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1352F",
+       "src": "cf",
+       "name": "Binary String Reconstruction",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1430D",
+       "src": "cf",
+       "name": "String Deletion",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1678B2",
+       "src": "cf",
+       "name": "Tokitsukaze and Good 01-String (hard version)",
+       "rating": 1800,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "str-palindromes-basic",
+     "name": "Palindromes (basic)",
+     "tier": 900,
+     "order": 3,
+     "prereq": [
+      "str-frequency"
+     ],
+     "summary": "Recognise and construct palindromes with two pointers from both ends and mirrored positions i and n-1-i. Typical tasks: make a string a palindrome with minimum changes, build the longest palindrome from given pieces, decide if some subsequence/substring is a palindrome.",
+     "learn": [
+      "Mirror pairs (i, n-1-i) are independent: fix each pair greedily, middle char is free when n is odd",
+      "Every palindrome of length >= 2 contains a palindrome of length 2 or 3 (useful for \"no palindromic substring\" tasks)",
+      "Palindromic subsequence of length 3 exists iff some value appears twice at distance >= 2",
+      "Count-based reasoning: pairs of letters build the two halves, at most one odd letter in the middle",
+      "Two-pointer shrink from both ends when you may delete one kind of character",
+      "For many substring palindrome queries move on to hashing or Manacher"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.1: String terminology",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.1 (p. 243)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Ad Hoc Problems",
+       "url": "https://usaco.guide/bronze/ad-hoc",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1324B",
+       "src": "cf",
+       "name": "Yet Another Palindrome Problem",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1304B",
+       "src": "cf",
+       "name": "Longest Palindrome",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1867B",
+       "src": "cf",
+       "name": "XOR Palindromes",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1512C",
+       "src": "cf",
+       "name": "A-B Palindrome",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1251B",
+       "src": "cf",
+       "name": "Binary Palindromes",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1421C",
+       "src": "cf",
+       "name": "Palindromifier",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1624D",
+       "src": "cf",
+       "name": "Palindromes Coloring",
+       "rating": 1400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1822E",
+       "src": "cf",
+       "name": "Making Anti-Palindromes",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1555D",
+       "src": "cf",
+       "name": "Say No to Palindromes",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1335E1",
+       "src": "cf",
+       "name": "Three Blocks Palindrome (easy version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2069D",
+       "src": "cf",
+       "name": "Palindrome Shuffle",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1109B",
+       "src": "cf",
+       "name": "Sasha and One More Name",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1951E",
+       "src": "cf",
+       "name": "No Palindromes",
+       "rating": 2000,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "str-subsequences",
+     "name": "Subsequences & greedy matching",
+     "tier": 1000,
+     "order": 4,
+     "prereq": [
+      "str-frequency"
+     ],
+     "summary": "Check whether t is a subsequence of s by a single greedy left-to-right scan, and extend this with next-occurrence tables or prefix/suffix match arrays. Shows up in \"remove characters\", \"minimum number of copies of s to form t\", and \"longest removable substring\" problems.",
+     "learn": [
+      "Greedy matching: take the earliest possible match of each character of t; this is optimal",
+      "Precompute nxt[i][c] = next index >= i holding c (O(26n)) or store positions per letter and binary search",
+      "pre[i] = position where t[0..i] finishes greedily from the left, suf[i] = from the right; combine them to remove a maximum substring",
+      "Counting subsequences such as \"abc\" uses running counts (number of a, number of ab, ...)",
+      "Substring vs subsequence: a substring is contiguous; many traps rely on mixing the two",
+      "Lexicographically largest subsequence = suffix maxima taken from right to left"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.1: String terminology",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.1 (p. 243)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Two Pointers",
+       "url": "https://usaco.guide/silver/two-pointers",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1451B",
+       "src": "cf",
+       "name": "Non-Substring Subsequence",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "1999D",
+       "src": "cf",
+       "name": "Slavic's Exam",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1989B",
+       "src": "cf",
+       "name": "Substring and Subsequence",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1307C",
+       "src": "cf",
+       "name": "Cow and Message",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1368B",
+       "src": "cf",
+       "name": "Codeforces Subsequences",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1924A",
+       "src": "cf",
+       "name": "Did We Get Everything Covered?",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1553D",
+       "src": "cf",
+       "name": "Backspace",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1295C",
+       "src": "cf",
+       "name": "Obtain The String",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1203D2",
+       "src": "cf",
+       "name": "Remove the Substring (hard version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2104E",
+       "src": "cf",
+       "name": "Unpleasant Strings",
+       "rating": 1700,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "str-lexicographic",
+     "name": "Lexicographic order tricks",
+     "tier": 1100,
+     "order": 5,
+     "prereq": [
+      "str-subsequences",
+      "@greedy-lexicographic"
+     ],
+     "summary": "Reason about lexicographic comparison to build the smallest/largest possible string greedily: the first differing position decides everything. Appears in \"minimise the string with k operations\", choosing best prefix to repeat, comparing concatenations and MEX-like strings.",
+     "learn": [
+      "Greedy: make the earliest position as small as possible, then recurse on the rest",
+      "A proper prefix is smaller than the longer string; watch this edge case in comparisons",
+      "Sort strings by a+b < b+a to minimise a concatenation",
+      "The smallest string not occurring as a substring has small length (enumerate all length-1, 2, 3 strings)",
+      "Monotonic stack to delete characters for lexicographically smallest/largest result (remove duplicate letters pattern)",
+      "For fast comparison of arbitrary substrings use hashing + binary search, Z-function or suffix array (later sub-topics)"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.1: String terminology",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.1 (p. 243)",
+       "minutes": 10
+      },
+      {
+       "title": "USACO Guide: Greedy Algorithms with Sorting",
+       "url": "https://usaco.guide/silver/greedy-sorting",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1536B",
+       "src": "cf",
+       "name": "Prinzessin der Verurteilung",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1316B",
+       "src": "cf",
+       "name": "String Modification",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1735C",
+       "src": "cf",
+       "name": "Phase Shift",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1675E",
+       "src": "cf",
+       "name": "Replace With the Previous, Minimize",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1742F",
+       "src": "cf",
+       "name": "Smaller",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1348C",
+       "src": "cf",
+       "name": "Phoenix and Distribution",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1537E1",
+       "src": "cf",
+       "name": "Erase and Extend (Easy Version)",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1799C",
+       "src": "cf",
+       "name": "Double Lexicographically Minimum",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1506G",
+       "src": "cf",
+       "name": "Maximize the Remaining String",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1616E",
+       "src": "cf",
+       "name": "Lexicographically Small Enough",
+       "rating": 2200,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "str-brackets",
+     "name": "Bracket sequences",
+     "tier": 1200,
+     "order": 6,
+     "prereq": [
+      "str-frequency",
+      "@ds-stack-basics"
+     ],
+     "summary": "A regular bracket sequence has balance (opens minus closes) that never goes negative and ends at zero. Problems ask to fix, count, colour or query bracket sequences; recognise them by \"(\", \")\" or any balanced-token structure.",
+     "learn": [
+      "Prefix balance b[i]: sequence is regular iff min b >= 0 and b[n] = 0",
+      "Stack matching gives the partner of each bracket and the longest regular substring",
+      "Minimum moves to fix = how far the balance dips below zero",
+      "Range \"longest regular subsequence\" queries: segment tree storing (matched, open, close)",
+      "Counting regular sequences of length 2n = Catalan number; prefix-balance DP for constrained counts",
+      "Bracket sequences also map to trees / paths (+1/-1 walk), useful for constructive tasks"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Balanced bracket sequences",
+       "url": "https://cp-algorithms.com/combinatorics/bracket_sequences.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Stacks",
+       "url": "https://usaco.guide/gold/stacks",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1469A",
+       "src": "cf",
+       "name": "Regular Bracket Sequence",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1374C",
+       "src": "cf",
+       "name": "Move Brackets",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "1657C",
+       "src": "cf",
+       "name": "Bracket Sequence Deletion",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1837D",
+       "src": "cf",
+       "name": "Bracket Coloring",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1503A",
+       "src": "cf",
+       "name": "Balance the Bits",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1709C",
+       "src": "cf",
+       "name": "Recover an RBS",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "5C",
+       "src": "cf",
+       "name": "Longest Regular Bracket Sequence",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "380C",
+       "src": "cf",
+       "name": "Sereja and Brackets",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1976D",
+       "src": "cf",
+       "name": "Invertible Bracket Sequences",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1821E",
+       "src": "cf",
+       "name": "Rearrange Brackets",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2064",
+       "src": "cses",
+       "name": "Bracket Sequences I",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "str-prefix-counts",
+     "name": "Prefix counts & parity masks on strings",
+     "tier": 1400,
+     "order": 7,
+     "prereq": [
+      "str-frequency",
+      "@prefix-1d"
+     ],
+     "summary": "Prefix sums over characters (count of each letter, mismatches against a periodic pattern, digit sums) turn substring questions into O(1) differences. The parity-bitmask variant (bit c = parity of letter c in the prefix) counts substrings where every letter appears an even/odd number of times.",
+     "learn": [
+      "cnt[c][i] = occurrences of c in s[0..i): substring counts are differences",
+      "Compare against periodic targets (RGBRGB...) via prefix mismatch counts for every shift",
+      "Good-substring counting: transform each char (e.g. digit - 1) and count equal prefix sums with a map",
+      "Parity mask: substring has all even counts iff mask[l] == mask[r]; \"at most one odd\" checks the 26 single-bit flips",
+      "Use arrays instead of map when the key space is small (2^26 bitset is too big: use hashing/sorting)",
+      "Combine with two pointers when constraints are monotone in the window length"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Introduction to Prefix Sums",
+       "url": "https://usaco.guide/silver/prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: More on Prefix Sums",
+       "url": "https://usaco.guide/silver/more-prefix-sums",
+       "kind": "usaco",
+       "where": "USACO Guide Silver",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1535C",
+       "src": "cf",
+       "name": "Unstable String",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "1045I",
+       "src": "cf",
+       "name": "Palindrome Pairs",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1196D2",
+       "src": "cf",
+       "name": "RGB Substring (hard version)",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1398C",
+       "src": "cf",
+       "name": "Good Subarrays",
+       "rating": 1600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1849C",
+       "src": "cf",
+       "name": "Binary String Copying",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "1660F1",
+       "src": "cf",
+       "name": "Promising String (easy version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1800F",
+       "src": "cf",
+       "name": "Dasha and Nightmares",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1660F2",
+       "src": "cf",
+       "name": "Promising String (hard version)",
+       "rating": 2100,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "str-parsing",
+     "name": "Parsing & expression evaluation",
+     "tier": 1300,
+     "order": 8,
+     "prereq": [
+      "str-brackets"
+     ],
+     "summary": "Read structured text (numbers, words, nested brackets, loops, mini-languages) and evaluate or transform it. Recursive descent or two stacks (operands + operators with precedence) evaluate arithmetic expressions; a stack of open constructs handles nesting such as loops, comments and tags. Recognised by the CF tag \"expression parsing\" and long input formats.",
+     "learn": [
+      "Tokenise first: split into numbers, identifiers and symbols; be careful with multi-digit numbers and signs",
+      "Two-stack (shunting-yard) evaluation: apply higher-or-equal precedence operators before pushing a new one; \"(\" waits for \")\"",
+      "Recursive descent: expr -> term {(+|-) term}, term -> factor {(*|/) factor}, factor -> number | ( expr )",
+      "Nested constructs (for/end, comments, tags) -> stack of frames holding a multiplier or depth; cap products to avoid overflow",
+      "Decode from the right when a marker follows the encoded item (e.g. two digits then 0)",
+      "Brute force over where to insert one bracket/operator, then re-evaluate in O(n): typical O(n^2) solutions",
+      "Read whole lines with getline and handle trailing spaces / empty tokens carefully"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Expression parsing",
+       "url": "https://cp-algorithms.com/string/expression_parsing.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: Stacks",
+       "url": "https://usaco.guide/gold/stacks",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: Simulation",
+       "url": "https://usaco.guide/bronze/simulation",
+       "kind": "usaco",
+       "where": "USACO Guide Bronze",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "32B",
+       "src": "cf",
+       "name": "Borze",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "1729B",
+       "src": "cf",
+       "name": "Decode String",
+       "rating": 800,
+       "from": "curated"
+      },
+      {
+       "id": "723B",
+       "src": "cf",
+       "name": "Text Document Analysis",
+       "rating": 1100,
+       "from": "curated"
+      },
+      {
+       "id": "1175B",
+       "src": "cf",
+       "name": "Catch Overflow!",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "727B",
+       "src": "cf",
+       "name": "Bill Total Value",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "747E",
+       "src": "cf",
+       "name": "Comments",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "778B",
+       "src": "cf",
+       "name": "Bitwise Formula",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "2052E",
+       "src": "cf",
+       "name": "Expression Correction",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "552E",
+       "src": "cf",
+       "name": "Vanya and Brackets",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "7E",
+       "src": "cf",
+       "name": "Defining Macros",
+       "rating": 2600,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hashing",
+   "name": "Hashing",
+   "cfTags": [
+    "hashing",
+    "strings"
+   ],
+   "subtopics": [
+    {
+     "id": "hash-polynomial",
+     "name": "Polynomial rolling hash",
+     "tier": 1500,
+     "order": 1,
+     "prereq": [
+      "str-frequency",
+      "@math-modular"
+     ],
+     "summary": "Map every prefix to h[i] = s[0]*p^(i-1) + ... + s[i-1] mod M so any substring hash is h[r] - h[l]*p^(r-l) in O(1). Use it whenever you need many substring equality checks: occurrences, distinct substrings, borders, overlaps when merging words.",
+     "learn": [
+      "Precompute prefix hashes and powers; substring hash = (h[r] - h[l]*pw[r-l]) mod M, keep values non-negative",
+      "Choose a large prime modulus (1e9+7 / 998244353, or 2^61-1 with 128-bit multiply) and a RANDOM base chosen at runtime",
+      "Double hashing (two moduli) or mod 2^61-1 makes collisions negligible; never use natural overflow mod 2^64 (Thue-Morse anti-hash)",
+      "Birthday paradox: comparing ~10^6 hashes pairwise needs a modulus far above 10^12",
+      "Distinct substrings of a fixed length: collect hashes in a sorted vector (avoid unordered_map hacks)",
+      "Rabin-Karp: compare the pattern hash with every window hash for O(n + m) matching",
+      "Pitfall: map characters to 1..26, not 0, so that \"a\" and \"aa\" differ",
+      "2D hashing: hash every row, then hash the column of row-hashes with a second base to compare sub-matrices in O(1)"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.3: String hashing",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.3 (p. 245)",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: String Hashing",
+       "url": "https://usaco.guide/gold/hashing",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 35
+      },
+      {
+       "title": "cp-algorithms: String Hashing",
+       "url": "https://cp-algorithms.com/string/string-hashing.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "cp-algorithms: Rabin-Karp for String Matching",
+       "url": "https://cp-algorithms.com/string/rabin-karp.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 10
+      },
+      {
+       "title": "Rolling hash and 8 interesting problems (CF blog)",
+       "url": "https://codeforces.com/blog/entry/60445",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "1800D",
+       "src": "cf",
+       "name": "Remove Two Letters",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1326D1",
+       "src": "cf",
+       "name": "Prefix-Suffix Palindrome (Easy version)",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "316G1",
+       "src": "cf",
+       "name": "Good Substrings",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "2010C2",
+       "src": "cf",
+       "name": "Message Transmission Error (hard version)",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "271D",
+       "src": "cf",
+       "name": "Good Substrings",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1979D",
+       "src": "cf",
+       "name": "Fixing a Binary String",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "113B",
+       "src": "cf",
+       "name": "Petr#",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1984D",
+       "src": "cf",
+       "name": "''a'' String Problem",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "727E",
+       "src": "cf",
+       "name": "Games on a CD",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1469E",
+       "src": "cf",
+       "name": "A Bit Similar",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "hash-anti-hash",
+     "name": "Collisions & anti-hash safety",
+     "tier": 1700,
+     "order": 2,
+     "prereq": [
+      "hash-polynomial"
+     ],
+     "summary": "Understand why hashes collide and how hackers break fixed bases, overflow (mod 2^64) hashing and unordered_map. Matters in every hackable round (Div 2/3/Educational) where a deterministic hash can be hacked after the contest.",
+     "learn": [
+      "Probability of a collision for one comparison is about n/M for polynomial hashes; across many comparisons multiply by their number",
+      "mod 2^64 hashing is broken by Thue-Morse strings regardless of the base",
+      "Fixed base + fixed modulus can be attacked by tree/lattice methods: randomise the base with a time-seeded RNG",
+      "Use mod 2^61-1 or a pair of moduli; compare pairs, not sums",
+      "unordered_map with default hash can be blown up to O(n^2): use a custom splitmix64 hash or sort + unique",
+      "If a solution fails on a random-looking test only after hacks, suspect the hash"
+     ],
+     "resources": [
+      {
+       "title": "On the mathematics behind rolling hashes and anti-hash tests",
+       "url": "https://codeforces.com/blog/entry/60442",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      },
+      {
+       "title": "Blowing up unordered_map, and how to stop getting hacked on it",
+       "url": "https://codeforces.com/blog/entry/62393",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Hash Maps (anti-hash tests)",
+       "url": "https://usaco.guide/gold/hashmaps",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: String Hashing (collision section)",
+       "url": "https://usaco.guide/gold/hashing",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "514C",
+       "src": "cf",
+       "name": "Watto and Mechanism",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1056E",
+       "src": "cf",
+       "name": "Check Transcription",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "898F",
+       "src": "cf",
+       "name": "Restoring the Expression",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "985F",
+       "src": "cf",
+       "name": "Isomorphic Strings",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "533F",
+       "src": "cf",
+       "name": "Encoding",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1129C",
+       "src": "cf",
+       "name": "Morse Code",
+       "rating": 2400,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "hash-binary-search",
+     "name": "Hashing + binary search (LCP, comparisons, palindromes)",
+     "tier": 1900,
+     "order": 3,
+     "prereq": [
+      "hash-polynomial",
+      "@bs-answer"
+     ],
+     "summary": "Binary search the length of the longest common prefix of two substrings using O(1) hash checks, giving O(log n) lexicographic comparison of any two substrings and palindrome radius computation. Used for longest repeated / common substring (binary search on answer), sorting cyclic shifts, palindrome queries with updates.",
+     "learn": [
+      "LCP(i, j) by binary search on length with hash equality: O(log n)",
+      "Compare substrings lexicographically: find LCP, then compare the next character",
+      "Hash the reversed string too: s[l..r] is a palindrome iff forward hash == backward hash",
+      "Longest substring occurring >= k times / common to two strings: binary search the length, check with a hash set",
+      "Hash in a Fenwick/segment tree supports point updates (CSES Palindrome Queries)",
+      "Combine with DP when transitions need \"does block A equal block B\" (e.g. word abbreviations)"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: String Hashing",
+       "url": "https://usaco.guide/gold/hashing",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: String Hashing: applications",
+       "url": "https://cp-algorithms.com/string/string-hashing.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1326D2",
+       "src": "cf",
+       "name": "Prefix-Suffix Palindrome (Hard version)",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "7D",
+       "src": "cf",
+       "name": "Palindrome Degree",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1003F",
+       "src": "cf",
+       "name": "Abbreviation",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "822E",
+       "src": "cf",
+       "name": "Liar",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2038I",
+       "src": "cf",
+       "name": "Polyathlon",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "961F",
+       "src": "cf",
+       "name": "k-substrings",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2420",
+       "src": "cses",
+       "name": "Palindrome Queries",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "hash-sets-xor",
+     "name": "Set / multiset hashing (XOR & sum hashing)",
+     "tier": 1900,
+     "order": 4,
+     "prereq": [
+      "hash-polynomial",
+      "@bit-xor"
+     ],
+     "summary": "Assign each value a random 64-bit number; the XOR (or sum) of a range is then a fingerprint of its set/multiset. Recognise it when you must test \"every value occurs an even number of times\", \"these two ranges are permutations of each other\" or \"this subarray is a permutation\" many times.",
+     "learn": [
+      "XOR of random labels over a range is 0 (whp) iff every value appears an even number of times",
+      "Sum of random labels fingerprints a multiset; compare with the fingerprint of {1..k} to detect permutations",
+      "For \"appears exactly k times\" use labels in Z_k (sum modulo k per component) or cumulative counts mod k",
+      "Prefix XOR + hash map counts subarrays with the property in O(n)",
+      "Use mt19937_64 seeded with time; 64-bit labels make collisions practically impossible",
+      "Graph/cycle tasks: give each edge/cycle a random value and XOR along paths (Zobrist hashing)",
+      "Hash a vertex by the XOR/sum of its neighbours labels to group vertices with equal neighbourhoods",
+      "Rooted-tree hashing / isomorphism is taught in the Trees area (@trees-hashing)"
+     ],
+     "resources": [
+      {
+       "title": "XOR Hashing [Tutorial]",
+       "url": "https://codeforces.com/blog/entry/85900",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: String Hashing (XOR hashing section)",
+       "url": "https://usaco.guide/gold/hashing",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "2014H",
+       "src": "cf",
+       "name": "Robin Hood Archery",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1996G",
+       "src": "cf",
+       "name": "Penacony",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1977D",
+       "src": "cf",
+       "name": "XORificator",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "154C",
+       "src": "cf",
+       "name": "Double Profiles",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "869E",
+       "src": "cf",
+       "name": "The Untended Antiquity",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1830C",
+       "src": "cf",
+       "name": "Hyperregular Bracket Strings",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1175F",
+       "src": "cf",
+       "name": "The Number of Subpermutations",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1418G",
+       "src": "cf",
+       "name": "Three Occurrences",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1746F",
+       "src": "cf",
+       "name": "Kazaee",
+       "rating": 2800,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "prefix-function",
+   "name": "Prefix Function / KMP",
+   "cfTags": [
+    "strings",
+    "string suffix structures"
+   ],
+   "subtopics": [
+    {
+     "id": "kmp-prefix-function",
+     "name": "Prefix function & KMP matching",
+     "tier": 1600,
+     "order": 1,
+     "prereq": [
+      "str-subsequences"
+     ],
+     "summary": "pi[i] is the length of the longest proper border (prefix that is also a suffix) of s[0..i]. Computing it in O(n) and running it on pattern + \"#\" + text gives all occurrences; it is the go-to deterministic tool for borders and pattern matching.",
+     "learn": [
+      "Compute pi with the \"fall back j = pi[j-1]\" loop; amortised O(n)",
+      "Matching: pi of p + \"#\" + t, positions where pi == |p| are occurrences",
+      "All borders of s are pi[n-1], pi[pi[n-1]-1], ... (chain of failure links)",
+      "Count occurrences of every prefix: cnt[pi[i]]++, then propagate down the failure chain",
+      "Number of distinct substrings in O(n^2) by adding characters one at a time",
+      "Works on arrays of integers too (e.g. differences of consecutive heights)"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Prefix function - Knuth-Morris-Pratt",
+       "url": "https://cp-algorithms.com/string/prefix-function.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      },
+      {
+       "title": "USACO Guide: String Searching (KMP)",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      }
+     ],
+     "problems": [
+      {
+       "id": "625B",
+       "src": "cf",
+       "name": "War of the Corporations",
+       "rating": 1200,
+       "from": "curated"
+      },
+      {
+       "id": "1029A",
+       "src": "cf",
+       "name": "Many Equal Substrings",
+       "rating": 1300,
+       "from": "curated"
+      },
+      {
+       "id": "1137B",
+       "src": "cf",
+       "name": "Camp Schedule",
+       "rating": 1600,
+       "from": "curated"
+      },
+      {
+       "id": "126B",
+       "src": "cf",
+       "name": "Password",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "471D",
+       "src": "cf",
+       "name": "MUH and Cube Walls",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1200E",
+       "src": "cf",
+       "name": "Compress Words",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "631D",
+       "src": "cf",
+       "name": "Messenger",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "25E",
+       "src": "cf",
+       "name": "Test",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1753",
+       "src": "cses",
+       "name": "String Matching",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1732",
+       "src": "cses",
+       "name": "Finding Borders",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "kmp-periods",
+     "name": "Borders, periods & repetitions",
+     "tier": 1800,
+     "order": 2,
+     "prereq": [
+      "kmp-prefix-function"
+     ],
+     "summary": "A string has period p iff it has a border of length n - p; the smallest period is n - pi[n-1] and the string is a repetition of a block iff that period divides n. Appears in \"shortest string whose repetition gives s\", LCM/GCD of strings, cyclic shift cycles and necklace problems.",
+     "learn": [
+      "Minimal period = n - pi[n-1]; s is k-times a block iff n % period == 0",
+      "All periods correspond to all borders (walk the failure chain)",
+      "Common divisors of two strings: divisors of gcd(|a|,|b|) that are periods of both",
+      "Repeated application of a permutation to a string: each cycle returns after its minimal period (lcm of those)",
+      "Periodicity lemma: periods p and q with p + q <= n + gcd(p, q) imply period gcd(p, q)",
+      "Hashing alternative: check s[0..n-p) == s[p..n) for each candidate p",
+      "Tandem repeats (squares ww): O(n^2) by fixing the half-length and counting equal positions at distance L; all repetitions in O(n log n) with Main-Lorentz"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Prefix function: compressing a string",
+       "url": "https://cp-algorithms.com/string/prefix-function.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: String Hashing (Finding Periods)",
+       "url": "https://usaco.guide/gold/hashing",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 10
+      },
+      {
+       "title": "cp-algorithms: Finding repetitions (Main-Lorentz)",
+       "url": "https://cp-algorithms.com/string/main_lorentz.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "1473B",
+       "src": "cf",
+       "name": "String LCM",
+       "rating": 1000,
+       "from": "curated"
+      },
+      {
+       "id": "182D",
+       "src": "cf",
+       "name": "Common Divisors",
+       "rating": 1400,
+       "from": "curated"
+      },
+      {
+       "id": "443B",
+       "src": "cf",
+       "name": "Kolya and Tandem Repeat",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1950E",
+       "src": "cf",
+       "name": "Nearly Shortest Repeating Substring",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "1948D",
+       "src": "cf",
+       "name": "Tandem Repeats?",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1219C",
+       "src": "cf",
+       "name": "Periodic integer number",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "1690F",
+       "src": "cf",
+       "name": "Shifting String",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "526D",
+       "src": "cf",
+       "name": "Om Nom and Necklace",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "19C",
+       "src": "cf",
+       "name": "Deletion of Repeats",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1733",
+       "src": "cses",
+       "name": "Finding Periods",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "kmp-automaton",
+     "name": "KMP automaton & DP over matches",
+     "tier": 2100,
+     "order": 3,
+     "prereq": [
+      "kmp-prefix-function",
+      "@dp-strings"
+     ],
+     "summary": "Turn the prefix function into an automaton aut[state][c] (state = length of the matched prefix) and run DP over (position, automaton state) to count or optimise strings that contain / avoid a pattern. Typical for \"count strings of length n containing s as a substring\" and for LCS-with-forbidden-substring.",
+     "learn": [
+      "aut[j][c] = j+1 if p[j] == c else aut[pi[j-1]][c]; build in O(m * alphabet)",
+      "DP state (i, j): processed i characters, currently matched j characters of the pattern",
+      "Counting strings that contain p = total - strings avoiding p (avoid state m)",
+      "Multiple patterns: use Aho-Corasick instead (same idea on a trie)",
+      "Combine with other DP dimensions (balance of brackets, LCS indices, number of occurrences)",
+      "Prefix-function queries on extended strings: memoise automaton transitions for the fixed part"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Prefix function: building an automaton",
+       "url": "https://cp-algorithms.com/string/prefix-function.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      },
+      {
+       "title": "USACO Guide: String Searching",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "346B",
+       "src": "cf",
+       "name": "Lucky Common Subsequence",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "494B",
+       "src": "cf",
+       "name": "Obsessive String",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1163D",
+       "src": "cf",
+       "name": "Mysterious Code",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1721E",
+       "src": "cf",
+       "name": "Prefix Function Queries",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "808G",
+       "src": "cf",
+       "name": "Anthem of Berland",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1015F",
+       "src": "cf",
+       "name": "Bracket Substring",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1112",
+       "src": "cses",
+       "name": "Required Substring",
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "z-function",
+   "name": "Z-function",
+   "cfTags": [
+    "strings",
+    "string suffix structures"
+   ],
+   "subtopics": [
+    {
+     "id": "z-function",
+     "name": "Z-function & applications",
+     "tier": 1600,
+     "order": 1,
+     "prereq": [
+      "str-subsequences"
+     ],
+     "summary": "z[i] is the length of the longest common prefix of s and s[i..]; it is computed in O(n) with the [l, r) window trick. Use it for matching (pattern + \"$\" + text), checking which prefixes occur where, comparing a string against all its suffixes, and big-number comparisons of substrings.",
+     "learn": [
+      "Maintain the rightmost segment [l, r) that matches a prefix; reuse z[i - l] inside it",
+      "Matching: z of p + \"$\" + t, positions with z == |p|",
+      "Prefix of length k is also a suffix iff z[n-k] == k",
+      "Number of occurrences of each prefix: count z values then suffix-sum",
+      "Compare s[i..] with s lexicographically in O(1) using z[i] and the next character",
+      "Z of t + s compares every suffix of s with t; useful for splitting a number into bounded parts (DP)",
+      "Z and prefix function are interconvertible; pick whichever is more natural"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.4: Z-algorithm",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.4 (p. 247)",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Z-function",
+       "url": "https://cp-algorithms.com/string/z-function.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: String Searching (Z)",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "535D",
+       "src": "cf",
+       "name": "Tavas and Malekas",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1968G1",
+       "src": "cf",
+       "name": "Division + LCP (easy version)",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "432D",
+       "src": "cf",
+       "name": "Prefixes and Suffixes",
+       "rating": 2000,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "2209E",
+       "src": "cf",
+       "name": "A Trivial String Problem",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1968G2",
+       "src": "cf",
+       "name": "Division + LCP (hard version)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "1537E2",
+       "src": "cf",
+       "name": "Erase and Extend (Hard Version)",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "149E",
+       "src": "cf",
+       "name": "Martian Strings",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1051E",
+       "src": "cf",
+       "name": "Vasya and Big Integers",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1313E",
+       "src": "cf",
+       "name": "Concatenation with intersection",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2107",
+       "src": "cses",
+       "name": "String Functions",
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tries",
+   "name": "Tries",
+   "cfTags": [
+    "strings",
+    "data structures",
+    "trees"
+   ],
+   "subtopics": [
+    {
+     "id": "trie-basic",
+     "name": "Trie (prefix tree)",
+     "tier": 1600,
+     "order": 1,
+     "prereq": [
+      "str-frequency"
+     ],
+     "summary": "A rooted tree where each edge is a character and each node is a prefix of some inserted string. Use it for many prefix queries, longest common prefix sums over pairs, dictionary DP (split text into words), and games played by appending letters.",
+     "learn": [
+      "Array-based nodes: int nxt[N][26], cnt[N], end[N]; node count = total length + 1",
+      "Sum over pairs of LCP lengths = sum over nodes of C(cnt, 2)",
+      "Word-break DP: from each position walk down the trie (O(n * max word length))",
+      "Games on prefixes: compute win/lose on the trie bottom-up (can-win and can-lose separately)",
+      "Store the minimum/maximum index or count at every node for \"first string with this prefix\" queries",
+      "Memory: allocate exactly total length nodes; reset only used nodes between test cases"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.2: Trie structure",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.2 (p. 244)",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: String Searching (Trie)",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "1792D",
+       "src": "cf",
+       "name": "Fixed Prefix Permutations",
+       "rating": 1700,
+       "from": "curated"
+      },
+      {
+       "id": "455B",
+       "src": "cf",
+       "name": "A Lot of Games",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1902E",
+       "src": "cf",
+       "name": "Collapsing Strings",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "633C",
+       "src": "cf",
+       "name": "Spy Syndrome 2",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "37C",
+       "src": "cf",
+       "name": "Old Berland Language",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "965E",
+       "src": "cf",
+       "name": "Short Code",
+       "rating": 2200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "557E",
+       "src": "cf",
+       "name": "Ann and Half-Palindrome",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "2041I",
+       "src": "cf",
+       "name": "Auto Complete",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1731",
+       "src": "cses",
+       "name": "Word Combinations",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trie-xor",
+     "name": "Binary (XOR) trie",
+     "tier": 1800,
+     "order": 2,
+     "prereq": [
+      "trie-basic",
+      "@bit-xor"
+     ],
+     "summary": "Insert numbers bit by bit from the most significant bit; walking greedily to the opposite bit answers max/min XOR with a set of numbers in O(log C). Recognise it from \"maximum XOR of a pair/subarray\", multiset queries with XOR, and counting pairs whose XOR is below k.",
+     "learn": [
+      "Max XOR with x: at each bit try to go to child (bit of x) ^ 1",
+      "Subarray XOR = prefix[r] ^ prefix[l]: insert prefixes as you sweep",
+      "Keep a count per node to support deletion (multiset) and counting pairs with XOR < k",
+      "Global XOR updates: keep a lazy mask instead of modifying the trie; MEX after XOR walks down full subtrees",
+      "Divide-and-conquer on the trie for minimum XOR spanning tree / inversion counts per bit",
+      "Store max index per node for \"latest prefix with XOR >= k\" queries; persistent version for range queries"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: String Searching (Trie: XOR problems)",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 15
+      },
+      {
+       "title": "CPH 10: Bit manipulation",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 10 (p. 95)",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "706D",
+       "src": "cf",
+       "name": "Vasiliy's Multiset",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "923C",
+       "src": "cf",
+       "name": "Perfect Security",
+       "rating": 1800,
+       "from": "curated"
+      },
+      {
+       "id": "1895D",
+       "src": "cf",
+       "name": "XOR Construction",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "2093G",
+       "src": "cf",
+       "name": "Shorten the Array",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "1285D",
+       "src": "cf",
+       "name": "Dr. Evil Underscores",
+       "rating": 1900,
+       "from": "curated"
+      },
+      {
+       "id": "817E",
+       "src": "cf",
+       "name": "Choosing The Commander",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1416C",
+       "src": "cf",
+       "name": "XOR Inverse",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "842D",
+       "src": "cf",
+       "name": "Vitya and Strange Lesson",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "665E",
+       "src": "cf",
+       "name": "Beautiful Subarrays",
+       "rating": 2100,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-1655",
+       "src": "cses",
+       "name": "Maximum Xor Subarray",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "trie-xor-advanced",
+     "name": "Advanced XOR trie (merging, D&C, persistence)",
+     "tier": 2300,
+     "order": 3,
+     "prereq": [
+      "trie-xor"
+     ],
+     "summary": "Harder tasks build tries over subtrees or prefixes and combine them: divide and conquer over the trie for XOR-MST, tries per parity class, persistent tries for range-restricted maximum XOR, and trie walks with counts for k-th smallest XOR.",
+     "learn": [
+      "XOR-MST (Boruvka on a trie): split by the highest bit, connect the two halves by one minimum XOR edge",
+      "k-th smallest pairwise XOR: walk all n pointers down the trie simultaneously bit by bit",
+      "Persistent trie: version r holds prefixes 0..r with latest-index info for max XOR in [l, r]",
+      "Separate tries by depth parity / colour when queries depend on that class",
+      "Small-to-large merging of tries over subtrees",
+      "Binary search on the answer + trie check (count pairs with XOR < mid) for k-th smallest subarray/pair values",
+      "Divide and conquer on the position of the maximum, querying a persistent trie on the smaller side"
+     ],
+     "resources": [
+      {
+       "title": "USACO Guide: Persistent Data Structures",
+       "url": "https://usaco.guide/adv/persistent",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: String Searching (Trie)",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "1980G",
+       "src": "cf",
+       "name": "Yasya and the Mysterious Tree",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "888G",
+       "src": "cf",
+       "name": "Xor-MST",
+       "rating": 2300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1625D",
+       "src": "cf",
+       "name": "Binary Spiders",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "1720D2",
+       "src": "cf",
+       "name": "Xor-Subsequence (hard version)",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1777F",
+       "src": "cf",
+       "name": "Comfortably Numb",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1983F",
+       "src": "cf",
+       "name": "array-value",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "241B",
+       "src": "cf",
+       "name": "Friends",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "1849F",
+       "src": "cf",
+       "name": "XOR Partition",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "1055F",
+       "src": "cf",
+       "name": "Tree and XOR",
+       "rating": 2900,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aho-corasick",
+   "name": "Aho-Corasick",
+   "cfTags": [
+    "strings",
+    "string suffix structures"
+   ],
+   "subtopics": [
+    {
+     "id": "aho-corasick",
+     "name": "Aho-Corasick automaton",
+     "tier": 2200,
+     "order": 1,
+     "prereq": [
+      "trie-basic",
+      "kmp-prefix-function"
+     ],
+     "summary": "Build a trie of all patterns plus suffix (failure) links by BFS to match a whole dictionary against a text in O(total length + matches). Use it for \"count occurrences of each pattern in the text\", \"for each position how many patterns end here\", and pattern-set queries.",
+     "learn": [
+      "Failure link of a node = longest proper suffix that is also a trie node; compute by BFS",
+      "Goto transitions go[v][c] turn the trie into a full automaton",
+      "Count occurrences of each pattern: add 1 to the visited state, then accumulate along suffix links in reverse BFS order",
+      "Patterns ending at a position = sum of terminal counts along the output-link chain (precompute in BFS)",
+      "Number of distinct pattern lengths is O(sqrt(total length)) - useful bound",
+      "Suffix-link tree + Euler tour + Fenwick handles dynamic pattern sets and online queries",
+      "Dynamic insertions: binary-grouping (log n automata) technique"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Aho-Corasick algorithm",
+       "url": "https://cp-algorithms.com/string/aho_corasick.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 35
+      },
+      {
+       "title": "USACO Guide: String Searching (Aho-Corasick)",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 25
+      },
+      {
+       "title": "Aho-Corasick algorithm. Construction (CF blog)",
+       "url": "https://codeforces.com/blog/entry/14854",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "1202E",
+       "src": "cf",
+       "name": "You Are Given Some Strings...",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "710F",
+       "src": "cf",
+       "name": "String Set Queries",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "963D",
+       "src": "cf",
+       "name": "Frequency of String",
+       "rating": 2500,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1437G",
+       "src": "cf",
+       "name": "Death DBMS",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1207G",
+       "src": "cf",
+       "name": "Indie Album",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "547E",
+       "src": "cf",
+       "name": "Mike and Friends",
+       "rating": 2800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2102",
+       "src": "cses",
+       "name": "Finding Patterns",
+       "from": "usaco-guide"
+      },
+      {
+       "id": "cses-2103",
+       "src": "cses",
+       "name": "Counting Patterns",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2104",
+       "src": "cses",
+       "name": "Pattern Positions",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "aho-dp",
+     "name": "DP on the Aho-Corasick automaton",
+     "tier": 2400,
+     "order": 2,
+     "prereq": [
+      "aho-corasick",
+      "kmp-automaton",
+      "@dp-bitmask",
+      "@dp-matrix-expo"
+     ],
+     "summary": "Run DP over (length, automaton state [, extra mask]) to count or optimise strings with respect to a set of patterns; with fixed small state count, matrix exponentiation handles huge lengths. Recognise from \"count strings of length n that contain none / all of these words\" or \"maximise happiness from occurring pickup lines\".",
+     "learn": [
+      "State = node of the automaton; value of a state = sum of terminal values along suffix links",
+      "Forbidden patterns: mark nodes whose suffix-link chain contains a terminal as dead",
+      "Must contain all patterns: add a bitmask of seen patterns (small number of patterns)",
+      "Large n: (max,+) or (+,*) matrix exponentiation over the automaton states",
+      "Question marks / wildcards: transition over all letters, combine with bitmask DP on the letters used"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Aho-Corasick: applications",
+       "url": "https://cp-algorithms.com/string/aho_corasick.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Matrix Exponentiation",
+       "url": "https://usaco.guide/plat/matrix-expo",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "86C",
+       "src": "cf",
+       "name": "Genetic engineering",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "696D",
+       "src": "cf",
+       "name": "Legen...",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "1739F",
+       "src": "cf",
+       "name": "Keyboard Design",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "1511F",
+       "src": "cf",
+       "name": "Chainword",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "1400F",
+       "src": "cf",
+       "name": "x-prime Substrings",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "1327G",
+       "src": "cf",
+       "name": "Letters and Question Marks",
+       "rating": 2800,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "palindromes",
+   "name": "Palindrome Algorithms",
+   "cfTags": [
+    "strings",
+    "string suffix structures"
+   ],
+   "subtopics": [
+    {
+     "id": "pal-manacher",
+     "name": "Manacher's algorithm",
+     "tier": 1800,
+     "order": 1,
+     "prereq": [
+      "str-palindromes-basic"
+     ],
+     "summary": "Computes the radius of the longest palindrome centred at every position (odd and even) in O(n) by reusing a mirrored centre inside the rightmost palindrome. Use it for longest palindromic substring, counting palindromic substrings, and \"longest palindromic prefix/suffix\" questions.",
+     "learn": [
+      "Handle even centres by inserting separators (s = \"#a#b#\") or keep two arrays d1/d2",
+      "Rightmost palindrome [l, r]: start from min(r - i, d[l + r - i]) and extend naively",
+      "Number of palindromic substrings = sum of radii",
+      "Longest palindromic prefix: largest centre whose palindrome touches index 0",
+      "Palindromes starting/ending at each index: difference arrays over the radii",
+      "Hashing + binary search gives the same radii in O(n log n) when Manacher is awkward",
+      "For n <= 5000 the O(n^2) table pal[l][r] (or expand around every centre) is often enough"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Manacher's Algorithm",
+       "url": "https://cp-algorithms.com/string/manacher.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: String Searching (Manacher)",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 15
+      },
+      {
+       "title": "Manacher's algorithm and code readability (CF blog)",
+       "url": "https://codeforces.com/blog/entry/12143",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "245H",
+       "src": "cf",
+       "name": "Queries for Number of Palindromes",
+       "rating": 1800,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "835D",
+       "src": "cf",
+       "name": "Palindromic characteristics",
+       "rating": 1900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1943B",
+       "src": "cf",
+       "name": "Non-Palindromic Substring",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1080E",
+       "src": "cf",
+       "name": "Sonya and Matrix Beauty",
+       "rating": 2400,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1827C",
+       "src": "cf",
+       "name": "Palindrome Partition",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "30E",
+       "src": "cf",
+       "name": "Tricky and Clever Password",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1111",
+       "src": "cses",
+       "name": "Longest Palindrome",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "pal-eertree",
+     "name": "Palindromic tree (eertree)",
+     "tier": 2600,
+     "order": 2,
+     "prereq": [
+      "pal-manacher",
+      "kmp-prefix-function"
+     ],
+     "summary": "The eertree stores every distinct palindromic substring as a node (at most n + 2) with suffix links to the longest palindromic suffix. It answers counts of distinct palindromes, occurrences of each palindrome and powers palindromic-factorisation DP via series links.",
+     "learn": [
+      "Two roots: length -1 (imaginary) and length 0; add characters one by one, at most one new node each",
+      "Suffix link = longest proper palindromic suffix; occurrences via reverse-order accumulation",
+      "Palindromic factorisation in O(n log n) using diff/series links (lengths form O(log n) arithmetic progressions)",
+      "Count palindromes ending at each position = depth in the suffix-link tree",
+      "Palindrome pair counting (Palisection) also solvable with Manacher + prefix sums"
+     ],
+     "resources": [
+      {
+       "title": "Palindromic tree: behind the scenes (adamant, CF blog)",
+       "url": "https://codeforces.com/blog/entry/13959",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 30
+      },
+      {
+       "title": "USACO Guide: String Suffix Structures (Palindromic Tree)",
+       "url": "https://usaco.guide/adv/string-suffix",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "17E",
+       "src": "cf",
+       "name": "Palisection",
+       "rating": 2900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "932G",
+       "src": "cf",
+       "name": "Palindrome Partition",
+       "rating": 2900,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "906E",
+       "src": "cf",
+       "name": "Reverses",
+       "rating": 3300,
+       "from": "curated"
+      },
+      {
+       "id": "1738H",
+       "src": "cf",
+       "name": "Palindrome Addicts",
+       "rating": 3300,
+       "from": "curated"
+      },
+      {
+       "id": "1081H",
+       "src": "cf",
+       "name": "Palindromic Magic",
+       "rating": 3500,
+       "from": "usaco-guide"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "suffix-structures",
+   "name": "Suffix Structures",
+   "cfTags": [
+    "string suffix structures",
+    "strings"
+   ],
+   "subtopics": [
+    {
+     "id": "suffix-array",
+     "name": "Suffix array",
+     "tier": 2100,
+     "order": 1,
+     "prereq": [
+      "hash-binary-search",
+      "@sort-basics"
+     ],
+     "summary": "Sort all suffixes (or cyclic shifts) by prefix doubling in O(n log n) (or O(n log^2 n) with std::sort). Once built, pattern search is a binary search, and sorted order exposes lexicographic structure: k-th substring, minimal shift, BWT.",
+     "learn": [
+      "Prefix doubling: rank pairs (rank[i], rank[i + 2^k]) and re-sort; counting sort gives O(n log n)",
+      "Append a sentinel smaller than all characters (or work with cyclic shifts)",
+      "Pattern occurrence = contiguous range of the SA, found by two binary searches: O(m log n)",
+      "Concatenate several strings with distinct separators to compare them together",
+      "Same doubling idea sorts strings defined by XOR/shift operations",
+      "Burrows-Wheeler transform and its inverse are SA applications (CSES String Transform)"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Suffix Array",
+       "url": "https://cp-algorithms.com/string/suffix-array.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 35
+      },
+      {
+       "title": "USACO Guide: Suffix Array",
+       "url": "https://usaco.guide/adv/suffix-array",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 35
+      }
+     ],
+     "problems": [
+      {
+       "id": "128B",
+       "src": "cf",
+       "name": "String",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "427D",
+       "src": "cf",
+       "name": "Match & Catch",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "873F",
+       "src": "cf",
+       "name": "Forbidden Indices",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1090J",
+       "src": "cf",
+       "name": "Two Prefixes",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1654F",
+       "src": "cf",
+       "name": "Minimal String Xoration",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "232D",
+       "src": "cf",
+       "name": "Fence",
+       "rating": 2900,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2108",
+       "src": "cses",
+       "name": "Substring Order I",
+       "from": "curated"
+      },
+      {
+       "id": "cses-1113",
+       "src": "cses",
+       "name": "String Transform",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "suffix-lcp",
+     "name": "LCP array & applications",
+     "tier": 2300,
+     "order": 2,
+     "prereq": [
+      "suffix-array",
+      "@ds-sparse-table"
+     ],
+     "summary": "Kasai's algorithm builds lcp[i] = LCP of adjacent suffixes in the SA in O(n); with a sparse table, LCP of any two suffixes is a range minimum. Classic uses: number of distinct substrings, longest repeated / common substring, counting substrings occurring k times, sums of LCP over sets of suffixes.",
+     "learn": [
+      "Kasai: process suffixes in text order, lcp decreases by at most 1 each step",
+      "Distinct substrings = n(n+1)/2 - sum(lcp)",
+      "LCP(sa_i, sa_j) = min(lcp[i+1..j]): sparse table for O(1) queries",
+      "Longest common substring of A and B: adjacent SA entries from different strings in A + \"#\" + B",
+      "Sum of pairwise LCPs over a set: sort by SA rank, monotonic stack or DSU merging by decreasing lcp",
+      "Substrings occurring >= k times: sliding window minimum over lcp"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Suffix Array: LCP and applications",
+       "url": "https://cp-algorithms.com/string/suffix-array.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: Suffix Array (LCP)",
+       "url": "https://usaco.guide/adv/suffix-array",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 25
+      }
+     ],
+     "problems": [
+      {
+       "id": "123D",
+       "src": "cf",
+       "name": "String",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "316G3",
+       "src": "cf",
+       "name": "Good Substrings",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "452E",
+       "src": "cf",
+       "name": "Three strings",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1780G",
+       "src": "cf",
+       "name": "Delicious Dessert",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1073G",
+       "src": "cf",
+       "name": "Yet Another LCP Problem",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "653F",
+       "src": "cf",
+       "name": "Paper task",
+       "rating": 2600,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "204E",
+       "src": "cf",
+       "name": "Little Elephant and Strings",
+       "rating": 2800,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2105",
+       "src": "cses",
+       "name": "Distinct Substrings",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2106",
+       "src": "cses",
+       "name": "Repeating Substring",
+       "from": "curated"
+      },
+      {
+       "id": "cses-2110",
+       "src": "cses",
+       "name": "Substring Distribution",
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "suffix-automaton",
+     "name": "Suffix automaton & suffix tree",
+     "tier": 2400,
+     "order": 3,
+     "prereq": [
+      "suffix-array",
+      "aho-corasick"
+     ],
+     "summary": "The suffix automaton is the minimal DFA recognising all suffixes (at most 2n states), built online in O(n); its suffix-link tree is the suffix tree of the reversed string. It answers substring membership, number of distinct substrings, occurrences of every substring and k-th lexicographic substring.",
+     "learn": [
+      "Each state = class of substrings with the same endpos set; len[v] and link[v] determine it",
+      "Online extension with cloning; total states <= 2n - 1, transitions <= 3n - 4",
+      "Distinct substrings = sum(len[v] - len[link[v]]); occurrences = endpos sizes via the link tree",
+      "k-th substring: count paths from each state (DP on DAG) and walk",
+      "Generalised SAM for several strings; longest common substring by running the second string through",
+      "Suffix tree (Ukkonen or from SA + LCP) is the dual structure; pick whichever you know best"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Suffix Automaton",
+       "url": "https://cp-algorithms.com/string/suffix-automaton.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 45
+      },
+      {
+       "title": "USACO Guide: String Suffix Structures",
+       "url": "https://usaco.guide/adv/string-suffix",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 35
+      },
+      {
+       "title": "A short guide to suffix automata (CF blog)",
+       "url": "https://codeforces.com/blog/entry/20861",
+       "kind": "cf-blog",
+       "where": "Codeforces blog",
+       "minutes": 20
+      },
+      {
+       "title": "cp-algorithms: Suffix Tree (Ukkonen)",
+       "url": "https://cp-algorithms.com/string/suffix-tree-ukkonen.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "316G2",
+       "src": "cf",
+       "name": "Good Substrings",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "802G3",
+       "src": "cf",
+       "name": "Fake News (hard)",
+       "rating": 2300,
+       "from": "curated"
+      },
+      {
+       "id": "616F",
+       "src": "cf",
+       "name": "Expensive Strings",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "235C",
+       "src": "cf",
+       "name": "Cyclical Quest",
+       "rating": 2700,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "666E",
+       "src": "cf",
+       "name": "Forensic Examination",
+       "rating": 3100,
+       "from": "curated"
+      },
+      {
+       "id": "1037H",
+       "src": "cf",
+       "name": "Security",
+       "rating": 3200,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "1063F",
+       "src": "cf",
+       "name": "String Journey",
+       "rating": 3300,
+       "from": "usaco-guide"
+      },
+      {
+       "id": "700E",
+       "src": "cf",
+       "name": "Cool Slogans",
+       "rating": 3300,
+       "from": "curated"
+      },
+      {
+       "id": "cses-2109",
+       "src": "cses",
+       "name": "Substring Order II",
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "string-advanced",
+   "name": "Advanced String Topics",
+   "cfTags": [
+    "strings",
+    "fft",
+    "dp",
+    "string suffix structures"
+   ],
+   "subtopics": [
+    {
+     "id": "str-lcp-dp",
+     "name": "DP powered by string tools (LCP table, palindrome table, matching)",
+     "tier": 1900,
+     "order": 1,
+     "prereq": [
+      "hash-polynomial",
+      "z-function",
+      "@dp-lcs-edit",
+      "@dp-strings"
+     ],
+     "summary": "DP over positions or substrings whose transitions ask string questions: \"are these two blocks equal?\", \"is s[l..r] a palindrome?\", \"which substring is larger?\", \"where does t occur?\". Precompute the answers with an O(n^2) LCP table, a palindrome table, hashing, Z or KMP so each transition is O(1). Classic DP forms (LCS, edit distance, subsequence counting) live in the DP area (@dp-lcs-edit, @dp-strings).",
+     "learn": [
+      "O(n^2) LCP table: lcp[i][j] = s[i]==s[j] ? lcp[i+1][j+1] + 1 : 0, filled from the back (use short/int16 to save memory)",
+      "Compare two substrings of equal length via lcp: equal iff lcp >= len, otherwise compare the first different character",
+      "Palindrome table pal[l][r] = s[l]==s[r] && pal[l+1][r-1]; prefix sums of palindromes ending/starting at i count pairs",
+      "Splitting into increasing numbers: dp[i][len] with LCP-based comparison of the previous block plus suffix sums",
+      "Compression DP: dp[i] = min over j of dp[j] + cost(s[j..i)), where the period of every substring comes from a prefix function started at j",
+      "Find all occurrences first (KMP/Z/hash), then DP over occurrences (cover / remove all occurrences with minimum moves and count ways)",
+      "Memory: n = 5000 gives 25M cells; reuse rows or store only what transitions need"
+     ],
+     "resources": [
+      {
+       "title": "CPH 26.3: String hashing (substring comparison)",
+       "url": "https://cses.fi/book/book.pdf",
+       "kind": "cph",
+       "where": "CPH ch. 26.3 (p. 245)",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Z-function (LCP with the prefix)",
+       "url": "https://cp-algorithms.com/string/z-function.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "cp-algorithms: Prefix function: compressing a string",
+       "url": "https://cp-algorithms.com/string/prefix-function.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 15
+      },
+      {
+       "title": "USACO Guide: Introduction to DP",
+       "url": "https://usaco.guide/gold/intro-dp",
+       "kind": "usaco",
+       "where": "USACO Guide Gold",
+       "minutes": 20
+      }
+     ],
+     "problems": [
+      {
+       "id": "159D",
+       "src": "cf",
+       "name": "Palindrome pairs",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "611D",
+       "src": "cf",
+       "name": "New Year and Ancient Prophecy",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1624E",
+       "src": "cf",
+       "name": "Masha-forgetful",
+       "rating": 2000,
+       "from": "curated"
+      },
+      {
+       "id": "1729G",
+       "src": "cf",
+       "name": "Cut Substrings",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "1120C",
+       "src": "cf",
+       "name": "Compress String",
+       "rating": 2100,
+       "from": "curated"
+      },
+      {
+       "id": "2045H",
+       "src": "cf",
+       "name": "Missing Separators",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "825F",
+       "src": "cf",
+       "name": "String Compression",
+       "rating": 2400,
+       "from": "curated"
+      },
+      {
+       "id": "1562E",
+       "src": "cf",
+       "name": "Rescue Niwen!",
+       "rating": 2500,
+       "from": "curated"
+      }
+     ]
+    },
+    {
+     "id": "str-min-rotation",
+     "name": "Cyclic strings: minimal rotation & Lyndon factorisation",
+     "tier": 1900,
+     "order": 2,
+     "prereq": [
+      "kmp-periods",
+      "hash-binary-search"
+     ],
+     "summary": "Duval's algorithm splits a string into a non-increasing sequence of Lyndon words in O(n); the lexicographically smallest cyclic shift is found with it (or with Booth's algorithm / SA on s+s). Appears in canonical forms of cyclic strings and necklaces, and greedy \"cut and reverse\" tasks.",
+     "learn": [
+      "Lyndon word: strictly smaller than all its proper rotations",
+      "Duval: maintain i, j, k pointers; O(n) time, O(1) memory",
+      "Minimal rotation: run Duval on s + s; the answer is the start of the last Lyndon factor that begins before position n",
+      "Alternatives: suffix array of s + s, or hashing + binary search comparisons in O(n log n)",
+      "Canonical form of a cyclic string = its minimal rotation (compare necklaces by it, count distinct rotations)",
+      "Booth's algorithm (failure function on s + s) is an O(n) alternative to Duval"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Lyndon factorization",
+       "url": "https://cp-algorithms.com/string/lyndon_factorization.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 25
+      },
+      {
+       "title": "USACO Guide: String Searching (Minimal Rotation)",
+       "url": "https://usaco.guide/adv/string-search",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 10
+      }
+     ],
+     "problems": [
+      {
+       "id": "745A",
+       "src": "cf",
+       "name": "Hongcow Learns the Cyclic Shift",
+       "rating": 900,
+       "from": "curated"
+      },
+      {
+       "id": "496B",
+       "src": "cf",
+       "name": "Secret Combination",
+       "rating": 1500,
+       "from": "curated"
+      },
+      {
+       "id": "524F",
+       "src": "cf",
+       "name": "And Yet Another Bracket Sequence",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "594E",
+       "src": "cf",
+       "name": "Cutting the Line",
+       "rating": 3100,
+       "from": "curated"
+      },
+      {
+       "id": "cses-1110",
+       "src": "cses",
+       "name": "Minimal Rotation",
+       "from": "usaco-guide"
+      }
+     ]
+    },
+    {
+     "id": "str-fft-matching",
+     "name": "Matching with FFT / bitsets (wildcards, mismatches)",
+     "tier": 2500,
+     "order": 3,
+     "prereq": [
+      "z-function",
+      "@math-fft"
+     ],
+     "summary": "When the pattern has wildcards or you need, for every alignment, the number of matching characters, encode the comparison as a convolution (sum over (a - b)^2 * a * b with 0 for wildcards) and use FFT; for small alphabets do one convolution per letter. Bitset shift-and gives O(nm/64) substring queries.",
+     "learn": [
+      "Exact matching with wildcards: sum p_j t_{i+j} (p_j - t_{i+j})^2 = 0 expands into three convolutions",
+      "Per-letter indicator convolutions count matches for each shift (alphabet size times FFT)",
+      "Approximate matching (within distance k): blur the text indicator first, then convolve",
+      "Bitset shift-and: occ &= (pos[c] >> j) for each pattern character; supports point updates",
+      "Use NTT or double precision carefully; reverse one of the sequences to turn correlation into convolution"
+     ],
+     "resources": [
+      {
+       "title": "cp-algorithms: Fast Fourier transform (string matching section)",
+       "url": "https://cp-algorithms.com/algebra/fft.html",
+       "kind": "cpalgo",
+       "where": "cp-algorithms",
+       "minutes": 30
+      },
+      {
+       "title": "USACO Guide: Introduction to Fast Fourier Transform",
+       "url": "https://usaco.guide/adv/fft",
+       "kind": "usaco",
+       "where": "USACO Guide Advanced",
+       "minutes": 30
+      },
+      {
+       "title": "USACO Guide: Bitsets",
+       "url": "https://usaco.guide/plat/bitsets",
+       "kind": "usaco",
+       "where": "USACO Guide Platinum",
+       "minutes": 15
+      }
+     ],
+     "problems": [
+      {
+       "id": "954I",
+       "src": "cf",
+       "name": "Yet Another String Matching Problem",
+       "rating": 2200,
+       "from": "curated"
+      },
+      {
+       "id": "528D",
+       "src": "cf",
+       "name": "Fuzzy Search",
+       "rating": 2500,
+       "from": "curated"
+      },
+      {
+       "id": "754E",
+       "src": "cf",
+       "name": "Dasha and cyclic table",
+       "rating": 2600,
+       "from": "curated"
+      },
+      {
+       "id": "827E",
+       "src": "cf",
+       "name": "Rusty String",
+       "rating": 2700,
+       "from": "curated"
+      },
+      {
+       "id": "1334G",
+       "src": "cf",
+       "name": "Substring Search",
+       "rating": 2900,
+       "from": "curated"
+      },
+      {
+       "id": "914F",
+       "src": "cf",
+       "name": "Substrings in a String",
+       "rating": 3000,
+       "from": "curated"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

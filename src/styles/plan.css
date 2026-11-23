@@ -1,0 +1,29 @@
+/* Plan tab: routine + daily goals, Plan with Claude, Next 7 days (day strip beside the day editor on a laptop) */
+
+/* seven days always fit a 360px phone */
+.week .day-strip { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.week .day-chip { min-width: 0; min-height: 64px; justify-content: center; }
+.week .day-chip small, .week .day-chip i { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.week .day-chip .dc-short { display: none; }
+@media (max-width: 600px) { .week .day-chip .dc-long { display: none; } .week .day-chip .dc-short { display: inline; } }
+.week .day-chip small { display: inline-flex; align-items: center; gap: 2px; } .week .day-chip small .msr { font-size: 12px; }
+.dc-wide { display: none; }
+@media (min-width: 900px) {
+  .week .week-cols { grid-template-columns: minmax(180px, 220px) minmax(0, 1fr); align-items: start; }
+  .week .day-strip { grid-template-columns: minmax(0, 1fr); gap: 4px; position: sticky; top: calc(var(--top-h, 72px) + 8px); }
+  .week .day-chip { flex-direction: row; justify-content: space-between; min-height: 52px; padding: 8px 14px; text-align: left; }
+  .week .day-chip small, .week .day-chip b { display: none; }
+  .week .day-chip .dc-wide { display: flex; flex-direction: column; min-width: 0; order: -1; font-size: 14px; font-weight: 650; line-height: 1.25; }
+  .dc-wide em { font-style: normal; font-size: 11px; font-weight: 500; opacity: .75; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .week .day-chip i { font-size: 12px; flex: none; }
+  .week .day-chip:not(.on):hover { background: var(--surface-container-high); }
+}
+
+/* the planner: example chips are real tap targets; everything waits for sync */
+.planner .chips.quick .chip { height: auto; min-height: 40px; padding: 6px 14px; max-width: 100%; }
+.planner .chip:disabled, .planner textarea:disabled { opacity: .55; cursor: not-allowed; }
+
+/* empty lists say what to do */
+.blocks .plan-empty { display: flex; gap: 8px; align-items: flex-start; padding: 12px 4px; line-height: 1.45; cursor: default; }
+.blocks .plan-empty .msr { font-size: 18px; color: var(--primary); flex: none; }
+.plan-sum .legend { gap: 4px 12px; }
