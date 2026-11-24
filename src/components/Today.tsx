@@ -10,6 +10,7 @@ import { Icon } from './fx'
 import { DoNowCard } from './CoachPanel'
 import { ContestBanner } from './ContestMode'
 import { EnergyCheck } from './Energy'
+import { CardsDueCard } from './Archive'
 import { Shape, WavyBar, WavyRing, type ShapeName } from './shapes'
 import { Btn, IconBtn, bouncy, spring, useNow } from './common'
 import { sfx } from '../sound'
@@ -126,6 +127,7 @@ export function Today({ onEdit, onFocus, onPomodoro, onTimeline }: { onEdit: (t?
             </section>
           )}
           <EnergyCheck />
+          <CardsDueCard />
         </aside>
 
         <div className="col-main">

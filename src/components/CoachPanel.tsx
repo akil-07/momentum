@@ -1,3 +1,4 @@
+import { withMath } from './MathText'
 import { AnimatePresence, motion } from 'motion/react'
 import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
 import { breakIn, dateKey, getState, toast, useStore, type CoachMsg } from '../store'
@@ -17,18 +18,24 @@ import '../styles/review.css'
 /* ═════════ the one-to-one coach: "do this now", chat, questions, todos, weakness board ═════════ */
 
 /** tiny markdown: paragraphs, "- " bullets, **bold**, `code`, ```fenced code blocks``` (with a copy button) */
-export function Md({ text }: { text: string }) {
-  const inline = (s: string) => s.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((p, i) => p.startsWith('**') && p.length > 4 ? <b key={i}>{p.slice(2, -2)}</b> : p.startsWith('`') && p.length > 2 ? <code key={i}>{p.slice(1, -1)}</code> : <Fragment key={i}>{p}</Fragment>)
+/** markdown-lite; `math` also renders $…$ / $$…$$ / $$$…$$$ with KaTeX (flashcards, statements) */
+export function Md({ text, math = false }: { text: string; math?: boolean }) {
+  const fmt = (s: string) => s.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((p, i) => p.startsWith('**') && p.length > 4 ? <b key={i}>{p.slice(2, -2)}</b> : p.startsWith('`') && p.length > 2 ? <code key={i}>{p.slice(1, -1)}</code> : <Fragment key={i}>{p}</Fragment>)
+  const inline = (s: string) => math ? withMath(s, t => fmt(t)) : fmt(s)
   const blocks: ReactNode[] = []
-  let list: string[] = [], code: string[] | null = null, lang = ''
-  const flush = () => { if (list.length) { blocks.push(<ul key={blocks.length}>{list.map((l, i) => <li key={i}>{inline(l)}</li>)}</ul>); list = [] } }
+  let list: string[] = [], ordered = false, code: string[] | null = null, lang = ''
+  const flush = () => {
+    if (!list.length) return
+    const items = list.map((l, i) => <li key={i}>{inline(l)}</li>)
+    blocks.push(ordered ? <ol key={blocks.length}>{items}</ol> : <ul key={blocks.length}>{items}</ul>); list = []
+  }
   const flushCode = () => { if (code) { blocks.push(<CodeBlock key={blocks.length} code={code.join('\n')} lang={lang} />); code = null } }
   for (const line of text.split('\n')) {
     const fence = line.match(/^\s*```\s*([\w+#.-]*)\s*$/)
     if (code) { if (fence && !fence[1]) flushCode(); else code.push(line); continue }
     if (fence) { flush(); code = []; lang = fence[1]; continue }
-    const m = line.match(/^\s*(?:[-*•]|\d+[.)])\s+(.*)/)
-    if (m) list.push(m[1])
+    const m = line.match(/^\s*(?:([-*•])|\d+[.)])\s+(.*)/)
+    if (m) { const o = !m[1]; if (list.length && o !== ordered) flush(); ordered = o; list.push(m[2]) }
     else { flush(); if (line.trim()) blocks.push(<p key={blocks.length}>{inline(line.replace(/^#+\s*/, ''))}</p>) }
   }
   flush(); flushCode() // an unterminated fence still renders as code

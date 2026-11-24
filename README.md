@@ -40,10 +40,18 @@ JSON file on your disk. No accounts, no cloud, no telemetry.
 **Archive**
 - A permanent record of every mock, rated round, virtual and practice session you have ever done, with every problem
   and its full attempt history, kept on the server in `data/archive/` and never pruned (built to stay useful for years).
-- Flashcards per problem: the statement in brief, how it should be solved, how you solved it (read from your own
-  code) and what differed, reviewed with spaced repetition. Cards are written one at a time by a one-shot `claude -p`.
-- Point it at your solutions folder and each file is linked to its problem (you can fix any link by hand). The coach
-  can read that folder and the archive (read-only), and a restarted coach gets a month-by-month digest of the whole history.
+- **Upsolve:** every problem you have not solved yet, from every round, mock, virtual and practice session: wrong
+  answers, ones you opened, skipped or wrote code for, and ones you never opened. A problem leaves the list on its own
+  once you solve it on Codeforces.
+- **Flashcards** for every problem you solve, written on their own in the background by a one-shot `claude -p`: the
+  statement in brief, how it should be solved, how you solved it (read from your own code) and what differed, reviewed
+  with spaced repetition. Due cards show up on Today.
+- **Your solutions folder:** each file is linked to its problem (fix any link by hand), and the folder can keep itself
+  organized: linked files go to `Contests/`, `Virtual/`, `Mocks/` or `Practice/`, in a folder per round or day,
+  named `<problem id> <name>.cpp`. Files edited in the last 2 hours are left alone, nothing is overwritten, contents
+  never change, and the last batch can be undone.
+- The coach can read that folder and the archive (read-only), and a restarted coach gets a month-by-month digest of the
+  whole history.
 
 **Progress**
 - Rating vs. practice level, work hours, discipline score, habits, a topic ladder and more, all with table views.
@@ -104,6 +112,7 @@ systemctl --user enable --now momentum
 | `MOMENTUM_CODE` | unset | Your solutions folder, read by the Archive and the coach (the path set in the Archive tab wins) |
 | `MOMENTUM_CARD_MODEL` | `sonnet` | Model used to write flashcards |
 | `MOMENTUM_CARD_MAX_DAY` | `60` | Flashcards written per day at most (the rest wait for the next day) |
+| `MOMENTUM_AUTO_CARDS` | `1` | `0` stops writing flashcards on their own (the buttons still work) |
 
 Data lives in `data/state.json`, with a daily backup in `data/backups/` (the last 14 days). The archive lives in
 `data/archive/` (plain JSON and text, append-only, never pruned) with its own daily snapshot

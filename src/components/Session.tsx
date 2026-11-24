@@ -221,7 +221,7 @@ function RealLive({ t }: { t: CpTest }) {
         const ix = pid.slice(cid.length), x = r.probs[ix], p = getProb(pid), ok = x?.at !== undefined
         return (
           <li key={pid} className={'prob' + (ok ? ' solved' : x?.wa ? ' tried' : '')}>
-            <a className="prob-main" href={contestProbUrl(pid)} target="_blank" rel="noreferrer" onClick={() => openProblem(pid)}>
+            <a className="prob-main" href={contestProbUrl(pid)} target="_blank" rel="noreferrer" onClick={() => openProblem(pid)} onAuxClick={() => openProblem(pid)}>
               <div className="prob-top"><b className="letter">{ix || LETTERS[i]}</b><Rating r={p?.r} />
                 {ok ? <><Icon n="check_circle" fill className="ok" /><span className="small">{Math.floor(x.at! / 60)}:{String(x.at! % 60).padStart(2, '0')}</span></> : null}
                 {x?.wa ? <span className="rr-wa">−{x.wa}</span> : null}</div>

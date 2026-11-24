@@ -32,16 +32,45 @@ export interface LinkRec { pid: string | null; by: 'auto' | 'user'; u: number }
 export interface CardJobs { running: string | null; queue: string[]; doneToday: number; cap: number; errors: Record<string, string> }
 export interface ArchiveIndex {
   ver: number; createdAt?: number; codeDir: string; activities: Record<string, Activity>; problems: Record<string, ProbMeta>
-  cards: Record<string, { at: number; key_idea: string }>; srs: Record<string, Srs>; links: Record<string, LinkRec>
+  cards: Record<string, CardEntry>; srs: Record<string, Srs>; links: Record<string, LinkRec>
   hasStatement: Record<string, boolean>; cardJobs: CardJobs
+  /** keep the code folder organized (server files linked code under <Kind>/<date> <round>/<pid> <name>) */
+  organize?: boolean; lastOrganize?: { at: number; n: number; moves: { from: string; to: string }[] } | null
 }
+/** a card in the archive index: enough to list it (its front) without loading it */
+export interface CardEntry { at: number; key_idea: string; summary?: string; tags?: string[]; ver?: number }
+/* topics, most specific first: a card goes under the first of these its problem has (Codeforces tags) */
+export const TOPIC_ORDER = ['dp', 'graphs', 'trees', 'shortest paths', 'dfs and similar', 'dsu', 'graph matchings', 'flows', 'data structures',
+  'binary search', 'two pointers', 'bitmasks', 'number theory', 'combinatorics', 'probabilities', 'geometry', 'string suffix structures',
+  'hashing', 'strings', 'divide and conquer', 'games', 'interactive', 'matrices', 'fft', 'meet-in-the-middle', 'ternary search',
+  'constructive algorithms', 'sortings', 'greedy', 'math', 'brute force', 'implementation']
+export const TOPIC_LABEL: Record<string, string> = {
+  dp: 'Dynamic programming', graphs: 'Graphs', trees: 'Trees', 'shortest paths': 'Shortest paths', 'dfs and similar': 'DFS / BFS', dsu: 'DSU',
+  'data structures': 'Data structures', 'binary search': 'Binary search', 'two pointers': 'Two pointers', bitmasks: 'Bitmasks',
+  'number theory': 'Number theory', combinatorics: 'Combinatorics', probabilities: 'Probability', geometry: 'Geometry', strings: 'Strings',
+  hashing: 'Hashing', 'divide and conquer': 'Divide and conquer', games: 'Games', interactive: 'Interactive',
+  'constructive algorithms': 'Constructive', sortings: 'Sorting', greedy: 'Greedy', math: 'Math', 'brute force': 'Brute force',
+  implementation: 'Implementation', other: 'Other',
+}
+export const topicLabel = (t: string) => TOPIC_LABEL[t] || t.charAt(0).toUpperCase() + t.slice(1)
+/** the one topic a problem is filed under: its most specific Codeforces tag, else the card's own first tag */
+export function topicOf(tags: string[] | undefined, cardTags?: string[]): string {
+  const ts = (tags || []).filter(t => !t.startsWith('*'))
+  for (const t of TOPIC_ORDER) if (ts.includes(t)) return t
+  return ts[0] || cardTags?.[0] || 'other'
+}
+export interface OrganizeResult { moves: { from: string; to: string }[]; kept: { path: string; why: string }[]; error?: string }
 /** a code file linked to a problem, with its text (GET /api/archive/problem/<pid>) */
 export interface CodeFile { path: string; text: string; mtime: number }
 export interface ProblemDetail { meta: ProbMeta | null; statement: string; card: Card | null; srs: Srs | null; code: CodeFile[] }
 /** one file of the code-folder scan (GET /api/archive/code) */
 export interface CodeScanFile { path: string; mtime: number; size: number; head: string }
 export interface CodeScan { dir: string; ok: boolean; files: CodeScanFile[] }
-export interface Ingest { activities: Activity[]; problems: ProbIn[]; attempts: Attempt[] }
+/** drop: app records that were never real work (the server deletes them and their attempts for good);
+ *  full: app activities whose complete attempt list this send carries (the server replaces what it had for them) */
+export interface Ingest { activities: Activity[]; problems: ProbIn[]; attempts: Attempt[]; drop: string[]; full: string[] }
+/** a mock left before this many minutes with nothing solved, submitted or opened was rerolled, not sat */
+export const JUNK_MOCK_MIN = 10
 
 export const PID_OK = /^\d{1,4}[A-Z]\d?$/
 const splitPid = (pid: string) => { const m = pid.match(/^(\d+)([A-Z]\d?)$/); return m ? { c: +m[1], i: m[2] } : null }
@@ -51,9 +80,21 @@ const uniq = <T>(xs: T[]) => [...new Set(xs)]
 /* ───────── buildIngest: everything this device knows, as archive records (pure) ───────── */
 /** `contestName`: a contest's title when known (contestInfo), else undefined */
 export function buildIngest(cp: CpState, user: CfUser | null, probs: Map<string, Prob>, contestName: (cid: number) => string | undefined): Ingest {
-  const acts = new Map<string, Activity>(), atts: Attempt[] = []
+  const acts = new Map<string, Activity>(), atts: Attempt[] = [], drop: string[] = [], full: string[] = []
+  // events before evCut were compacted away: only newer records can be judged (opened problems) and re-sent in full
+  const evCut = cp.evCut || 0, evs = Object.values(cp.events || {})
+  const openedIn = (lo: number, hi: number) => new Set(evs.filter(e => e.k === 'open' && e.at >= lo && e.at <= hi).map(e => e.pid))
   const mine = (h?: string) => !!cp.handle && sameHandle(h, cp.handle)
   const subs = user && cp.handle && sameHandle(user.handle, cp.handle) ? (user.list || []).filter(s => PID_OK.test(s.pid)) : []
+  // CfUser.list keeps the newest ~4000 submissions: once it is full, the groups at its old end may have lost their
+  // first submissions, and re-sending them would give their summary attempts new keys. The archive already has them.
+  const LIST_CAP = 4000
+  const all = user?.list || []
+  const cut = all.length >= LIST_CAP ? Math.min(...all.map(s => s.at)) + 36 * 36e5 : -Infinity
+  // only a device that has your CF submissions for a window can say what happened in it: without them a record is
+  // merged, never re-sent in full (that would delete its CF attempts) and never dropped (a tombstone is for good)
+  const cfOk = !!user && !!cp.handle && sameHandle(user.handle, cp.handle) && Array.isArray(user.list)
+  const cfCovers = (lo: number) => cfOk && lo >= cut
   const nameOf = (cid: number) => contestName(cid) || user?.rated?.find(r => r.cid === cid)?.name
   const voided = (id: string) => !!cp.triggers?.['void:' + id]
   const subsIn = (pid: string, lo: number, hi: number) => subs.filter(s => s.pid === pid && s.at >= lo && s.at <= hi)
@@ -88,8 +129,16 @@ export function buildIngest(cp: CpState, user: CfUser | null, probs: Map<string,
       })
       continue
     }
-    testWins.push({ lo: t.startedAt, hi: end + 30 * 60000, pids: t.pids })
     const id = 'test:' + t.id
+    const seen = t.startedAt >= evCut  // its open events are still there
+    const judged = seen && cfCovers(t.startedAt)
+    // only inside the mock itself: the next mock can start minutes after a voided one ended
+    const opened = openedIn(t.startedAt, end)
+    const anySub = t.pids.some(p => subsIn(p, t.startedAt, end).length || (real?.probs?.[splitPid(p)?.i || '']?.wa || 0) > 0)
+    // rerolled after seconds, or abandoned (voided) with nothing done: not something you sat
+    if (judged && !solved.length && !anySub && !opened.size && (voided(t.id) || end - t.startedAt < JUNK_MOCK_MIN * 60000)) { drop.push(id); continue }
+    if (judged) full.push(id)
+    testWins.push({ lo: t.startedAt, hi: end + 30 * 60000, pids: t.pids })
     acts.set(id, {
       id, kind: real ? 'virtual' : 'mock', date: t.date, at: t.startedAt, end, mins: t.dur,
       title: real ? `Virtual · ${real.name || nameOf(real.contestId) || 'Round ' + real.contestId}` : `Mock · ${t.date}`,
@@ -100,7 +149,9 @@ export function buildIngest(cp: CpState, user: CfUser | null, probs: Map<string,
     for (const pid of t.pids) {
       const s = solvedSecs(pid)
       if (s !== undefined) atts.push({ pid, at: t.startedAt + s * 1000, status: 'solved', src: 'test', secs: s, act: id })
-      else atts.push({ pid, at: t.startedAt, status: subsIn(pid, t.startedAt, end).length || (real?.probs?.[splitPid(pid)?.i || '']?.wa || 0) > 0 ? 'failed' : 'tried', src: 'test', act: id })
+      else if (subsIn(pid, t.startedAt, end).length || (real?.probs?.[splitPid(pid)?.i || '']?.wa || 0) > 0) atts.push({ pid, at: t.startedAt, status: 'failed', src: 'test', act: id })
+      // a problem you never opened was not tried (once events are compacted we can no longer tell: keep the old rule)
+      else if (opened.has(pid) || !seen) atts.push({ pid, at: t.startedAt, status: 'tried', src: 'test', act: id })
     }
   }
 
@@ -108,6 +159,7 @@ export function buildIngest(cp: CpState, user: CfUser | null, probs: Map<string,
   const sessions = Object.values(cp.sessions || {}).filter(x => mine(x.h) && x.kind !== 'mock').sort((a, b) => a.startedAt - b.startedAt)
   const sessWin = sessions.map(x => ({ x, lo: x.startedAt, hi: (x.endedAt || x.startedAt) + 10 * 60000 }))
   for (const x of sessions) {
+    if (x.startedAt >= evCut && cfCovers(x.startedAt)) full.push('sess:' + x.id)
     const mode = x.spec?.mode ?? x.kind
     const tags = (x.spec?.tags || []).slice(0, 2)
     acts.set('sess:' + x.id, {
@@ -117,6 +169,11 @@ export function buildIngest(cp: CpState, user: CfUser | null, probs: Map<string,
   }
 
   // 3. Codeforces history: rated rounds, virtuals, practice
+  let byRound: Map<number, string[]> | null = null
+  const roundPids = (cid: number) => {
+    if (!byRound) { byRound = new Map(); for (const p of probs.values()) { const l = byRound.get(p.c); if (l) l.push(p.id); else byRound.set(p.c, [p.id]) } }
+    return byRound.get(cid) || []
+  }
   const groups = new Map<string, typeof subs>()
   const actOfSub = (s: (typeof subs)[number]): string | null => {
     if (s.pt === 'CONTESTANT' || s.pt === 'OUT_OF_COMPETITION') return 'cf:' + s.cid
@@ -129,11 +186,6 @@ export function buildIngest(cp: CpState, user: CfUser | null, probs: Map<string,
     return null
   }
   for (const s of subs) { const a = actOfSub(s); if (a) (groups.get(a) || groups.set(a, []).get(a)!).push(s) }
-  // CfUser.list keeps the newest ~4000 submissions: once it is full, the groups at its old end may have lost their
-  // first submissions, and re-sending them would give their summary attempts new keys. The archive already has them.
-  const LIST_CAP = 4000
-  const all = user?.list || []
-  const cut = all.length >= LIST_CAP ? Math.min(...all.map(s => s.at)) + 36 * 36e5 : -Infinity
   const partial = (id: string) => { const ss = groups.get(id); return !!ss && ss.some(s => s.at < cut) }
   const okSet = (ss: typeof subs) => new Set(ss.filter(s => s.v === 'OK').map(s => s.pid))
   for (const [id, ss] of groups) {
@@ -141,7 +193,8 @@ export function buildIngest(cp: CpState, user: CfUser | null, probs: Map<string,
     if (partial(id)) continue
     const cid = +id.split(':')[1], virtual = id.startsWith('cfv:')
     const at = Math.min(...ss.map(s => s.rel != null ? s.at - s.rel * 1000 : s.at)), end = Math.max(...ss.map(s => s.at))
-    const pids = uniq(ss.map(s => s.pid)).sort(idxSort), ok = okSet(ss)
+    // every problem of the round, not just the ones you submitted: the rest were skipped (and belong in Upsolve)
+    const pids = uniq([...ss.map(s => s.pid), ...roundPids(cid)]).sort(idxSort), ok = okSet(ss)
     const rated = user?.rated?.find(r => r.cid === cid)
     const old = acts.get(id)
     const name = nameOf(cid) || `Round ${cid}`
@@ -216,7 +269,7 @@ export function buildIngest(cp: CpState, user: CfUser | null, probs: Map<string,
     const p = probs.get(pid), sp = splitPid(pid)!
     return { pid, name: p?.n || '', rating: p?.r || 0, tags: p?.t || [], contestId: p?.c ?? sp.c, index: p?.i ?? sp.i }
   })
-  return { activities, problems, attempts }
+  return { activities, problems, attempts, drop, full }
 }
 
 /* ───────── matchCode: which problem each file of the code folder solves (pure) ───────── */
@@ -228,7 +281,8 @@ const RE_NAMED = /(?:^|\/)([A-Z]\d?)\s*[.)\-_]\s*([^/]+)\.[A-Za-z0-9]+$/
 export function matchCode(files: Pick<CodeScanFile, 'path' | 'mtime' | 'head'>[], acts: Activity[], probs: Map<string, Prob>, contests: { id: number; name: string }[]): { path: string; pid: string }[] {
   const mineSet = new Set(acts.flatMap(a => a.pids))
   const exists = (pid: string) => probs.has(pid) || mineSet.has(pid)
-  const mocks = acts.filter(a => a.kind === 'mock' || a.kind === 'virtual').sort((a, b) => a.at - b.at)
+  // a voided mock was never sat: it neither takes a folder nor counts in the folder numbering
+  const mocks = acts.filter(a => (a.kind === 'mock' || a.kind === 'virtual') && a.note !== 'voided').sort((a, b) => a.at - b.at)
   const actCids = new Set(acts.map(a => a.contestId).filter((x): x is number => !!x))
   let byName: Map<string, Prob[]> | null = null
   const nameIdx = () => {
@@ -258,8 +312,10 @@ export function matchCode(files: Pick<CodeScanFile, 'path' | 'mtime' | 'head'>[]
   for (const f of files) {
     const path = f.path.replace(/\\/g, '/')
     const pid = (() => {
-      // (1) an explicit id in the file's first lines
+      // (1) an explicit id in the file's first lines (beats the file name: it is how you fix a wrong guess)
       for (const m of (f.head || '').matchAll(RE_ID)) { const p = m[1] + m[2]; if (exists(p)) return p }
+      // (0) an organized file: its name starts with the problem id ("1772A A+B.cpp")
+      { const b = path.split('/').pop() || '', m0 = b.match(/^(\d{1,4}[A-Z]\d?)(?=[\s.(])/); if (m0 && exists(m0[1])) return m0[1] }
       // (2) Contests/<round number> (Div N)/<IDX>.cpp
       let m = path.match(RE_CONTEST)
       if (m) {
@@ -343,6 +399,36 @@ export function dueCards(a: Pick<ArchiveIndex, 'cards' | 'srs'> | null | undefin
     .slice(0, Math.max(0, newCap - newToday))
   return [...due, ...fresh]
 }
+/** every problem you have not solved, from every round, mock, virtual and practice session (all time, never expires),
+ *  newest first: a problem you solved since (anywhere) drops out; voided mocks don't count.
+ *  why: failed = a wrong answer on record · tried = opened in the round · skipped = served in practice, not solved ·
+ *  code = you wrote code but it never got accepted · untouched = in the round, never opened */
+/** code you wrote for a problem of a round that you never submitted: it belongs to that round (History and Upsolve) */
+export function roundExtras(x: Pick<Activity, 'kind' | 'contestId' | 'pids'>, code: Set<string>): string[] {
+  return x.contestId && x.kind !== 'practice' && x.kind !== 'free' ? [...code].filter(p => splitPid(p)?.c === x.contestId && !x.pids.includes(p)).sort(idxSort) : []
+}
+export type UpWhy = 'failed' | 'tried' | 'skipped' | 'code' | 'untouched'
+export interface Upsolve { pid: string; act: string; kind: ActKind; title: string; date: string; at: number; why: UpWhy }
+export function upsolveList(a: Pick<ArchiveIndex, 'activities' | 'problems' | 'links'> | null | undefined): Upsolve[] {
+  if (!a) return []
+  const code = new Set(Object.values(a.links || {}).map(l => l?.pid).filter(Boolean) as string[])
+  const out: Upsolve[] = [], seen = new Set<string>()
+  const acts = Object.values(a.activities || {}).filter(x => x.note !== 'voided').sort((x, y) => y.at - x.at || (x.id < y.id ? -1 : 1))
+  for (const x of acts) {
+    const extra = roundExtras(x, code)
+    const order = x.kind === 'mock' || x.kind === 'practice' || x.kind === 'free' ? [...x.pids, ...extra] : [...x.pids, ...extra].sort(idxSort)
+    for (const pid of order) {
+      const m = a.problems?.[pid]
+      if (seen.has(pid) || x.solved.includes(pid) || m?.status === 'solved') continue
+      const mine = (m?.attempts || []).filter(t => t.act === x.id)
+      const practice = x.kind === 'practice' || x.kind === 'free'
+      // a wrong answer anywhere on record makes it 'failed' (it may sit under a later practice session that re-served it)
+      const why: UpWhy = (m?.attempts || []).some(t => t.status === 'failed') ? 'failed' : mine.length ? (practice ? 'skipped' : 'tried') : code.has(pid) ? 'code' : practice ? 'skipped' : 'untouched'
+      seen.add(pid); out.push({ pid, act: x.id, kind: x.kind, title: x.title, date: x.date, at: x.at, why })
+    }
+  }
+  return out
+}
 /** the interval (days) a grade would give this card (same SM-2 as the idea bank and the server) */
 export function previewIvl(s: Srs | null | undefined, q: Grade) {
   const c = { id: '', pid: '', idea: '', tags: [], created: 0, ef: s?.ef ?? 2.5, ivl: s?.ivl ?? 0, reps: s?.reps ?? 0, lapses: s?.lapses ?? 0, due: s?.due ?? '2000-01-01', u: 0 }
@@ -403,7 +489,11 @@ export function chunkIngest(p: Ingest, max = 3e6): Ingest[] {
   const n = Math.max(1, Math.ceil(JSON.stringify(p).length / max))
   if (n === 1) return [p]
   const part = <T>(xs: T[], i: number) => xs.slice(Math.floor(xs.length * i / n), Math.floor(xs.length * (i + 1) / n))
-  return Array.from({ length: n }, (_, i) => ({ activities: part(p.activities, i), problems: part(p.problems, i), attempts: part(p.attempts, i) }))
+  // a `full` activity's attempts must arrive in one request (the server replaces that activity's list with it): they
+  // all ride in the first chunk with drop/full, everything else is split evenly
+  const fullSet = new Set(p.full), mine = p.attempts.filter(a => a.act && fullSet.has(a.act)), rest = p.attempts.filter(a => !(a.act && fullSet.has(a.act)))
+  return Array.from({ length: n }, (_, i) => ({ activities: part(p.activities, i), problems: part(p.problems, i),
+    attempts: i === 0 ? [...mine, ...part(rest, i)] : part(rest, i), drop: i === 0 ? p.drop : [], full: i === 0 ? p.full : [] }))
 }
 let ingestRun: Promise<boolean> | null = null, ingestT: ReturnType<typeof setTimeout> | undefined, ingestWait: ((ok: boolean) => void)[] = [], ingestForce = false
 async function doIngest(force: boolean): Promise<boolean> {
@@ -455,8 +545,25 @@ export async function scanAndLink(): Promise<CodeScan | null> {
     .filter(x => !links[x.path] || (links[x.path].by === 'auto' && links[x.path].pid !== x.pid))
     .map(x => ({ path: x.path, pid: x.pid, by: 'auto' as const }))
   if (want.length) { await api('POST', '/api/archive/link', { links: want }); await loadArchive() }
+  // keep the folder organized: file what is linked (the server skips files edited in the last 2 hours)
+  if ((archive?.organize ?? true) !== false) {
+    const r = await api<OrganizeResult>('POST', '/api/archive/organize', { apply: true }).catch(() => null)
+    if (r?.moves?.length) { code = await api<CodeScan>('GET', '/api/archive/code'); await loadArchive(); bump() }
+  }
   return code
 }
+/** file the linked code now (apply) or just show where it would go */
+export async function organizeNow(apply = true): Promise<OrganizeResult> {
+  const r = await api<OrganizeResult>('POST', '/api/archive/organize', { apply })
+  if (apply && r.moves?.length) { code = await api<CodeScan>('GET', '/api/archive/code'); await loadArchive(); bump() }
+  return r
+}
+/** put the latest batch of moves back (this also turns automatic organizing off) */
+export async function undoOrganize(): Promise<number> {
+  const r = await api<{ undone: number }>('POST', '/api/archive/organize/undo', {})
+  code = await api<CodeScan>('GET', '/api/archive/code'); await loadArchive(); bump(); return r.undone || 0
+}
+export async function setOrganize(on: boolean) { await api('POST', '/api/archive/config', { organize: on }); await loadArchive() }
 /** link (pid) or unlink (null) one file by hand */
 export async function linkCode(path: string, pid: string | null) {
   await api('POST', '/api/archive/link', { links: [{ path, pid, by: 'user' }] }); await loadArchive()

@@ -183,3 +183,121 @@
 .arc-tl li.ok b { color: var(--primary); }
 .arc-sheet .sheet-actions { flex-wrap: wrap; row-gap: 4px; }
 .arc-sheet .sheet-actions a.btn { text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+
+/* problem status in a round: upsolved / tried / untouched, and the upsolve marker */
+.arc-v.upsolved { background: transparent; color: var(--primary); box-shadow: inset 0 0 0 1.5px var(--primary); }
+.arc-v.tried { background: var(--tertiary-container); color: var(--on-tertiary-container); }
+.arc-v.untouched { background: transparent; color: var(--outline); }
+.arc-v.up { display: inline-flex; align-items: center; gap: 2px; background: var(--secondary-container); color: var(--on-secondary-container); }
+.arc-v.up .msr { font-size: 14px; }
+/* narrow rows: the marker is just its icon, the chips tighter, so the problem name keeps its room */
+@media (max-width: 520px) { .arc-prow .arc-v.up { padding: 2px 5px; } .arc-prow .arc-v.up .arc-v-t { display: none; } .arc-prow .arc-v { padding: 2px 6px; } }
+
+/* upsolve panel */
+.arc-ups { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--outline-variant); }
+.arc-ups-h { display: flex; align-items: center; gap: 8px; }
+.arc-ups-h .msr { color: var(--primary); }
+.arc-up-row { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 6px 8px; border-radius: 12px; background: var(--surface-container-high); }
+.arc-up-row.overdue { box-shadow: inset 3px 0 0 var(--error); }
+.arc-up-main { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; text-align: left; background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; }
+.arc-up-main .arc-pname, .arc-up-main .small { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arc-up-go { display: inline-grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 50%; color: var(--on-surface-variant); }
+.arc-up-go:hover { background: var(--surface-container-highest); }
+.arc-more { align-self: flex-start; background: none; border: 0; color: var(--primary); font-weight: 600; padding: 6px 0; cursor: pointer; }
+
+/* Today: flashcards due */
+.arc-today { display: flex; align-items: center; gap: 14px; }
+.arc-today p { margin: 2px 0 0; }
+.arc-today-n { display: flex; flex-direction: column; align-items: center; min-width: 48px; line-height: 1; color: var(--primary); }
+.arc-today-n b { font-size: 28px; font-weight: 700; }
+.arc-today-n span { font-size: 11px; color: var(--on-surface-variant); margin-top: 2px; }
+
+/* Upsolve view: rounds as groups */
+.arc-up-gh { display: flex; align-items: center; gap: 12px; padding: 12px 14px 4px; min-width: 0; }
+.arc-up-gh .arc-act-t { min-width: 0; }
+.arc-up-gh .arc-act-t b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* organize */
+.arc-org { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--outline-variant); }
+.arc-moves { margin: 6px 0 0; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; overflow-wrap: anywhere; }
+
+/* Cards: today's review on top, then every card by topic as compact rows */
+.arc-cardsv { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.card.arc-today-deck { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 22px 24px; }
+@media (min-width: 700px) { .card.arc-today-deck { grid-template-columns: 230px minmax(0, 1fr); align-items: stretch; } }
+.arc-td-l { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: flex-start; text-align: left; }
+.arc-td-l .arc-deck-big { flex: none; }
+.arc-td-l .arc-deck-big b { font-size: 64px; }
+.arc-td-l .arc-deck-big span { font-size: 18px; }
+.arc-td-l p { flex: 1 1 140px; margin: 0; font-size: 14px; }
+@media (min-width: 700px) { .arc-td-l { flex-direction: column; align-items: flex-start; justify-content: center; gap: 10px; } .arc-td-l p { flex: none; } }
+.arc-td-r { display: flex; flex-direction: column; gap: 10px; min-width: 0; width: 100%; align-self: stretch; }
+.arc-today-deck > * { min-width: 0; }
+.arc-rec-h { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 700; color: var(--on-surface-variant); }
+.arc-rec-h .msr { font-size: 18px; color: var(--primary); }
+/* one row that scrolls sideways: the recommended cards never push the list down */
+.arc-rec { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: thin; padding-bottom: 6px; scroll-snap-type: x proximity; }
+.arc-rec-i { flex: 0 0 260px; display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 132px; text-align: left; padding: 14px 16px; border: 0; border-radius: 20px; cursor: pointer;
+  background: var(--surface-container-high); color: inherit; font: inherit; scroll-snap-align: start; transition: background .15s, transform .15s; }
+.arc-rec-i:hover { background: var(--surface-container-highest); transform: translateY(-2px); }
+.arc-rec-n { font-size: 17px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arc-rec-m { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.arc-rec-m .small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arc-rec-s { font-size: 13px; line-height: 1.45; color: var(--on-surface-variant); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 600px) { .arc-rec-i { flex-basis: 230px; } .card.arc-today-deck { padding: 18px; } .arc-td-l .arc-deck-big b { font-size: 52px; } }
+.arc-ctools { display: flex; gap: 8px; align-items: center; min-width: 0; }
+.arc-ctools > :first-child { flex: 1 1 auto; min-width: 0; }
+.arc-ctools .seg { flex: none; width: auto; }
+.arc-topics { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+@media (min-width: 900px) { .arc-topics { flex-wrap: wrap; overflow: visible; } }
+.arc-topic-c { flex: none; height: 34px; padding: 0 12px; border-radius: var(--r-full); border: 1px solid var(--outline-variant); background: transparent;
+  color: var(--on-surface-variant); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.arc-topic-c span { opacity: .7; margin-left: 4px; font-variant-numeric: tabular-nums; }
+.arc-topic-c.on { background: var(--secondary-container); color: var(--on-secondary-container); border-color: transparent; }
+.arc-cgroups { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1100px) { .arc-cgroups { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+.arc-cgroup { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.arc-cgroup-h { margin: 0 4px 2px; font-size: 14px; font-weight: 700; color: var(--primary); }
+.arc-cgroup-h span { color: var(--on-surface-variant); font-weight: 500; margin-left: 4px; }
+.arc-crows { display: flex; flex-direction: column; border-radius: 16px; overflow: hidden; background: var(--surface-container); }
+.arc-crow + .arc-crow { border-top: 1px solid var(--outline-variant); }
+.arc-crow-h { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: 't r i' 'k k k'; align-items: center; column-gap: 8px; row-gap: 1px;
+  width: 100%; padding: 8px 12px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; min-height: 44px; }
+.arc-crow-h:hover { background: var(--surface-container-high); }
+.arc-crow-t { grid-area: t; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arc-crow-h > .rating, .arc-crow-h > [class*="rating"] { grid-area: r; }
+.arc-crow-h > .msr { grid-area: i; color: var(--on-surface-variant); }
+.arc-crow-k { grid-area: k; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arc-crow.open .arc-crow-k { display: none; }
+.arc-crow-b { display: flex; flex-direction: column; gap: 10px; padding: 4px 12px 12px; }
+.arc-crow-b .arc-summary { margin: 0; }
+.arc-due { margin-left: 6px; font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: var(--r-full); background: var(--tertiary-container); color: var(--on-tertiary-container); }
+.arc-key { display: flex; gap: 8px; align-items: flex-start; }
+
+/* math (KaTeX) and statements */
+.mx .katex { font-size: 1.05em; }
+.mx-d { display: block; overflow-x: auto; overflow-y: hidden; margin: 6px 0; }
+.katex-display { margin: 0; }
+.md .katex, .arc-summary .katex { white-space: nowrap; }
+.stm { display: flex; flex-direction: column; gap: 8px; line-height: 1.55; overflow-wrap: anywhere; }
+.stm p { margin: 0; }
+.stm ul { margin: 0; padding-left: 20px; }
+.stm-title { margin: 4px 0 0; font-size: 1.05rem; }
+.stm-h { margin: 8px 0 0; font-size: .95rem; color: var(--primary); }
+.stm-meta { font-size: .8rem; color: var(--on-surface-variant); }
+.stm-pre { margin: 0; padding: 10px 12px; border-radius: 12px; background: var(--surface-container-highest); font-family: ui-monospace, monospace; font-size: .85rem; overflow-x: auto; white-space: pre; }
+
+/* topic folders */
+.arc-folders { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.arc-folder { border-radius: 16px; background: var(--surface-container); overflow: hidden; }
+.arc-folder-h { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 8px 14px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.arc-folder-h:hover { background: var(--surface-container-high); }
+.arc-folder-h > .msr:first-child { color: var(--primary); }
+.arc-folder-t { font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arc-folder-n { font-size: 13px; font-weight: 600; color: var(--on-surface-variant); font-variant-numeric: tabular-nums; min-width: 2ch; text-align: right; }
+.arc-folder-b { overflow: hidden; }
+.arc-folder .arc-crows { border-radius: 0; background: transparent; border-top: 1px solid var(--outline-variant); }
+.arc-folder .arc-crow-h { padding-left: 46px; }
+.arc-folder .arc-crow-b { padding-left: 46px; }
+@media (max-width: 600px) { .arc-folder .arc-crow-h, .arc-folder .arc-crow-b { padding-left: 14px; } }
+.arc-new { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: var(--r-full); background: var(--surface-container-highest); color: var(--on-surface-variant); }

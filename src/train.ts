@@ -82,7 +82,7 @@ export function planStarted(k = dateKey()) {
 export function queues(sk = skillNow()) {
   const cp = getState().cp, k = dateKey(), t0 = now()
   const solvedNow = (pid: string) => cp.attempts[pid]?.status === 'solved' || !!getCfUser()?.subs[pid]?.ok
-  const upsolve: { pid: string; due: number; overdue: boolean }[] = []
+  const upsolve: { pid: string; due: number; overdue: boolean; tid: string }[] = []
   for (const t of Object.values(cp.tests)) {
     if (!t.finishedAt || t0 - t.finishedAt > 14 * 864e5 || !sameHandle(t.h, cp.handle) || (t.real && !t.real.vStart) || isVoidTest(t, cp)) continue
     const live = isContestRec(t), cid = t.real ? String(t.real.contestId) : ''
@@ -100,7 +100,7 @@ export function queues(sk = skillNow()) {
       // real rounds run long (up to 8 problems): upsolve what you tried, plus what's within reach — not the whole set
       if (t.real && !live && !t.real.probs[pid.slice(cid.length)]?.wa && p!.r > Math.max(sk.level, t.perf || 0) + 200) continue
       const due = t.finishedAt + 72 * 36e5
-      upsolve.push({ pid, due, overdue: t0 > due })
+      upsolve.push({ pid, due, overdue: t0 > due, tid: t.id })
     }
   }
   const resolve = Object.entries(cp.resolve || {}).filter(([, r]) => r.due <= k && r.wins < 2).map(([pid]) => pid).slice(0, 2)

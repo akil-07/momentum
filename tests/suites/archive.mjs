@@ -32,6 +32,12 @@ cp.tests = {
   other: { id: 'other', date: k(t1), pids: ['2100A'], startedAt: t1, dur: 60, finishedAt: t1 + 36e5, solved: {}, h: 'someoneelse' },
   run: { id: 'run', date: k(Date.now()), pids: ['2100A'], startedAt: Date.now(), dur: 120, solved: {}, h: 'Me' },
 }
+// m1: 2100C was opened during the mock (an unsolved, never-opened problem is not a try)
+cp.events = { e1: { id: 'e1', pid: '2100C', k: 'open', at: t1 + 30 * 60000, h: 'Me' } }
+// a mock rerolled after 15 s, and one abandoned (voided) overnight with nothing opened: never sat, both dropped
+cp.tests.r1 = { id: 'r1~x', date: k(t2), pids: ['2100A'], startedAt: t2 + 36e5, dur: 120, finishedAt: t2 + 36e5 + 15000, solved: {}, h: 'Me' }
+cp.tests.ab = { id: 'ab', date: k(t2), pids: ['2100B'], startedAt: t2 + 5 * 36e5, dur: 120, finishedAt: t2 + 13 * 36e5, solved: {}, h: 'Me' }
+cp.triggers = { 'void:ab': 1 }
 const s1 = base + 1 * D
 cp.sessions = {
   s1: { id: 's1', kind: 'practice', date: k(s1), startedAt: s1, endedAt: s1 + 2 * 36e5, mins: 120, pids: ['2190A', '2190B'], solved: ['2190A'], spec: { mode: 'learn', tags: ['dp', 'greedy', 'math'], lo: 900, hi: 1300, minutes: 120, timebox: 1 }, h: 'Me' },
@@ -82,11 +88,29 @@ const user = {
   check('ingest: ids are unique', new Set(g.activities.map(a => a.id)).size === g.activities.length)
   check('ingest: invalid pids are dropped everywhere', !JSON.stringify(g).includes('100001A') && g.problems.some(p => p.pid === '9999A' && p.name === '' && p.contestId === 9999 && p.index === 'A'))
   const att = (pid, src) => g.attempts.filter(a => a.pid === pid && a.src === src)
-  check('ingest: mock attempts come from the test (solved with secs, unsolved = tried)', att('2100A', 'test').length === 1 && att('2100A', 'test')[0].secs === 600 && att('2100A', 'test')[0].at === t1 + 600000 && att('2100C', 'test')[0].status === 'tried' && att('2100A', 'test')[0].act === 'test:m1')
+  check('ingest: mock attempts come from the test (solved with secs, opened but unsolved = tried)', att('2100A', 'test').length === 1 && att('2100A', 'test')[0].secs === 600 && att('2100A', 'test')[0].at === t1 + 600000 && att('2100C', 'test')[0].status === 'tried' && att('2100A', 'test')[0].act === 'test:m1')
   check('ingest: virtual attempts use the round\'s per-index results (wa → failed)', att('2160A', 'test')[0]?.secs === 900 && att('2160B', 'test')[0]?.status === 'failed' && !att('2160A', 'cf').length)
   check('ingest: an app practice attempt is linked to its session and not repeated by CF', att('2190A', 'practice')[0]?.act === 'sess:s1' && !att('2190A', 'cf').length)
   check('ingest: a served-but-unsolved session problem with only a WA is one CF attempt (failed)', att('2190B', 'cf').length === 1 && att('2190B', 'cf')[0].status === 'failed' && att('2190B', 'practice')[0]?.status === 'tried')
   check('ingest: one CF attempt per problem per participation, at its first submission', att('2180B', 'cf').length === 1 && att('2180B', 'cf')[0].at === f1 + 30 * 60000 && att('2180B', 'cf')[0].status === 'solved' && att('2170A', 'cf').length === 1 && att('2170A', 'cf')[0].secs === 900)
+  check('ingest: a mock rerolled after seconds and a voided one with nothing done are dropped, not archived',
+    !by['test:r1~x'] && !by['test:ab'] && g.drop.includes('test:r1~x') && g.drop.includes('test:ab'))
+  check('ingest: a sat mock and sessions are sent in full (the server replaces their stale attempts)', g.full.includes('test:m1') && g.full.includes('sess:s1') && !g.full.includes('test:ab'))
+  // a device without (this handle's) CF submissions cannot judge a window: it merges, never sends in full or drops
+  const g0 = A.buildIngest(cp, null, probs, cname), g1 = A.buildIngest(cp, { ...user, handle: 'someoneelse' }, probs, cname)
+  check('ingest: no CF data (or another handle) means no full and no drop', !g0.full.length && !g0.drop.length && !g1.full.length && !g1.drop.length)
+  check('ingest: an unsolved problem never opened in a mock gets no attempt', !g.attempts.some(a => a.act === 'test:m1' && a.pid === '2100B' && a.status !== 'solved'))
+  { const ix = { activities: by, problems: Object.fromEntries(g.problems.map(p => [p.pid, { ...p, attempts: g.attempts.filter(a => a.pid === p.pid), status: g.attempts.some(a => a.pid === p.pid && a.status === 'solved') ? 'solved' : 'tried' }])), links: {} }
+    const ups = A.upsolveList(ix), u = Object.fromEntries(ups.map(x => [x.pid, x]))
+    check('upsolve: a WA in a round is listed, one you solved since is not', u['2150B']?.why === 'failed' && !u['2100C'] && u['2160B']?.why === 'failed')
+    check('upsolve: newest round first', ups.findIndex(x => x.pid === '2150B') < ups.findIndex(x => x.pid === '2160B'))
+    check('upsolve: unsolved practice problems are listed too', u['2190B']?.kind === 'practice') }
+  { const mk = (id, kind, pids, solved = [], at = 1) => ({ id, kind, date: '2026-11-0' + at, at, title: id, pids, solved })
+    const ix = { activities: { a: mk('a', 'mock', ['1A', '1B', '1C'], ['1A']), b: mk('b', 'practice', ['2A', '2B'], [], 2), v: { ...mk('v', 'mock', ['3A']), note: 'voided' } },
+      problems: { '1B': { attempts: [{ act: 'a', status: 'tried' }] }, '2A': { attempts: [{ act: 'b', status: 'tried' }] }, '1A': { status: 'solved', attempts: [] } }, links: { 'x.cpp': { pid: '1C' } } }
+    const u = Object.fromEntries(A.upsolveList(ix).map(x => [x.pid, x.why]))
+    check('upsolve: every unsolved problem with its reason (opened / code / skipped / never opened), voided mocks left out',
+      u['1B'] === 'tried' && u['1C'] === 'code' && u['2A'] === 'skipped' && u['2B'] === 'skipped' && !u['1A'] && !u['3A']) }
   check('ingest: problems carry the problemset meta', g.problems.find(p => p.pid === '2100C')?.rating === 1300 && g.problems.find(p => p.pid === '2100C').tags[0] === 'greedy' && g.problems.find(p => p.pid === '2200B1') === undefined)
   const g2 = A.buildIngest(JSON.parse(JSON.stringify(cp)), JSON.parse(JSON.stringify(user)), probs, cname)
   check('ingest: deterministic (same input → same payload, so the hash skip works)', JSON.stringify(g) === JSON.stringify(g2))
@@ -123,6 +147,8 @@ const user = {
   check('matchCode 3: no such mock → unmatched', !('Mock Rounds/9/A.cpp' in r))
   check('matchCode 4: "<IDX>. <Name>" matches index + name, preferring problems you attempted', r['Daily/21-11-2026/Learn/C. Coin Rows.cpp'] === '1950C' && r['Daily/21-11-2026/Learn/A. Coin Rows.cpp'] === '1900A')
   check('matchCode 4: case / spacing insensitive; unknown names omitted', r['Daily/x/B.  beta .cpp'] === '2100B' && !('Daily/x/C. Unknown Thing.cpp' in r))
+  check('matchCode: an organized file is matched by the id its name starts with', m([f('Virtual/2026-11-23 Round/2160B Virt B (2).cpp'), f('Practice/2026-11-21/2190A Sess A.cpp')])['Practice/2026-11-21/2190A Sess A.cpp'] === '2190A'
+    && m([f('Virtual/2026-11-23 Round/2160B Virt B (2).cpp')])['Virtual/2026-11-23 Round/2160B Virt B (2).cpp'] === '2160B')
   const div2 = A.matchCode([f('Contests/1137 (Div2)/A.cpp')], [], probs, [{ id: 2250, name: 'Codeforces Round 1137 (Div. 2)' }])
   check('matchCode 2: "(Div2)" without a space works too', div2[0]?.pid === '2250A') }
 
@@ -162,6 +188,13 @@ const user = {
   check('dueCards: new cards graded today use up the allowance', A.dueCards({ cards, srs: doneNew }, today).filter(p => !doneNew[p]).length === 19)
   check('dueCards: no archive → []', A.dueCards(null, today).length === 0)
   check('previewIvl: new card 1/1/1/2 days, a learned card grows', [0, 1, 2, 3].map(q => A.previewIvl(null, q)).join() === '1,1,1,2' && A.previewIvl({ ef: 2.5, ivl: 6, reps: 2, lapses: 0, due: today }, 2) === 15) }
+
+/* ── topics for the card list ── */
+{
+  check('topicOf: the most specific Codeforces tag wins', A.topicOf(['implementation', 'greedy', 'dp']) === 'dp' && A.topicOf(['math', 'number theory']) === 'number theory' && A.topicOf(['implementation', 'strings']) === 'strings')
+  check('topicOf: unknown tags, *special, card tags, other', A.topicOf(['*special', 'expression parsing']) === 'expression parsing' && A.topicOf([], ['sweep line']) === 'sweep line' && A.topicOf(undefined) === 'other')
+  check('topicLabel: friendly names, fallback capitalised', A.topicLabel('dp') === 'Dynamic programming' && A.topicLabel('expression parsing') === 'Expression parsing')
+}
 
 console.log(`\n${ok} passed, ${bad} failed`)
 process.exit(bad ? 1 : 0)

@@ -33,8 +33,9 @@ export function Shortcuts({ open, onClose, actions }: { open: boolean; onClose: 
       // an idea review owns Space and 1-4 (reveal / grade) while focus is on the page or inside its card
       const t = (e.target as HTMLElement | null), inIdeas = !t || t === document.body || document.activeElement === document.body || !!t.closest?.('.card.ideas')
       if ((key === ' ' || key === 'Spacebar' || (key >= '1' && key <= '4')) && inIdeas && document.querySelector('.card.ideas .idea-review, .card.ideas .idea-done')) return
-      // an Archive flashcard review owns Space and 1-4 too (unless a full-screen timer is open over it)
-      if ((key === ' ' || key === 'Spacebar' || (key >= '1' && key <= '4')) && document.querySelector('.arc-deck.reviewing') && !document.querySelector('.focus')) return
+      // an Archive flashcard review owns Space (flip) and, once the card is flipped, 1-4 (grade); unflipped, the digits
+      // still switch tabs (a review can start on its own when the Archive opens). Not while a full-screen timer is over it.
+      if (!document.querySelector('.focus') && ((key === ' ' || key === 'Spacebar') ? document.querySelector('.arc-deck.reviewing') : key >= '1' && key <= '4' && document.querySelector('.arc-deck.reviewing.shown'))) return
       if (key === '?') { e.preventDefault(); a.help(); return }
       if (e.shiftKey) return
       if (key >= '1' && key <= '6') { e.preventDefault(); a.tab(+key - 1); return }

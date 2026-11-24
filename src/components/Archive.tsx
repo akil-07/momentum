@@ -8,23 +8,27 @@ import { askCoach } from '../coach'
 import { GRADES, fmtIvl, type Grade } from '../ideas'
 import { fmtDay } from '../ui'
 import {
-  dueCards, linkFile, loadArchive, loadProblem, previewIvl, queueCards, reviewCard, scanAndLink, setCodeDir, useArchive,
-  type Activity, type ArchiveIndex, type Card, type CodeScan, type ProbMeta, type ProblemDetail,
+  dueCards, roundExtras, linkFile, loadArchive, organizeNow, setOrganize, undoOrganize, loadProblem, previewIvl, queueCards, reviewCard, scanAndLink, setCodeDir, upsolveList, useArchive,
+  topicOf, topicLabel, TOPIC_ORDER, type CardEntry, type UpWhy, type Activity, type ArchiveIndex, type Card, type CodeScan, type ProbMeta, type ProblemDetail,
 } from '../archive'
-import { Btn, Chips, IconBtn, Sheet, spring } from './common'
+import { Btn, Chips, IconBtn, Sheet, Switch, spring } from './common'
 import { Seg } from './Seg'
 import { Icon } from './fx'
-import { Rating, fmtClock } from './cpui'
+import { ProbLink, Rating, fmtClock } from './cpui'
+import { queues, startPractice, skillNow } from '../train'
+import { useStore } from '../store'
 import { Md } from './CoachPanel'
+import { Statement, withMath } from './MathText'
 import '../styles/archive.css'
 
 /* ═════════ Archive: every mock, round, virtual and practice session ever, every problem, flashcards, your code ═════════ */
 
-type View = 'history' | 'problems' | 'cards' | 'code'
+type View = 'history' | 'upsolve' | 'problems' | 'cards' | 'code'
 type Kind = Activity['kind']
 type Meta = ProbMeta
 
 const VIEW_KEY = 'momentum.archive.view'
+const TOPICS_KEY = 'momentum.archive.openTopics'
 const KINDS: { v: Kind; label: string; icon: string }[] = [
   { v: 'contest', label: 'Rated', icon: 'emoji_events' }, { v: 'mock', label: 'Mocks', icon: 'sports_score' },
   { v: 'virtual', label: 'Virtual', icon: 'history_toggle_off' }, { v: 'practice', label: 'Practice', icon: 'fitness_center' },
@@ -49,19 +53,21 @@ export function Archive() {
   // fresh numbers whenever the tab opens (the background loop refreshes every 10 min)
   useEffect(() => { void loadArchive() }, [])
   const sync = useSync()
-  const [view, setViewS] = useState<View>(() => { const v = lsGet(VIEW_KEY); return v === 'problems' || v === 'cards' || v === 'code' ? v : 'history' })
+  const [view, setViewS] = useState<View>(() => { const v = lsGet(VIEW_KEY); return v === 'upsolve' || v === 'problems' || v === 'cards' || v === 'code' ? v : 'history' })
   const setView = (v: View) => { setViewS(v); lsSet(VIEW_KEY, v) }
   const [open, setOpen] = useState<string | null>(null)
   const today = dateKey()
   const due = useMemo(() => index ? dueCards(index, today) : [], [index, today])
-  const counts = index ? { acts: Object.keys(index.activities).length, probs: Object.keys(index.problems).length, cards: Object.keys(index.cards).length } : null
-  const title = { history: 'Everything you ever did', problems: 'Every problem you touched', cards: 'Never forget a solution', code: 'Your code, linked' }[view]
+  const nUps = useMemo(() => upsolveList(index).length, [index])
+  const counts = index ? { acts: Object.keys(index.activities).length, ups: nUps, probs: Object.keys(index.problems).length, cards: Object.keys(index.cards).length } : null
+  const title = { history: 'Everything you ever did', upsolve: 'Unfinished business', problems: 'Every problem you touched', cards: 'Never forget a solution', code: 'Your code, linked' }[view]
 
   let body: React.ReactNode
   if (sync.state === 'off' || status === 'off') body = <Empty icon="cloud_off" title="Connect the local server in Settings" text="The archive lives on your Momentum server so it keeps every round, problem and card for years — it needs sync set up." />
   else if (!index && status === 'error') body = <Empty icon="sync_problem" title="Could not load the archive" text={error || 'The server did not answer. It retries on its own.'} />
   else if (!index) body = <Empty icon="hourglass_top" title="Loading the archive…" text="Collecting every round and problem you have done." />
   else if (view === 'history') body = <History ix={index} onOpen={setOpen} />
+  else if (view === 'upsolve') body = <Upsolve ix={index} onOpen={setOpen} />
   else if (view === 'problems') body = <Problems ix={index} onOpen={setOpen} />
   else if (view === 'cards') body = <Cards ix={index} due={due} onOpen={setOpen} />
   else body = <CodeView ix={index} scan={code} onOpen={setOpen} />
@@ -71,6 +77,7 @@ export function Archive() {
       <header className="greet"><div><div className="overline">Archive</div><h1 className="display-sm">{title}</h1></div></header>
       <Seg className="arc-seg" label="Archive view" value={view} onChange={setView} options={[
         { v: 'history', label: 'History', sub: counts ? counts.acts : undefined },
+        { v: 'upsolve', label: 'Upsolve', sub: counts ? counts.ups : undefined },
         { v: 'problems', label: 'Problems', sub: counts ? counts.probs : undefined },
         { v: 'cards', label: 'Cards', sub: counts ? (due.length ? `${due.length} due` : counts.cards) : undefined },
         { v: 'code', label: 'Code' },
@@ -172,7 +179,7 @@ function ActRow({ a, ix, code, open, onToggle, onOpen }: { a: Activity; ix: Arch
           <span className="small muted">{fmtDay(a.date)}{a.mins ? ` · ${a.mins} min` : ''}{a.mode ? ` · ${a.mode}` : ''}</span>
         </span>
         <span className="arc-act-n">
-          <b>{a.solved.length}/{a.pids.length}</b>
+          <b>{a.solved.length}/{a.pids.length + roundExtras(a, code).length}</b>
           {(a.perf || a.rank || a.delta !== undefined) && <span className="small muted">
             {a.perf ? `perf ${a.perf}` : ''}{a.rank ? `${a.perf ? ' · ' : ''}#${a.rank}` : ''}
             {a.delta !== undefined && a.delta !== null && <i className={a.delta >= 0 ? 'arc-up' : 'arc-down'}> {a.delta >= 0 ? '+' : ''}{a.delta}</i>}
@@ -184,16 +191,19 @@ function ActRow({ a, ix, code, open, onToggle, onOpen }: { a: Activity; ix: Arch
         {open && <motion.div className="arc-act-b" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring}>
           {a.note && <p className="small muted arc-note">{a.note}</p>}
           {!a.pids.length && <p className="small muted">No problems recorded.</p>}
-          {a.pids.map(pid => {
+          {[...a.pids, ...roundExtras(a, code)].map(pid => {
             const m = ix.problems[pid], tries = (m?.attempts || []).filter(t => t.act === a.id)
             const ok = a.solved.includes(pid), solveT = tries.find(t => okVerdict(t.status) && t.secs)
-            const st = ok ? 'solved' : tries.length ? 'failed' : 'unattempted'
+            // solved later anywhere = upsolved; a WA on record = failed; opened or code written = tried; else untouched
+            const later = !ok && m?.status === 'solved', wa = tries.some(t => t.status === 'failed')
+            const st = ok ? 'solved' : later ? 'upsolved' : wa ? 'failed' : tries.length || code.has(pid) ? 'tried' : 'untouched'
+            const label = { solved: 'AC', upsolved: 'upsolved', failed: 'WA', tried: 'tried', untouched: '—' }[st]
             return (
               <button key={pid} type="button" className="arc-prow" onClick={() => onOpen(pid)}>
                 <span className="arc-letter">{idxOf(pid, m)}</span>
                 <span className="grow arc-pname">{m?.name || pid}<span className="prob-id"> {pid}</span></span>
                 <Rating r={m?.rating} />
-                <span className={'arc-v ' + st}>{ok ? 'AC' : tries.length ? `${tries.length} tr${tries.length > 1 ? 'ies' : 'y'}` : '—'}</span>
+                <span className={'arc-v ' + st} title={st === 'untouched' ? 'not opened in the app, no submission, no code' : undefined}>{label}</span>
                 {solveT?.secs ? <span className="small muted arc-time">{fmtClock(solveT.secs)}</span> : null}
                 <Badges ix={ix} pid={pid} code={code} />
               </button>
@@ -201,6 +211,108 @@ function ActRow({ a, ix, code, open, onToggle, onOpen }: { a: Activity; ix: Arch
           })}
         </motion.div>}
       </AnimatePresence>
+    </div>
+  )
+}
+
+/* ───────── Today: due flashcards come up there too ───────── */
+export function CardsDueCard() {
+  const { index } = useArchive()
+  const due = useMemo(() => index ? dueCards(index, dateKey()) : [], [index])
+  if (!due.length) return null
+  const go = () => { reviewOnOpen = true; lsSet(VIEW_KEY, 'cards'); window.dispatchEvent(new CustomEvent('momentum:go', { detail: { tab: 'archive' } })) }
+  const fresh = due.filter(p => !index!.srs[p]).length
+  return (
+    <section className="card arc-today">
+      <div className="arc-today-n"><b>{due.length}</b><span>flashcard{due.length > 1 ? 's' : ''}</span></div>
+      <div className="grow"><b>Due today</b><p className="small muted">{fresh ? `${fresh} new` : ''}{fresh && due.length - fresh ? ' · ' : ''}{due.length - fresh ? `${due.length - fresh} to review` : ''} · about {Math.max(2, Math.round(due.length * 1.5))} min</p></div>
+      <Btn icon="style" onClick={go}>Review</Btn>
+    </section>
+  )
+}
+
+/* ───────── Upsolve: every problem you have not solved, from every round, mock, virtual and practice session ───────── */
+const WHY: Record<UpWhy, { label: string; long: string }> = {
+  failed: { label: 'WA', long: 'wrong answer' }, tried: { label: 'opened', long: 'opened, not solved' },
+  skipped: { label: 'skipped', long: 'skipped in practice' }, code: { label: 'code', long: 'code written, not accepted' },
+  untouched: { label: 'not opened', long: 'never opened' },
+}
+const UP_KINDS: { v: Kind; label: string; icon: string }[] = KINDS.filter(k => k.v !== 'free')
+function Upsolve({ ix, onOpen }: { ix: ArchiveIndex; onOpen: (pid: string) => void }) {
+  const busy = useStore(s => !!s.cp.active)
+  const tests = useStore(s => s.cp.tests), atts = useStore(s => s.cp.attempts)
+  const ups = useMemo(() => upsolveList(ix), [ix])
+  // the 72-hour deadlines come from the app's own queue (overdue ones hold back new practice)
+  const due = useMemo(() => { const m = new Map<string, { due: number; overdue: boolean }>(); try { for (const x of queues(skillNow()).upsolve) if (!m.has(x.pid)) m.set(x.pid, x) } catch { /* no data yet */ } return m }, [ix, tests, atts]) // eslint-disable-line react-hooks/exhaustive-deps
+  const [kinds, setKinds] = useState<Kind[]>([])
+  const [whys, setWhys] = useState<UpWhy[]>([])
+  const [q, setQ] = useState('')
+  const [sort, setSort] = useState<'new' | 'easy'>('new')
+  const [n, setN] = useState(PAGE)
+  const byKind = useMemo(() => { const c: Partial<Record<Kind, number>> = {}; for (const u of ups) { const k = u.kind === 'free' ? 'practice' : u.kind; c[k] = (c[k] || 0) + 1 } return c }, [ups])
+  const byWhy = useMemo(() => { const c: Partial<Record<UpWhy, number>> = {}; for (const u of ups) c[u.why] = (c[u.why] || 0) + 1; return c }, [ups])
+  const shown = useMemo(() => {
+    const s = q.trim().toLowerCase()
+    const r = ups.filter(u => (!kinds.length || kinds.includes(u.kind === 'free' ? 'practice' : u.kind)) && (!whys.length || whys.includes(u.why))
+      && (!s || u.pid.toLowerCase().includes(s) || (ix.problems[u.pid]?.name || '').toLowerCase().includes(s) || u.title.toLowerCase().includes(s)
+        || (ix.problems[u.pid]?.tags || []).some(t => t.includes(s))))
+    return sort === 'easy' ? [...r].sort((a, b) => (ix.problems[a.pid]?.rating || 9999) - (ix.problems[b.pid]?.rating || 9999)) : r
+  }, [ups, kinds, whys, q, sort, ix])
+  // newest first: grouped by the round it came from; easiest first: one flat list
+  const groups = useMemo(() => {
+    if (sort === 'easy') return [{ key: 'all', title: '', date: '', kind: null as Kind | null, items: shown.slice(0, n) }]
+    const m = new Map<string, { key: string; title: string; date: string; kind: Kind | null; items: typeof shown }>()
+    for (const u of shown.slice(0, n)) { if (!m.has(u.act)) m.set(u.act, { key: u.act, title: u.title, date: u.date, kind: u.kind, items: [] }); m.get(u.act)!.items.push(u) }
+    return [...m.values()]
+  }, [shown, sort, n])
+  const totals = useMemo(() => { const t = new Map<string, number>(); for (const u of shown) t.set(u.act, (t.get(u.act) || 0) + 1); return t }, [shown])
+  const overdue = ups.filter(u => due.get(u.pid)?.overdue).length
+  const now = Date.now()
+  if (!ups.length) return <Empty icon="task_alt" title="Nothing left to upsolve" text="Every problem from your rounds, mocks and practice is solved. New ones land here the moment a round ends." />
+  return (
+    <div className="arc-layout">
+      <aside className="card arc-aside">
+        <div className="arc-deck-big"><b>{ups.length}</b><span>to upsolve</span></div>
+        {overdue > 0 && <p className="small arc-err"><Icon n="schedule" /> {overdue} past the 72-hour upsolve window</p>}
+        <Search value={q} onChange={setQ} placeholder="Search problems, rounds, tags" />
+        <div className="field-label">From</div>
+        <Chips multi value={kinds} onChange={k => setKinds(ks => ks.includes(k) ? ks.filter(x => x !== k) : [...ks, k])}
+          options={UP_KINDS.filter(k => byKind[k.v] || kinds.includes(k.v)).map(k => ({ v: k.v, label: `${k.label} · ${byKind[k.v] || 0}`, icon: k.icon }))} />
+        <div className="field-label">Why it is here</div>
+        <Chips multi value={whys} onChange={w => setWhys(ws => ws.includes(w) ? ws.filter(x => x !== w) : [...ws, w])}
+          options={(Object.keys(WHY) as UpWhy[]).filter(w => byWhy[w] || whys.includes(w)).map(w => ({ v: w, label: `${WHY[w].label} · ${byWhy[w] || 0}` }))} />
+        <Seg className="mini" label="Order" value={sort} onChange={setSort} options={[{ v: 'new', label: 'Newest' }, { v: 'easy', label: 'Easiest' }]} />
+        <Btn icon="replay" disabled={busy} onClick={() => { const L = skillNow().level; startPractice({ mode: 'upsolve', tags: [], lo: L - 300, hi: L + 500, minutes: 60, timebox: 1.25, by: 'user' }) }}>Start an upsolve session</Btn>
+        <p className="small muted">Solve any of these on Codeforces and it leaves this list on its own (it shows as “upsolved” in History). It gets its flashcard then too.</p>
+      </aside>
+      <div className="arc-main">
+        {!shown.length && <p className="small muted arc-none">No match. {(kinds.length || whys.length || q) ? <button type="button" className="arc-more" onClick={() => { setKinds([]); setWhys([]); setQ('') }}>Clear filters</button> : null}</p>}
+        {groups.map(g => (
+          <section key={g.key} className={g.title ? 'arc-act open' : 'arc-list'}>
+            {g.title && <div className="arc-up-gh">
+              {g.kind && <span className="arc-kind" title={KIND_LABEL[g.kind]}><Icon n={KIND_ICON[g.kind] || 'event'} fill /></span>}
+              <span className="grow arc-act-t"><b>{g.title}</b><span className="small muted">{fmtDay(g.date)}{g.date.slice(0, 4) !== String(new Date().getFullYear()) ? ' ' + g.date.slice(0, 4) : ''}</span></span>
+              <span className="small muted">{totals.get(g.key) || g.items.length} left</span>
+            </div>}
+            <div className="arc-act-b">
+              {g.items.map(u => {
+                const m = ix.problems[u.pid], d = due.get(u.pid)
+                return (
+                  <div key={u.pid} className={'arc-up-row' + (d?.overdue ? ' overdue' : '')}>
+                    <button type="button" className="grow arc-up-main" onClick={() => onOpen(u.pid)}>
+                      <span className="arc-pname">{m?.name || u.pid} <span className="prob-id">{u.pid}</span></span>
+                      <span className="small muted">{WHY[u.why].long}{d ? (d.overdue ? ' · overdue' : ` · due in ${Math.max(1, Math.round((d.due - now) / 36e5))}h`) : ''}{!g.title ? ` · ${u.title}` : ''}</span>
+                    </button>
+                    <Rating r={m?.rating} />
+                    <ProbLink pid={u.pid} className="arc-up-go"><Icon n="open_in_new" /></ProbLink>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        ))}
+        {shown.length > n && <Btn kind="tonal" icon="expand_more" onClick={() => setN(x => x + PAGE)}>Show more ({shown.length - n} more)</Btn>}
+      </div>
     </div>
   )
 }
@@ -232,7 +344,8 @@ function Problems({ ix, onOpen }: { ix: ArchiveIndex; onOpen: (pid: string) => v
       && (!s || p.pid.toLowerCase().includes(s) || (p.name || '').toLowerCase().includes(s) || (p.tags || []).some(t => t.toLowerCase().includes(s))))
     return r.sort(sort === 'rating' ? (a, b) => (b.rating || 0) - (a.rating || 0) || b.lastAt - a.lastAt : (a, b) => b.lastAt - a.lastAt)
   }, [all, q, st, tag, lo, hi, has, sort, code, ix])
-  const missing = useMemo(() => shown.filter(p => !ix.cards[p.pid]).map(p => p.pid), [shown, ix])
+  // flashcards are only for problems you solved (unsolved ones live in Upsolve and get a card once solved)
+  const missing = useMemo(() => shown.filter(p => p.status === 'solved' && !ix.cards[p.pid]).map(p => p.pid), [shown, ix])
   const jobs = ix.cardJobs
   const make = async () => {
     try { const r = await queueCards(missing); toast(r.queued ? `${r.queued} flashcard${r.queued > 1 ? 's' : ''} queued` : 'Nothing new to queue', 'style') }
@@ -262,7 +375,7 @@ function Problems({ ix, onOpen }: { ix: ArchiveIndex; onOpen: (pid: string) => v
           </label>
         </div>
         <div className="arc-jobs">
-          <Btn icon="auto_awesome" disabled={!missing.length} onClick={make}>{missing.length ? `Make flashcards for ${missing.length} without one` : 'Every match has a card'}</Btn>
+          <Btn icon="auto_awesome" disabled={!missing.length} onClick={make}>{missing.length ? `Make flashcards for ${missing.length} solved without one` : 'Every solved match has a card'}</Btn>
           <JobLine ix={ix} />
           {jobs && Object.keys(jobs.errors || {}).length > 0 && <p className="small arc-err"><Icon n="error" /> {Object.keys(jobs.errors).length} failed — retry from the problem.</p>}
         </div>
@@ -304,52 +417,118 @@ function JobLine({ ix }: { ix: ArchiveIndex }) {
 }
 
 /* ───────── Flashcards ───────── */
+/** the Today "Review" button opens the Cards view straight into a review of what is due */
+let reviewOnOpen = false
 function Cards({ ix, due, onOpen }: { ix: ArchiveIndex; due: string[]; onOpen: (pid: string) => void }) {
-  const [run, setRun] = useState<string[] | null>(null)
-  const [browse, setBrowse] = useState(false)
+  const [run, setRun] = useState<string[] | null>(() => { if (reviewOnOpen && due.length) { reviewOnOpen = false; return due } reviewOnOpen = false; return null })
   const [q, setQ] = useState('')
+  const [sort, setSort] = useState<'rating' | 'recent'>('rating')
+  const [openPid, setOpenPid] = useState<string | null>(null)
+  // topic folders: closed until you open one; which are open is remembered
+  const [openT, setOpenT] = useState<Set<string>>(() => { try { return new Set(JSON.parse(lsGet(TOPICS_KEY) || '[]')) } catch { return new Set() } })
+  const toggleT = (t: string) => setOpenT(o => { const n = new Set(o); if (n.has(t)) n.delete(t); else n.add(t); lsSet(TOPICS_KEY, JSON.stringify([...n])); return n })
   const total = Object.keys(ix.cards).length
-  const fresh = due.filter(p => !ix.srs[p]).length
-  const next = useMemo(() => Object.values(ix.srs).map(s => s.due).filter(d => d > dateKey()).sort()[0], [ix])
-  const list = useMemo(() => {
+  const all = useMemo(() => Object.entries(ix.cards).map(([pid, c]) => {
+    const m = ix.problems[pid]
+    return { pid, c, m, topic: topicOf(m?.tags, c.tags) }
+  }), [ix])
+  const topics = useMemo(() => {
+    const n = new Map<string, number>(); for (const x of all) n.set(x.topic, (n.get(x.topic) || 0) + 1)
+    const rank = (t: string) => { const i = TOPIC_ORDER.indexOf(t); return i < 0 ? TOPIC_ORDER.length : i }
+    return [...n.entries()].sort((a, b) => rank(a[0]) - rank(b[0]) || a[0].localeCompare(b[0]))
+  }, [all])
+  const groups = useMemo(() => {
     const s = q.trim().toLowerCase()
-    return Object.entries(ix.cards).map(([pid, c]) => ({ pid, c, m: ix.problems[pid] }))
-      .filter(x => !s || x.pid.toLowerCase().includes(s) || (x.m?.name || '').toLowerCase().includes(s) || (x.c.key_idea || '').toLowerCase().includes(s) || (x.m?.tags || []).some(t => t.includes(s)))
-      .sort((a, b) => (b.m?.lastAt || 0) - (a.m?.lastAt || 0))
-  }, [ix, q])
-  if (!total) return <Empty icon="style" title="No flashcards yet" text="Open Problems and press “Make flashcards” — each card holds the statement, how it should be solved and how you solved it.">
+    const hit = (x: (typeof all)[number]) => !s || x.pid.toLowerCase().includes(s) || (x.m?.name || '').toLowerCase().includes(s)
+      || (x.c.key_idea || '').toLowerCase().includes(s) || (x.c.summary || '').toLowerCase().includes(s) || [...(x.m?.tags || []), ...(x.c.tags || [])].some(t => t.includes(s))
+    const ord = (a: (typeof all)[number], b: (typeof all)[number]) => sort === 'rating' ? (a.m?.rating || 9999) - (b.m?.rating || 9999) || (a.pid < b.pid ? -1 : 1) : (b.c.at || 0) - (a.c.at || 0)
+    return topics.map(([t]) => ({ t, items: all.filter(x => x.topic === t && hit(x)).sort(ord) })).filter(g => g.items.length)
+  }, [all, topics, q, sort])
+  const searching = !!q.trim()
+  if (!total) return <Empty icon="style" title="No flashcards yet" text="Every problem you solve gets a card on its own: the statement, how it should be solved and how you solved it.">
     <JobLine ix={ix} />
   </Empty>
+  if (run) return <div className="arc-cardsv"><Deck ix={ix} ids={run} onExit={() => setRun(null)} onOpen={onOpen} /></div>
+  const fresh = due.filter(p => !ix.srs[p]).length
+  const next = Object.values(ix.srs).map(x => x.due).filter(d => d > dateKey()).sort()[0]
+  const rec = due.slice(0, 8)
   return (
-    <div className="arc-layout cards">
-      <div className="arc-main">
-        {run ? <Deck ix={ix} ids={run} onExit={() => setRun(null)} onOpen={onOpen} />
-          : <section className="card arc-deck-idle">
-              <div className="arc-deck-big"><b>{due.length}</b><span>due today</span></div>
-              <p className="small muted">{fresh ? `${fresh} new · ` : ''}{due.length - fresh} to review · {total} cards in all{!due.length && next ? ` · next ${fmtDate(next, true)}` : ''}</p>
-              <div className="row wrap"><Btn icon="play_arrow" size="lg" disabled={!due.length} onClick={() => setRun(due)}>{due.length ? 'Start review' : 'All caught up'}</Btn>
-                <Btn kind="tonal" icon="view_list" onClick={() => setBrowse(b => !b)}>{browse ? 'Hide cards' : 'Browse all cards'}</Btn></div>
-            </section>}
-        {browse && !run && (
-          <section className="card arc-browse">
-            <Search value={q} onChange={setQ} placeholder="Search cards" />
-            <div className="arc-list">
-              {list.slice(0, 300).map(({ pid, c, m }) => (
-                <button key={pid} type="button" className="arc-prow big" onClick={() => onOpen(pid)}>
-                  <span className="grow arc-pname"><b>{m?.name || pid}</b><span className="small muted arc-pmeta">{c.key_idea || pid}</span></span>
-                  <Rating r={m?.rating} />
-                  {ix.srs[pid] && <span className="small muted arc-time">{ix.srs[pid].due <= dateKey() ? 'due' : fmtDate(ix.srs[pid].due)}</span>}
-                </button>
-              ))}
-            </div>
-          </section>
-        )}
+    <div className="arc-cardsv">
+      {/* today's review: what is due, and the cards it recommends first */}
+      <section className="card arc-today-deck">
+        <div className="arc-td-l">
+          <div className="arc-deck-big"><b>{due.length}</b><span>due today</span></div>
+          <p className="small muted">{due.length ? `${fresh ? `${fresh} new · ` : ''}${due.length - fresh} to review` : next ? `All caught up · next ${fmtDate(next, true)}` : 'All caught up'} · {total} cards</p>
+          <Btn icon="play_arrow" size="lg" disabled={!due.length} onClick={() => setRun(due)}>{due.length ? 'Start review' : 'Nothing due'}</Btn>
+        </div>
+        {rec.length > 0 && <div className="arc-td-r">
+          <div className="arc-rec-h"><Icon n="auto_awesome" fill /> Recommended now</div>
+          <div className="arc-rec">
+            {rec.map(pid => { const m = ix.problems[pid]; return (
+              <button key={pid} type="button" className="arc-rec-i" onClick={() => setRun([pid, ...due.filter(p => p !== pid)])} title="Review this one first">
+                <span className="arc-rec-n">{m?.name || pid}</span>
+                <span className="arc-rec-m"><Rating r={m?.rating} /><span className="small muted">{ix.srs[pid] ? 'review' : 'new'} · {topicLabel(topicOf(m?.tags, ix.cards[pid]?.tags))}</span></span>
+                {ix.cards[pid]?.summary && <span className="arc-rec-s">{withMath(ix.cards[pid].summary || '')}</span>}
+              </button>) })}
+          </div>
+        </div>}
+      </section>
+
+      {/* every card, by topic: one compact row each, the back opens in place */}
+      <div className="arc-ctools">
+        <Search value={q} onChange={setQ} placeholder="Search cards, ideas, tags" />
+        <Seg className="mini" label="Order" value={sort} onChange={setSort} options={[{ v: 'rating', label: 'Easiest' }, { v: 'recent', label: 'Newest' }]} />
+        <IconBtn icon={openT.size ? 'unfold_less' : 'unfold_more'} title={openT.size ? 'Close all folders' : 'Open all folders'}
+          onClick={() => { const n = openT.size ? new Set<string>() : new Set(groups.map(g => g.t)); setOpenT(n); lsSet(TOPICS_KEY, JSON.stringify([...n])) }} />
       </div>
-      <aside className="card arc-aside">
-        <h3 className="title"><Icon n="school" fill /> How it works</h3>
-        <p className="small muted">Front: the problem in a few lines. Recall how you would solve it, then flip (<kbd>space</kbd>). Back: the intended solution, how you actually solved it, what differed, and your code. Grade with <kbd>1</kbd>–<kbd>4</kbd>; cards you know drift years apart, ones you miss come back tomorrow.</p>
-        <JobLine ix={ix} />
-      </aside>
+      {!groups.length && <p className="small muted arc-none">No match.</p>}
+      <div className="arc-folders">
+        {groups.map(g => {
+          const open = searching || openT.has(g.t)
+          const nDue = g.items.filter(x => due.includes(x.pid) && ix.srs[x.pid]).length, nNew = g.items.filter(x => !ix.srs[x.pid]).length
+          return (
+            <section key={g.t} className={'arc-folder' + (open ? ' open' : '')}>
+              <button type="button" className="arc-folder-h" onClick={() => toggleT(g.t)} aria-expanded={open}>
+                <Icon n={open ? 'folder_open' : 'folder'} fill />
+                <span className="grow arc-folder-t">{topicLabel(g.t)}</span>
+                {nDue > 0 && <span className="arc-due">{nDue} due</span>}
+                {nNew > 0 && <span className="arc-new">{nNew} new</span>}
+                <span className="arc-folder-n">{g.items.length}</span>
+                <Icon n={open ? 'expand_less' : 'expand_more'} />
+              </button>
+              <AnimatePresence initial={false}>
+                {open && <motion.div className="arc-folder-b" initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={spring}>
+                  <div className="arc-crows">{g.items.map(x => <CardRow key={x.pid} pid={x.pid} entry={x.c} m={x.m} due={due.includes(x.pid) && !!ix.srs[x.pid]}
+                    open={openPid === x.pid} onToggle={() => setOpenPid(o => o === x.pid ? null : x.pid)} onOpen={onOpen} />)}</div>
+                </motion.div>}
+              </AnimatePresence>
+            </section>
+          )
+        })}
+      </div>
+      <JobLine ix={ix} />
+    </div>
+  )
+}
+
+/* one card as a compact row (name, rating, key idea); the front and back open in place */
+function CardRow({ pid, entry, m, due, open, onToggle, onOpen }: { pid: string; entry: CardEntry; m?: ProbMeta; due: boolean; open: boolean; onToggle: () => void; onOpen: (pid: string) => void }) {
+  const [d, setD] = useState<ProblemDetail | 'err' | null>(null)
+  useEffect(() => { if (open && !d) loadProblem(pid).then(setD, () => setD('err')) }, [open, d, pid])
+  return (
+    <div className={'arc-crow' + (open ? ' open' : '')}>
+      <button type="button" className="arc-crow-h" onClick={onToggle} aria-expanded={open}>
+        <span className="arc-crow-t"><b>{m?.name || pid}</b> <span className="prob-id">{pid}</span>{due && <span className="arc-due">due</span>}</span>
+        <Rating r={m?.rating} />
+        <Icon n={open ? 'expand_less' : 'expand_more'} />
+        <span className="arc-crow-k small muted">{entry.key_idea ? withMath(entry.key_idea) : ''}</span>
+      </button>
+      {open && <div className="arc-crow-b">
+        {entry.summary && <p className="arc-summary">{withMath(entry.summary)}</p>}
+        {d === 'err' ? <p className="small arc-err">Could not load this card.</p> : !d ? <p className="small muted">Loading…</p>
+          : d.card ? <CardBack card={d.card} code={d.code} /> : null}
+        <div className="row wrap"><Btn kind="text" size="sm" icon="open_in_full" onClick={() => onOpen(pid)}>Problem, statement and history</Btn></div>
+      </div>}
     </div>
   )
 }
@@ -394,6 +573,7 @@ function Deck({ ix, ids, onExit, onOpen }: { ix: ArchiveIndex; ids: string[]; on
       // a keyboard-focused button keeps its own Space / Enter
       const f = document.activeElement as HTMLElement | null
       if ((e.key === ' ' || e.key === 'Enter') && f && f !== document.body && f.matches('button, a, summary') && f.matches(':focus-visible')) return
+      if (e.key === 'Escape') { e.preventDefault(); onExit(); return } // ends the review (it may have started on its own)
       if (done) { if (e.key === 'Enter') { e.preventDefault(); onExit() } return }
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); return } // Space only flips, never grades
       const g = GRADES.find(x => x.key === e.key)
@@ -415,7 +595,7 @@ function Deck({ ix, ids, onExit, onOpen }: { ix: ArchiveIndex; ids: string[]; on
   // ix.srs is updated by reviewCard, so a requeued card previews from its latest schedule
   const m = ix.problems[pid], card = d && d !== 'err' ? d.card : null, srs = ix.srs[pid] || (d && d !== 'err' ? d.srs : null)
   return (
-    <section className="card arc-deck reviewing">
+    <section className={'card arc-deck reviewing' + (shown ? ' shown' : '')}>
       <div className="arc-prog"><motion.span animate={{ width: `${(i / queue.length) * 100}%` }} transition={spring} /></div>
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.div key={pid + ':' + i} className="arc-face" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} transition={spring}>
@@ -428,8 +608,8 @@ function Deck({ ix, ids, onExit, onOpen }: { ix: ArchiveIndex; ids: string[]; on
           {m?.tags?.length ? (tagsOn ? <div className="row wrap">{m.tags.map(t => <span key={t} className="chip mini">{t}</span>)}</div>
             : <button type="button" className="arc-link" onClick={() => setTagsOn(true)}><Icon n="sell" /> show tags</button>) : null}
           {!d ? <p className="small muted">Loading…</p> : d === 'err' ? <p className="small arc-err">Could not load this card.</p> : <>
-            {card?.summary ? <p className="arc-summary">{card.summary}</p> : <p className="small muted">No summary — open the full statement.</p>}
-            {d.statement && <details className="arc-det"><summary><Icon n="description" /> Full statement</summary><pre className="arc-stmt">{d.statement}</pre></details>}
+            {card?.summary ? <p className="arc-summary">{withMath(card.summary)}</p> : <p className="small muted">No summary — open the full statement.</p>}
+            {d.statement && <details className="arc-det"><summary><Icon n="description" /> Full statement</summary><Statement text={d.statement} /></details>}
             {!shown ? <Btn kind="tonal" icon="flip" onClick={flip}>Show solution <kbd>space</kbd></Btn>
               : <motion.div className="arc-back" initial={{ opacity: 0, rotateX: -50 }} animate={{ opacity: 1, rotateX: 0 }} transition={spring}>
                   {card ? <CardBack card={card} code={d.code} /> : <p className="small muted">This problem has no card text yet.</p>}
@@ -452,11 +632,11 @@ function Deck({ ix, ids, onExit, onOpen }: { ix: ArchiveIndex; ids: string[]; on
 function CardBack({ card, code }: { card: Card; code?: ProblemDetail['code'] }) {
   return (
     <div className="arc-cardback">
-      {card.key_idea && <p className="arc-key"><Icon n="lightbulb" fill /> {card.key_idea}</p>}
-      {card.intended && <div className="arc-sec"><h4><Icon n="route" /> How it should be solved</h4><Md text={card.intended} /></div>}
-      {card.mine && <div className="arc-sec mine"><h4><Icon n="person" /> How you solved it</h4><Md text={card.mine} /></div>}
-      {card.compare && <div className="arc-sec diff"><h4><Icon n="compare_arrows" /> What differed</h4><Md text={card.compare} /></div>}
-      {card.pitfalls?.length > 0 && <div className="arc-sec"><h4><Icon n="warning" /> Pitfalls</h4><ul>{card.pitfalls.map((p, k) => <li key={k}>{p}</li>)}</ul></div>}
+      {card.key_idea && <p className="arc-key"><Icon n="lightbulb" fill /> <span>{withMath(card.key_idea)}</span></p>}
+      {card.intended && <div className="arc-sec"><h4><Icon n="route" /> How it should be solved</h4><Md math text={card.intended} /></div>}
+      {card.mine && <div className="arc-sec mine"><h4><Icon n="person" /> How you solved it</h4><Md math text={card.mine} /></div>}
+      {card.compare && <div className="arc-sec diff"><h4><Icon n="compare_arrows" /> What differed</h4><Md math text={card.compare} /></div>}
+      {card.pitfalls?.length > 0 && <div className="arc-sec"><h4><Icon n="warning" /> Pitfalls</h4><ul>{card.pitfalls.map((p, k) => <li key={k}>{withMath(p)}</li>)}</ul></div>}
       {code && code.length > 0 && code.map(f => (
         <details key={f.path} className="arc-det"><summary><Icon n="code" /> {f.path}</summary><pre className="arc-code">{f.text}</pre></details>
       ))}
@@ -505,6 +685,7 @@ function CodeView({ ix, scan, onOpen }: { ix: ArchiveIndex; scan: CodeScan | nul
         <p className="small muted">Files are matched to problems by an id in the file (<code>// 1833A</code>), the contest folder, the mock folder and its time, or the file name. Your coach reads this folder too, read-only. Fix any wrong match by typing the problem id.</p>
         <p className="small muted">{rows.length} files · {linked} linked · {rows.length - linked} unlinked</p>
         {scan && !scan.ok && ix.codeDir && <p className="small arc-err"><Icon n="error" /> The server cannot read this folder.</p>}
+        {ix.codeDir && <Organize ix={ix} />}
       </aside>
       <div className="arc-main">
         {!ix.codeDir ? <Empty icon="folder_open" title="No code folder yet" text="Point Momentum at the folder where you keep your solutions." />
@@ -515,6 +696,25 @@ function CodeView({ ix, scan, onOpen }: { ix: ArchiveIndex; scan: CodeScan | nul
             </>}
       </div>
     </div>
+  )
+}
+
+/* keeping the folder organized: the server files every linked solution, this shows it and can undo the last batch */
+function Organize({ ix }: { ix: ArchiveIndex }) {
+  const [busy, setBusy] = useState(false)
+  const on = ix.organize !== false, last = ix.lastOrganize
+  const run = async (f: () => Promise<void>) => { setBusy(true); try { await f() } catch (e) { toast('Failed: ' + (e instanceof Error ? e.message : 'server error'), 'error') } finally { setBusy(false) } }
+  return (
+    <section className="arc-org">
+      <Switch on={on} label="Keep this folder organized" onChange={v => void run(async () => { await setOrganize(v); if (v) { const r = await organizeNow(); toast(r.moves.length ? `Filed ${r.moves.length} file${r.moves.length > 1 ? 's' : ''}` : 'Already organized', 'folder') } })} />
+      <p className="small muted">Every linked solution goes to <code>Contests/</code>, <code>Virtual/</code>, <code>Mocks/</code> or <code>Practice/</code>, in a folder per round or day, named <code>1772A A+B.cpp</code>. Save new solutions anywhere in the folder. Files edited in the last 2 hours are left alone, nothing is ever overwritten, and only names change, never what is inside.</p>
+      <div className="row wrap">
+        <Btn kind="tonal" size="sm" icon="folder_managed" disabled={busy} onClick={() => void run(async () => { const r = await organizeNow(); toast(r.moves.length ? `Filed ${r.moves.length} file${r.moves.length > 1 ? 's' : ''}` : 'Already organized', 'folder') })}>Organize now</Btn>
+        {last && <Btn kind="text" size="sm" icon="undo" disabled={busy} onClick={() => void run(async () => { const n = await undoOrganize(); toast(`Moved ${n} file${n === 1 ? '' : 's'} back · automatic organizing is off`, 'undo') })}>Undo last ({last.n})</Btn>}
+      </div>
+      {last && <details className="arc-det"><summary className="small">Last organized {fmtWhen(last.at)} · {last.n} file{last.n > 1 ? 's' : ''}</summary>
+        <ul className="arc-moves small">{last.moves.map(m => <li key={m.to}><span className="muted">{m.from}</span><br />→ {m.to}</li>)}</ul></details>}
+    </section>
   )
 }
 
@@ -568,7 +768,7 @@ function ProblemSheet({ ix, pid, onClose }: { ix: ArchiveIndex; pid: string | nu
   const failed = p ? ix.cardJobs?.errors?.[p] : undefined
   const make = async (force: boolean) => {
     if (!p) return
-    try { await queueCards([p], force); toast(force ? 'Card will be rewritten' : 'Card queued', 'style') } catch { toast('Could not queue the card', 'error') }
+    try { const r = await queueCards([p], force); toast(!r.queued ? 'Flashcards are only for solved problems' : force ? 'Card will be rewritten' : 'Card queued', 'style') } catch { toast('Could not queue the card', 'error') }
   }
   const ask = () => {
     if (!p) return
@@ -595,21 +795,22 @@ function ProblemSheet({ ix, pid, onClose }: { ix: ArchiveIndex; pid: string | nu
 
         <section className="arc-block">
           <div className="arc-block-h"><h3 className="title"><Icon n="style" fill /> Flashcard</h3>
-            {d?.card ? <Btn kind="text" size="sm" icon="refresh" disabled={queued} onClick={() => make(true)}>{queued ? 'Rewriting…' : 'Rewrite'}</Btn> : null}</div>
+            {d?.card && m?.status === 'solved' ? <Btn kind="text" size="sm" icon="refresh" disabled={queued} onClick={() => make(true)}>{queued ? 'Rewriting…' : 'Rewrite'}</Btn> : null}</div>
           {d?.card ? <>
-            {d.card.summary && <p className="arc-summary">{d.card.summary}</p>}
+            {d.card.summary && <p className="arc-summary">{withMath(d.card.summary)}</p>}
             <CardBack card={d.card} />
             <p className="small muted">Written {fmtWhen(d.card.at)}{d.card.model ? ` · ${d.card.model}` : ''}{d.srs ? ` · next review ${fmtDate(d.srs.due, true)}` : ''}</p>
           </> : queued ? <p className="small muted"><Icon n="progress_activity" className="arc-spin" /> Card is being written…</p>
             : !d && !err ? <p className="small muted">Loading…</p>
             : err && ix.cards[p] ? <p className="small arc-err">Could not load this card.{ix.cards[p].key_idea ? <span className="muted"> Key idea: {ix.cards[p].key_idea}</span> : null}</p>
+            : m?.status !== 'solved' ? <p className="small muted">You get a flashcard once you solve it. It is in Upsolve until then.</p>
             : <div className="row wrap">{failed && <span className="small arc-err grow">Last try failed: {failed}</span>}<Btn icon="auto_awesome" onClick={() => make(false)}>Make card</Btn></div>}
         </section>
 
         <section className="arc-block">
           <h3 className="title"><Icon n="description" /> Statement</h3>
           {err ? <p className="small arc-err">Could not load the details.</p> : !d ? <p className="small muted">Loading…</p>
-            : d.statement ? <details className="arc-det"><summary>Show full statement</summary><pre className="arc-stmt">{d.statement}</pre></details>
+            : d.statement ? <details className="arc-det"><summary>Show full statement</summary><Statement text={d.statement} /></details>
             : <p className="small muted">Not stored yet — open it on Codeforces.</p>}
         </section>
 

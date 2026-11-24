@@ -20,9 +20,10 @@ Archive (archive.py: permanent record in data/archive/, never pruned; flashcards
   GET  /api/archive                 everything (activities, problems, card index, srs, links, cardJobs)
   GET  /api/archive/problem/<pid>   {meta, statement, card, srs, code:[{path, text, mtime}]}
   GET  /api/archive/code            scan of the code folder
-  POST /api/archive/ingest {activities, problems, attempts}   idempotent upsert
+  POST /api/archive/ingest {activities, problems, attempts, drop, full}   idempotent upsert; queues cards on its own
   POST /api/archive/config {codeDir}   POST /api/archive/link {links:[{path, pid, by}]}
   POST /api/archive/cards {pids, force?}   POST /api/archive/review {pid, grade, today}
+  POST /api/archive/organize {apply?} -> {moves, kept}   POST /api/archive/organize/undo   POST /api/archive/config {organize}
 
 Usage:  python3 server.py [--port 8787]
 Listens on 127.0.0.1 only; open http://localhost:8787 in a browser on the same machine.
@@ -413,13 +414,30 @@ class Handler(SimpleHTTPRequestHandler):
             b = self.body(4 * 1024 * 1024)
             if b is None:
                 return
-            return self.json(200, A.ingest(b))
+            res = A.ingest(b)
+            A.auto_queue()
+            return self.json(200, res)
         if path == '/api/archive/config':
             b = self.body(64 * 1024)
             if b is None:
                 return
+            if 'organize' in b and 'codeDir' not in b:
+                if not isinstance(b['organize'], bool):
+                    return self.json(400, {'error': 'organize must be true or false'})
+                return self.json(200, {'ok': True, 'organize': A.set_organize(b['organize'])})
             ok, res = A.set_code_dir(b.get('codeDir'))
             return self.json(200 if ok else 400, {'ok': True, 'codeDir': res} if ok else {'error': res})
+        if path == '/api/archive/organize':
+            b = self.body(64 * 1024)
+            if b is None:
+                return
+            if not A.code_dir():
+                return self.json(400, {'error': 'no code folder configured'})
+            return self.json(200, A.organize(apply=b.get('apply', True) is not False))
+        if path == '/api/archive/organize/undo':
+            if self.body(64 * 1024) is None:
+                return
+            return self.json(200, A.organize_undo())
         if path == '/api/archive/link':
             b = self.body(4 * 1024 * 1024)
             if b is None:
@@ -427,6 +445,8 @@ class Handler(SimpleHTTPRequestHandler):
             if not A.code_dir():
                 return self.json(400, {'error': 'no code folder configured'})
             ok, err, n, skipped = A.link(b.get('links'))
+            if ok and n:
+                A.auto_queue()  # newly linked code: cards for it (or a rewrite of one that had no "how you solved it")
             return self.json(200 if ok else 400, {'ok': True, 'changed': n, 'skipped': skipped} if ok else {'error': err})
         if path == '/api/archive/cards':
             b = self.body(256 * 1024)

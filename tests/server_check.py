@@ -8,6 +8,10 @@ sys.path.insert(0, APP)
 ok = bad = 0
 
 
+def _json_load(p):
+    return json.load(open(p))
+
+
 def check(name, cond):
     global ok, bad
     ok, bad = ok + bool(cond), bad + (not cond)
@@ -160,7 +164,7 @@ print(json.dumps({{'type': 'result', 'is_error': False, 'total_cost_usd': 0.01, 
 os.chmod(stub, 0o755)
 port = free_port()
 env = {**os.environ, 'MOMENTUM_DATA': adata, 'MOMENTUM_KEY': KEY, 'MOMENTUM_DIST': dist, 'MOMENTUM_CLAUDE_BIN': stub,
-       'MOMENTUM_CARD_MAX_DAY': '2', 'PYTHONUNBUFFERED': '1'}
+       'MOMENTUM_CARD_MAX_DAY': '2', 'MOMENTUM_AUTO_CARDS': '0', 'PYTHONUNBUFFERED': '1'}
 env.pop('MOMENTUM_CODE', None); env.pop('MOMENTUM_CARD_MODEL', None)
 proc = subprocess.Popen([sys.executable, os.path.join(APP, 'server.py'), '--port', str(port)], env=env, cwd=tmp,
                         stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
@@ -265,6 +269,9 @@ try:
     s, j, _ = req('POST', '/api/archive/review', json.dumps({'pid': '1900A', 'grade': 4, 'today': '2026-01-17'}))
     check('review: bad grade -> 400', s == 400)
 
+    s, j, _ = req('POST', '/api/archive/cards', json.dumps({'pids': ['1900B']}))
+    check('cards: an unsolved problem never gets a card', s == 200 and j['queued'] == 0)
+    req('POST', '/api/archive/ingest', json.dumps({'activities': [], 'problems': [], 'attempts': [{'pid': '1901C', 'at': T0 + 86400000 + 9000, 'status': 'solved', 'src': 'cf'}]}))
     s, j, _ = req('POST', '/api/archive/cards', json.dumps({'pids': ['1900A', 'bad', '1901C']}))
     check(f'cards: valid pids queued ({j and j.get("queued")})', s == 200 and j['queued'] == 2)
     for _ in range(200):
@@ -274,7 +281,7 @@ try:
         time.sleep(0.05)
     card = json.load(open(os.path.join(arc, 'cards', '1900A.json'))) if os.path.exists(os.path.join(arc, 'cards', '1900A.json')) else {}
     check(f'cards: worker wrote structured cards ({a["cardJobs"]})', card.get('key_idea') == 'Kadane: best ending here' and card.get('pid') == '1900A'
-          and card.get('model') == 'sonnet' and card.get('ver') == 1 and set(a['cards']) == {'1900A', '1901C'} and a['cardJobs']['doneToday'] == 2)
+          and card.get('model') == 'sonnet' and card.get('ver') == 2 and set(a['cards']) == {'1900A', '1901C'} and a['cardJobs']['doneToday'] == 2)
     runs = [json.loads(l) for l in open(argv_log)] if os.path.exists(argv_log) else []
     av = runs[0]['argv'] if runs else []
     check('cards: one-shot claude -p (no --resume / --session-id), model sonnet, schema, WebFetch only',
@@ -298,7 +305,7 @@ finally:
 check('cards: the held queue persists for the next server', json.load(open(os.path.join(arc, 'work', 'queue.json'))) == ['1900A'])
 
 dg = archive.digest(adata)
-check(f'digest: month rows + totals ({len(dg.splitlines())} lines)', '2025-11 |' in dg and 'contest:1 mock:1' in dg and '| 1/1 |' in dg and 'totals: 2 activities, 3 problems, 1 solved, 2 flashcards' in dg)
+check(f'digest: month rows + totals ({len(dg.splitlines())} lines)', '2025-11 |' in dg and 'contest:1 mock:1' in dg and '| 2/0 |' in dg and 'totals: 2 activities, 3 problems, 2 solved, 2 flashcards' in dg)
 # five years of monthly activity still fits in ~60 lines (old years folded)
 ydata = os.path.join(tmp, 'ydata'); os.makedirs(os.path.join(ydata, 'archive'))
 acts = {f'test:{y}{mo}': {'id': f'test:{y}{mo}', 'kind': 'mock', 'date': f'{y}-{mo:02d}-05', 'perf': 1200 + y} for y in range(2021, 2027) for mo in range(1, 13)}
@@ -329,6 +336,100 @@ S3 = Sessions(nodata)
 c3 = S3._cmd('coach', 'sid', True)
 check('coach without code folder / archive: WebFetch only, no --add-dir', '--add-dir' not in c3 and c3[c3.index('--tools') + 1] == 'WebFetch')
 S3.shutdown()
+
+# ── ingest drop / full and automatic cards (in-process, no worker) ──
+ddata = os.path.join(tmp, 'dropdata'); os.makedirs(ddata)
+os.environ.pop('MOMENTUM_AUTO_CARDS', None)
+A = archive.Archive(ddata, fetch_statement=lambda pid: '', stmt_cache_dir=os.path.join(ddata, 'none'), cli=lambda: '/bin/true')
+A.start = lambda: None
+mk = lambda i, kind='mock': {'id': i, 'kind': kind, 'date': '2026-11-23', 'at': 1, 'title': i, 'pids': ['1833A', '1833B'], 'solved': []}
+A.ingest({'activities': [mk('test:2026-11-23'), mk('test:2026-11-23~x1', 'virtual')], 'problems': [],
+          'attempts': [{'pid': '1833A', 'at': 1, 'status': 'tried', 'src': 'test', 'act': 'test:2026-11-23'},
+                       {'pid': '1772A', 'at': 5, 'status': 'solved', 'src': 'test', 'act': 'test:2026-11-23~x1'},
+                       {'pid': '1772E', 'at': 5, 'status': 'tried', 'src': 'test', 'act': 'test:2026-11-23~x1'}]})
+sm = A.summary()
+check("ingest: app ids with '~' are kept", 'test:2026-11-23~x1' in sm['activities'])
+A.ingest({'activities': [{**mk('test:2026-11-23~x1', 'virtual'), 'pids': ['1772A', '1772E'], 'solved': ['1772A']}], 'problems': [],
+          'attempts': [{'pid': '1772A', 'at': 5, 'status': 'solved', 'src': 'test', 'act': 'test:2026-11-23~x1'}],
+          'drop': ['test:2026-11-23'], 'full': ['test:2026-11-23~x1']})
+sm = A.summary()
+check('ingest drop: the junk activity and its attempts go; a problem only it had goes too',
+      'test:2026-11-23' not in sm['activities'] and '1833A' not in sm['problems'])
+check('ingest full: stale attempts and pids of a fully re-sent activity are replaced',
+      sm['activities']['test:2026-11-23~x1']['pids'] == ['1772A', '1772E'] and not any(x.get('act') == 'test:2026-11-23~x1' for x in sm['problems']['1772E']['attempts']))
+A.ingest({'activities': [mk('test:2026-11-23')], 'problems': [], 'attempts': [{'pid': '1833A', 'at': 1, 'status': 'tried', 'src': 'test', 'act': 'test:2026-11-23'}]})
+check('ingest drop: a stale device cannot bring a dropped activity back', 'test:2026-11-23' not in A.summary()['activities'] and '1833A' not in A.summary()['problems'])
+n = A.auto_queue()
+check(f'auto cards: solved problems queue on their own, unsolved ones do not ({A.queue})', '1772A' in A.queue and '1772E' not in A.queue and n >= 1)
+A.ingest({'activities': [{**mk('test:w1'), 'pids': ['1900A']}], 'problems': [], 'attempts': [{'pid': '1900A', 'at': 9, 'status': 'failed', 'src': 'test', 'act': 'test:w1'}]})
+A.ingest({'activities': [], 'problems': [], 'attempts': [], 'drop': ['test:w1']})
+check('ingest drop: a record with a failed attempt is never tombstoned', 'test:w1' in A.summary()['activities']
+      and 'test:w1' not in archive._read_json(A.p('dropped.json'), {}))
+# a card whose linked file is gone is not rewritten on every ingest
+A.queue.clear(); A._card_index['1772A'] = {'at': 10 ** 13, 'key_idea': ''}
+os.makedirs(A.p('cards'), exist_ok=True)
+with open(A.p('cards', '1772A.json'), 'w') as f: json.dump({'pid': '1772A', 'code': [], 'mine': ''}, f)  # noqa: E701
+with open(A.p('links.json'), 'w') as f: json.dump({'gone/a.cpp': {'pid': '1772A'}}, f)  # noqa: E701
+A.auto_queue(); A.auto_queue()
+check(f'auto cards: a stale link (file gone) does not re-queue the card ({A.queue})', '1772A' not in A.queue)
+os.environ['MOMENTUM_AUTO_CARDS'] = '0'; A.queue.clear()
+check('auto cards: MOMENTUM_AUTO_CARDS=0 turns it off', A.auto_queue() == 0 and not A.queue)
+os.environ.pop('MOMENTUM_AUTO_CARDS', None)
+
+# ── organizing the code folder ──
+odata, ocode = os.path.join(tmp, 'orgdata'), os.path.join(tmp, 'orgcode')
+for f, body in (('Mock Rounds/2/A.cpp', 'a'), ('Contests/839 (Div 3)/D.cpp', 'd'), ('Daily/x/C. Coin Rows.cpp', 'c'), ('loose.cpp', 'l'),
+                ('Virtual/2026-11-23 Codeforces Round 839 (Div. 3)/1772A A+B.cpp', 'taken'), ('fresh.cpp', 'f')):
+    os.makedirs(os.path.dirname(os.path.join(ocode, f)) or ocode, exist_ok=True); open(os.path.join(ocode, f), 'w').write(body)
+old = time.time() - 5 * 3600
+for f in ('Mock Rounds/2/A.cpp', 'Contests/839 (Div 3)/D.cpp', 'Daily/x/C. Coin Rows.cpp', 'loose.cpp', 'Virtual/2026-11-23 Codeforces Round 839 (Div. 3)/1772A A+B.cpp'):
+    os.utime(os.path.join(ocode, f), (old, old))
+os.environ['MOMENTUM_CODE'] = ocode
+O = archive.Archive(odata, fetch_statement=lambda pid: '', stmt_cache_dir=os.path.join(odata, 'none'), cli=lambda: None)
+O.ingest({'activities': [{'id': 'test:v~1', 'kind': 'virtual', 'date': '2026-11-23', 'at': 5, 'title': 'Virtual · Codeforces Round 839 (Div. 3)', 'pids': ['1772A'], 'solved': ['1772A'], 'contestId': 1772},
+                         {'id': 'sess:p1', 'kind': 'practice', 'date': '2026-11-21', 'at': 1, 'title': 'Practice', 'pids': ['1555C'], 'solved': ['1555C']}],
+          'problems': [{'pid': '1772A', 'name': 'A+B?'}, {'pid': '1555C', 'name': 'Coin Rows'}, {'pid': '1772D', 'name': 'Absolute Sorting'}], 'attempts': []})
+O.link([{'path': 'Mock Rounds/2/A.cpp', 'pid': '1772A', 'by': 'auto'}, {'path': 'Contests/839 (Div 3)/D.cpp', 'pid': '1772D', 'by': 'auto'},
+        {'path': 'Daily/x/C. Coin Rows.cpp', 'pid': '1555C', 'by': 'user'}, {'path': 'fresh.cpp', 'pid': '1555C', 'by': 'auto'}])
+dry = O.organize(apply=False)
+tos = {m['from']: m['to'] for m in dry['moves']}
+check(f'organize dry run: round / day folders, "<pid> <name>" names, no overwrite ({tos})',
+      tos.get('Mock Rounds/2/A.cpp') == 'Virtual/2026-11-23 Codeforces Round 839 (Div. 3)/1772A A+B (2).cpp'
+      and tos.get('Contests/839 (Div 3)/D.cpp') == 'Virtual/2026-11-23 Codeforces Round 839 (Div. 3)/1772D Absolute Sorting.cpp'
+      and tos.get('Daily/x/C. Coin Rows.cpp') == 'Practice/2026-11-21/1555C Coin Rows.cpp' and 'loose.cpp' not in tos
+      and os.path.exists(os.path.join(ocode, 'Mock Rounds/2/A.cpp')))
+check('organize: a file edited in the last 2 hours is left alone', 'fresh.cpp' not in tos and any(k['path'] == 'fresh.cpp' for k in dry['kept']))
+res = O.organize()
+lk = _json_load(os.path.join(odata, 'archive', 'links.json'))
+check('organize: files moved, contents untouched, links follow, emptied folders removed',
+      open(os.path.join(ocode, 'Practice/2026-11-21/1555C Coin Rows.cpp')).read() == 'c' and lk.get('Practice/2026-11-21/1555C Coin Rows.cpp', {}).get('by') == 'user'
+      and 'Daily/x/C. Coin Rows.cpp' not in lk and not os.path.exists(os.path.join(ocode, 'Daily')) and not os.path.exists(os.path.join(ocode, 'Mock Rounds'))
+      and open(os.path.join(ocode, 'Virtual/2026-11-23 Codeforces Round 839 (Div. 3)/1772A A+B.cpp')).read() == 'taken' and len(res['moves']) == 3)
+check('organize: a second pass changes nothing', O.organize()['moves'] == [] and O.summary()['lastOrganize']['n'] == 3)
+und = O.organize_undo()
+lk = _json_load(os.path.join(odata, 'archive', 'links.json'))
+check('organize undo: everything back where it was, links too, automatic organizing turned off',
+      und['undone'] == 3 and open(os.path.join(ocode, 'Daily/x/C. Coin Rows.cpp')).read() == 'c' and 'Daily/x/C. Coin Rows.cpp' in lk
+      and not os.path.exists(os.path.join(ocode, 'Practice')) and O.summary()['organize'] is False)
+# symlinks stay put; a renamed round does not send files back and forth; undo never reaches another folder
+os.symlink(os.path.join(ocode, 'loose.cpp'), os.path.join(ocode, 'lnk.cpp')); os.utime(os.path.join(ocode, 'loose.cpp'), (old, old))
+O.set_organize(True); O.link([{'path': 'lnk.cpp', 'pid': '1555C', 'by': 'user'}])
+r = O.organize()
+check('organize: a symlink is left where it is', os.path.islink(os.path.join(ocode, 'lnk.cpp')) and any(k['path'] == 'lnk.cpp' for k in r['kept']))
+O.organize()
+O.ingest({'activities': [{'id': 'test:v~1', 'kind': 'virtual', 'date': '2026-11-23', 'at': 5, 'title': 'Virtual · Round 1772', 'pids': ['1772A'], 'solved': ['1772A'], 'contestId': 1772}], 'problems': [], 'attempts': []})
+check('ingest: a placeholder "Round N" title never replaces the real name', O.summary()['activities']['test:v~1']['title'] == 'Virtual · Codeforces Round 839 (Div. 3)')
+acts = archive._read_json(O.p('activities.json'), {}); acts['test:v~1']['title'] = 'Virtual · Codeforces Round 839 renamed'; archive._write_json(O.p('activities.json'), acts)
+check('organize: a round renamed later does not move its files again', O.organize()['moves'] == [])
+code2 = os.path.join(tmp, 'orgcode2'); os.makedirs(os.path.join(code2, 'Practice/2026-11-21'))
+open(os.path.join(code2, 'Practice/2026-11-21/1555C Coin Rows.cpp'), 'w').write('other folder')
+O.set_code_dir(code2)
+check('organize undo: switching folders sets the old undo history aside', O.organize_undo()['undone'] == 0 and O.summary()['lastOrganize'] is None
+      and open(os.path.join(code2, 'Practice/2026-11-21/1555C Coin Rows.cpp')).read() == 'other folder')
+with open(O.p('organize.jsonl'), 'w') as f: f.write('{"at": 1, "moves": [{"from": "a.cpp", "to": "b')  # noqa: E701  (a line cut off by a crash)
+O._append_batch({'at': 2, 'base': os.path.realpath(code2), 'moves': [{'from': 'x.cpp', 'to': 'y.cpp'}]})
+check('organize log: a cut-off line does not swallow the next batch', O.last_organize() and O.last_organize()['moves'] == [{'from': 'x.cpp', 'to': 'y.cpp'}])
+os.environ.pop('MOMENTUM_CODE', None)
 import shutil; shutil.rmtree(tmp, ignore_errors=True)  # noqa: E402,E702
 print(f'\n{ok} passed, {bad} failed')
 sys.exit(1 if bad else 0)
