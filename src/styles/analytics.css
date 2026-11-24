@@ -103,3 +103,11 @@ ul.hbars li.open .hb-l { white-space: normal; overflow: visible; overflow-wrap: 
 .tm-catbar i { cursor: pointer; }
 .tm-catbar i.on { box-shadow: inset 0 0 0 2px var(--on-surface); }
 .tm-cats .legend .tm-cat-on { color: var(--on-surface); font-weight: 700; }
+
+.treat .card-head { flex-wrap: wrap; gap: 4px 12px; }
+.treat-bars { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; margin: 4px 0 12px; }
+.treat-l { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 6px; color: var(--on-surface-variant); }
+.treat-l span { display: flex; align-items: center; gap: 6px; } .treat-l .msr { font-size: 16px; color: var(--primary); }
+.treat-l b { color: var(--on-surface); font-variant-numeric: tabular-nums; }
+.treat-foot { align-items: center; gap: 8px 12px; }
+.treat.ready { box-shadow: inset 0 0 0 2px var(--primary); }

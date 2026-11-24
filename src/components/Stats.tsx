@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ACHIEVEMENTS, addDays, bestWorkDay, totalWork, dateKey, dayPct, getState, keyToDate, levelInfo, qualifies, streakOf, useStore } from '../store'
+import { ACHIEVEMENTS, addDays, bestWorkDay, totalWork, dateKey, dayPct, getState, keyToDate, levelInfo, qualifies, redeemTreat, streakOf, toast, treatJar, TREAT_MIN, TREAT_XP, useStore } from '../store'
 import { Icon } from './fx'
 import { DetailCharts, PeakCharts, ProgressCharts, RivalsCard } from './Charts'
 import { Ladder } from './Ladder'
 import { Timeline } from './Timeline'
 import { Seg } from './Seg'
 import { Shape } from './shapes'
-import { fmtDay, fmtDur, fmtHours } from '../ui'
+import { confirmAsk, fmtDay, fmtDur, fmtHours, promptAsk } from '../ui'
+import { Btn, useNow } from './common'
+import { WavyBar } from './shapes'
 
 type PView = 'ladder' | 'stats' | 'timeline'
 const VIEWS: { v: PView; label: string }[] = [{ v: 'ladder', label: 'Ladder' }, { v: 'stats', label: 'Stats & habits' }, { v: 'timeline', label: 'Timeline' }]
@@ -31,6 +33,7 @@ function StatsView() {
   const [more, setMore] = useState(() => { try { return localStorage.getItem(MORE_KEY) === '1' } catch { return false } })
   const toggle = (o: boolean) => { setMore(o); try { localStorage.setItem(MORE_KEY, o ? '1' : '0') } catch { /* private mode */ } }
   return <>
+    <TreatCard />
     <ProgressCharts aside={<HabitsCard />} />
     <details className="more-stats" open={more} onToggle={e => toggle(e.currentTarget.open)}>
       <summary><Icon n="insights" fill /><span className="grow"><b>More stats</b><span className="small muted">solves, speed, errors, peak hours, chain, achievements, rivals</span></span><Icon n="expand_more" /></summary>
@@ -63,6 +66,33 @@ function HabitsCard() {
     <section className="card habits">
       <div className="card-head"><h3 className="title"><Icon n="local_fire_department" fill /> Habits</h3><span className="small muted">Level {L.lvl} · {L.title} · {L.need - L.into} XP to {L.lvl + 1}</span></div>
       <dl className="habit-grid">{rows.map(([ic, l, v]) => <div key={l}><dt><Icon n={ic} fill /> {l}</dt><dd>{v}</dd></div>)}</dl>
+    </section>
+  )
+}
+
+/** the treat jar: 1500 XP and 12 h of real work since the last treat buy one drink or snack to celebrate */
+function TreatCard() {
+  useStore(s => s.xp); useStore(s => s.days); useStore(s => s.treats); useNow(60000)
+  const j = treatJar(), last = j.history[0]
+  const redeem = async () => {
+    const what = await promptAsk({ title: 'You earned a treat', body: 'One drink or snack, on you. What is it?', ok: 'Enjoy it', input: { label: 'Your treat', value: '' } })
+    if (what === null) return
+    if (!await confirmAsk({ title: `Spend the jar on ${what.trim() || 'a treat'}?`, body: 'The jar empties and starts counting again: another 12 h of work and 1500 XP for the next one.', ok: 'Spend it' })) return
+    if (redeemTreat(what || 'a treat')) toast(`Enjoy ${what.trim() || 'your treat'} — you earned it`, 'local_cafe')
+  }
+  return (
+    <section className={'card treat' + (j.ready ? ' ready' : '')}>
+      <div className="card-head"><h3 className="title"><Icon n="local_cafe" fill /> Treat jar</h3>
+        <span className="small muted">{j.ready ? 'Full: one treat is yours' : `counting since ${fmtDay(dateKey(new Date(j.since)), true)}`}</span></div>
+      <div className="treat-bars">
+        <div><div className="treat-l"><span><Icon n="timer" fill /> real work</span><b>{fmtHours(j.work)} / {TREAT_MIN / 60} h</b></div><WavyBar value={j.work / TREAT_MIN} height={10} wave={j.work < TREAT_MIN} /></div>
+        <div><div className="treat-l"><span><Icon n="star" fill /> XP</span><b>{j.xp} / {TREAT_XP}</b></div><WavyBar value={j.xp / TREAT_XP} height={10} wave={j.xp < TREAT_XP} /></div>
+      </div>
+      <div className="row wrap treat-foot">
+        <span className="small muted grow">{j.ready ? 'Buy yourself one drink or snack. Just one: the jar does not stack.' : 'Fill both to earn one drink or snack. Only timed work counts toward the hours.'}
+          {last ? ` Last: ${last.what || 'a treat'}, ${fmtDay(dateKey(new Date(last.at)), true)}.` : ''}</span>
+        <Btn icon="local_cafe" disabled={!j.ready} onClick={redeem}>Claim treat</Btn>
+      </div>
     </section>
   )
 }

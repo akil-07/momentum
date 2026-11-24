@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { ensureToday, getState } from './store'
+import { ensureToday, ensureTreatJar, getState } from './store'
 import { applyTheme } from './theme'
 import { startSync } from './sync'
 import { startTrainerLoop } from './train'
@@ -15,6 +15,7 @@ import { startArchive } from './archive'
 import './styles.css'
 
 ensureToday()
+ensureTreatJar()
 const st = getState().settings
 applyTheme(st.seed, st.mode === 'system' ? matchMedia('(prefers-color-scheme: dark)').matches : st.mode === 'dark', st.style)
 startSync()

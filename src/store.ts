@@ -207,8 +207,12 @@ export const emptyCp = (): CpState => ({
   coachNotes: { text: '', at: 0 }, designs: { specs: [], forDate: '', at: 0 }, triggers: {}, daily: {}, ideas: {}, rivals: { list: [], u: 0 }, energy: {}, tricks: { list: [], at: 0 }, subs: {}, subtag: {}, cses: {},
 })
 
+/** the treat jar: a start mark (when the jar began counting) or a treat you redeemed. The jar counts from the newest treat
+ *  (else the oldest start); xp0 is your total XP at that moment, so the jar's XP is what you earned since. Never edited. */
+export interface Treat { id: string; kind: 'start' | 'treat'; at: number; xp0: number; what: string; u: number }
 export interface State {
   cp: CpState
+  /** treat jar marks, by id (grow-only; merged as a union) */ treats?: Record<string, Treat>
   agenda: PlannedTask[]
   planner: { proposals: Record<string, Proposal>; notes: { text: string; at: number } }
   /** exam weeks / holidays: what a day's training target is (season.ts targetFor); merged per id by u, deletes are a del flag */
@@ -622,7 +626,7 @@ export function mergeStates(a: State, b: State): State {
     template: lww(a.template, b.template, del), goals: lww(a.goals, b.goals, del),
     frozen: union(a.frozen, b.frozen), earnedFreezes: union(a.earnedFreezes, b.earnedFreezes), achievements: union(a.achievements, b.achievements),
     settings: newerSettings.settings, settingsU: newerSettings.settingsU,
-    agenda: lww(a.agenda || [], b.agenda || [], del), seasons: mergeSeasons(a.seasons, b.seasons),
+    agenda: lww(a.agenda || [], b.agenda || [], del), seasons: mergeSeasons(a.seasons, b.seasons), treats: { ...(a.treats || {}), ...(b.treats || {}) },
     planner: {
       proposals: (() => { const o = { ...(a.planner?.proposals || {}) }; for (const [k, v] of Object.entries(b.planner?.proposals || {})) o[k] = !o[k] ? v : later2(o[k], v, o[k].u, v.u); return o })(),
       notes: (b.planner?.notes?.at || 0) > (a.planner?.notes?.at || 0) ? b.planner.notes : (a.planner?.notes || { text: '', at: 0 }),
@@ -700,7 +704,7 @@ export function pruneState(s0: State, now = Date.now()): State {
 /* ───────────────────────── migration from v1 ───────────────────────── */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function migrate(o: any): State {
-  if (o?.v === 2) { const d = defaults(); return derive({ ...d, ...o, cp: { ...emptyCp(), ...o.cp }, agenda: o.agenda || [], seasons: o.seasons || {}, planner: { proposals: {}, notes: { text: '', at: 0 }, ...(o.planner || {}) }, settings: { ...DEFAULT_SETTINGS, ...o.settings }, best: { ...d.best, ...o.best } }) }
+  if (o?.v === 2) { const d = defaults(); return derive({ ...d, ...o, cp: { ...emptyCp(), ...o.cp }, agenda: o.agenda || [], seasons: o.seasons || {}, treats: o.treats || {}, planner: { proposals: {}, notes: { text: '', at: 0 }, ...(o.planner || {}) }, settings: { ...DEFAULT_SETTINGS, ...o.settings }, best: { ...d.best, ...o.best } }) }
   if (o?.v !== 1) return defaults()
   const days: Record<string, Day> = {}
   for (const k in o.days) {
@@ -1246,6 +1250,43 @@ export function importData(json: string) { const o = JSON.parse(json); if (o?.v 
 export function resetAll(keepSettings = true) {
   const d = defaults(), now = Math.max(Date.now(), (state.epoch || 0) + 1) // always moves forward, even twice in one ms
   commit({ ...d, epoch: now, ...(keepSettings ? { settings: state.settings, settingsU: state.settingsU } : { settingsU: now }) }, true)
-  ensureToday()
+  ensureToday(); ensureTreatJar()
 }
 export const toast = (text: string, icon?: string) => emit({ type: 'toast', text, icon })
+
+/* ───────────────────────── the treat jar ─────────────────────────
+   XP buys one real-world treat (a drink, a snack) — but only after TREAT_XP XP AND TREAT_MIN minutes of real logged work
+   since the last one. Both gates: XP rates swing with solve bonuses and combos, so XP alone could be hit in ~6 h; the work
+   minutes come from the timers (spans), so the 12 h is real. One at a time: anything past full doesn't carry over. */
+export const TREAT_XP = 1500, TREAT_MIN = 12 * 60
+const liveTreats = (s: State) => Object.values(s.treats || {})
+/** the mark the jar counts from: the newest treat, else the oldest start (a second device's later start can't reset it) */
+export function treatAnchor(s: State = state): Treat | undefined {
+  const ts = liveTreats(s), got = ts.filter(t => t.kind === 'treat').sort((a, b) => b.at - a.at || (a.id < b.id ? -1 : 1))
+  return got[0] ?? ts.filter(t => t.kind === 'start').sort((a, b) => a.at - b.at || (a.id < b.id ? -1 : 1))[0]
+}
+/** real work minutes since a moment: logged deep/study/admin spans after it (overlaps once), plus timer-less done tasks after it */
+export function workSince(s: State, since: number, now = Date.now()) {
+  const ds = Object.values(s.days), spans = ds.flatMap(d => liveSpans(d)).filter(x => isWork(x.cat) && spanEnd(x, now) > since)
+  const untimed = ds.reduce((a, d) => a + d.tasks.reduce((b, t) => b + (t.done && isWork(t.cat) && (t.doneAt || 0) > since && !taskSpans(d, t.id, true).length ? t.dur : 0), 0), 0)
+  return Math.round(unionMin(spans, now, since) + untimed)
+}
+export function treatJar(s: State = state, now = Date.now()) {
+  const a = treatAnchor(s)
+  const xp = a ? Math.max(0, s.xp - a.xp0) : 0, work = a ? workSince(s, a.at, now) : 0
+  const history = liveTreats(s).filter(t => t.kind === 'treat').sort((x, y) => y.at - x.at)
+  return { since: a?.at ?? now, xp: Math.min(xp, TREAT_XP), work: Math.min(work, TREAT_MIN), ready: !!a && xp >= TREAT_XP && work >= TREAT_MIN, history }
+}
+/** open the jar the first time (counting from now) — never on a state that already has one */
+export function ensureTreatJar() {
+  if (liveTreats(state).length) return
+  const now = Date.now(), id = 'start-' + uid()
+  set(s => liveTreats(s).length ? s : { ...s, treats: { [id]: { id, kind: 'start', at: now, xp0: s.xp, what: '', u: now } } })
+}
+/** spend the jar on one treat; false when it isn't full yet */
+export function redeemTreat(what: string) {
+  if (!treatJar().ready) return false
+  const now = Date.now(), id = 'treat-' + uid()
+  set(s => ({ ...s, treats: { ...(s.treats || {}), [id]: { id, kind: 'treat', at: now, xp0: s.xp, what: what.trim().slice(0, 80), u: now } } }))
+  return true
+}

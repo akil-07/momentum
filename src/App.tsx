@@ -1,6 +1,6 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { addTaskToday, completeTask, dateKey, DEVICE, ensureToday, getState, heartbeat, levelInfo, liveSpans, nowMin, qualifies, checkAchievements, sortTasks, stopSpan, toast, toMin, useStore, type State, type Task } from './store'
+import { addTaskToday, completeTask, dateKey, DEVICE, ensureToday, getState, heartbeat, levelInfo, treatJar, liveSpans, nowMin, qualifies, checkAchievements, sortTasks, stopSpan, toast, toMin, useStore, type State, type Task } from './store'
 import { applyTheme, tierSeed } from './theme'
 import { useCf } from './cf'
 import { RankUp } from './components/RankUp'
@@ -127,6 +127,8 @@ export default function App() {
   }
   const xp = useStore(s => s.xp), sync = useSync()
   const L = levelInfo(xp)
+  useStore(s => s.days); useStore(s => s.treats)
+  const treatReady = treatJar().ready
   const prog = useStore(s => { const d = s.days[dateKey()]; return d ? `${d.tasks.filter(t => t.done).length}/${d.tasks.length}` : '' })
   useEffect(() => { if (!document.title.includes('·')) document.title = prog && !prog.endsWith('/0') ? `(${prog}) Momentum` : 'Momentum' }, [prog])
   const go = (t: Tab) => { if (t !== tab) { sfx.tap(); setTab(t); scrollTo({ top: 0 }) } }
@@ -203,6 +205,7 @@ export default function App() {
             <span className="lvl-n">Lv {L.lvl}</span>
             <WavyBar value={L.into / L.need} height={10} className="lvl-bar" />
           </button>
+          {treatReady && <button className="dis-pill hi treat-pill" onClick={() => { setProgView('stats'); go('progress') }} title="Treat jar is full: claim one drink or snack"><Icon n="local_cafe" fill /><span>Treat</span></button>}
           <button className={'dis-pill' + (dis >= 70 ? ' hi' : dis < 40 ? ' lo' : '')} onClick={() => { setProgView('stats'); go('progress') }} title="Discipline (live): rises as you do what you planned today, falls when you fall behind"><Icon n="shield" fill /><b>{dis}</b></button>
           <button className={'sync-pill ' + sync.state} onClick={() => setSettings(true)} aria-label={'Sync: ' + { off: 'Not synced', idle: 'Sync', syncing: 'Syncing', ok: 'Synced', error: 'Offline' }[sync.state]} title={sync.msg || (sync.at ? 'Last synced ' + new Date(sync.at).toLocaleTimeString() : 'Sync')}>
             <Icon n={{ off: 'cloud_off', idle: 'cloud', syncing: 'cloud_sync', ok: 'cloud_done', error: 'sync_problem' }[sync.state]} fill />
