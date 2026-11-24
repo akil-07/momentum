@@ -198,7 +198,6 @@
 .arc-ups-h { display: flex; align-items: center; gap: 8px; }
 .arc-ups-h .msr { color: var(--primary); }
 .arc-up-row { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 6px 8px; border-radius: 12px; background: var(--surface-container-high); }
-.arc-up-row.overdue { box-shadow: inset 3px 0 0 var(--error); }
 .arc-up-main { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; text-align: left; background: none; border: 0; padding: 0; color: inherit; font: inherit; cursor: pointer; }
 .arc-up-main .arc-pname, .arc-up-main .small { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .arc-up-go { display: inline-grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 50%; color: var(--on-surface-variant); }

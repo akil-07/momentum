@@ -28,7 +28,7 @@ JSON file on your disk. No accounts, no cloud, no telemetry.
   upsolves and spaced re-solves. Accepted submissions on Codeforces are detected automatically.
 - A daily **mock contest** (6 problems, 2 hours) from topics you've learned, or an unseen past round taken as a virtual
   participation, scored as a performance rating.
-- A **contest radar** for upcoming rated rounds, a live-contest overlay, a 72-hour upsolve queue, an idea bank with
+- A **contest radar** for upcoming rated rounds, a live-contest overlay, an upsolve queue with no deadline, an idea bank with
   spaced repetition, and a curriculum with curated reading per topic.
 
 **Claude coach**

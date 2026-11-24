@@ -526,7 +526,6 @@ button.weak.improving { box-shadow: inset 4px 0 0 var(--tertiary); } button.weak
 .spec.done { opacity: .6; }
 .spec-ic { width: 40px; height: 40px; border-radius: var(--r-md); display: grid; place-items: center; background: var(--secondary-container); color: var(--on-secondary-container); flex-shrink: 0; }
 .spec-t { font-weight: 650; text-transform: capitalize; }
-.queues.debt { box-shadow: inset 0 0 0 2px var(--error); }
 .pid-chip { display: inline-flex; align-items: center; gap: 4px; margin: 2px 4px 2px 0; padding: 2px 8px; border-radius: var(--r-full); background: var(--surface-container-highest); color: inherit; text-decoration: none; font-weight: 600; }
 .learn-topic { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: var(--r-lg); background: var(--surface-container); }
 .res-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }

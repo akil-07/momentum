@@ -78,11 +78,11 @@ export function planStarted(k = dateKey()) {
   const cp = getState().cp
   return Object.values(cp.tests).some(t => t.date === k) || Object.values(cp.sessions).some(s => s.date === k) || (!!cp.active && dateKey(new Date(cp.active.startedAt)) === k)
 }
-/** due queues: upsolves (unsolved mock problems within reach, 72h deadline) and spaced re-solves */
+/** due queues: upsolves (unsolved mock problems within reach, no deadline) and spaced re-solves */
 export function queues(sk = skillNow()) {
   const cp = getState().cp, k = dateKey(), t0 = now()
   const solvedNow = (pid: string) => cp.attempts[pid]?.status === 'solved' || !!getCfUser()?.subs[pid]?.ok
-  const upsolve: { pid: string; due: number; overdue: boolean; tid: string }[] = []
+  const upsolve: { pid: string; tid: string }[] = []
   for (const t of Object.values(cp.tests)) {
     if (!t.finishedAt || t0 - t.finishedAt > 14 * 864e5 || !sameHandle(t.h, cp.handle) || (t.real && !t.real.vStart) || isVoidTest(t, cp)) continue
     const live = isContestRec(t), cid = t.real ? String(t.real.contestId) : ''
@@ -99,12 +99,11 @@ export function queues(sk = skillNow()) {
       if (touched && !touched.has(pid)) continue
       // real rounds run long (up to 8 problems): upsolve what you tried, plus what's within reach — not the whole set
       if (t.real && !live && !t.real.probs[pid.slice(cid.length)]?.wa && p!.r > Math.max(sk.level, t.perf || 0) + 200) continue
-      const due = t.finishedAt + 72 * 36e5
-      upsolve.push({ pid, due, overdue: t0 > due, tid: t.id })
+      upsolve.push({ pid, tid: t.id })
     }
   }
   const resolve = Object.entries(cp.resolve || {}).filter(([, r]) => r.due <= k && r.wins < 2).map(([pid]) => pid).slice(0, 2)
-  return { upsolve, resolve, debt: upsolve.filter(x => x.overdue).length }
+  return { upsolve, resolve }
 }
 export function ensurePlan(force = false) {
   const k = dateKey(), cp = getState().cp
@@ -120,9 +119,7 @@ export function ensurePlan(force = false) {
   const q = queues(sk)
   const designed = cp.designs.forDate >= addDays(k, -1) && cp.designs.specs.length ? cp.designs.specs : []
   let specs = designed.length ? designed : defaultSpecs(sk, { ...cp, offsets }, { resolve: q.resolve.length, upsolve: q.upsolve.length }, tg.cpMin)
-  // upsolve debt ≥ 3 blocks new push problems until it's cleared
-  if (q.debt >= 3 && tg.cpMin > 0) specs = [{ mode: 'upsolve', tags: [], lo: sk.level - 300, hi: sk.level + 500, minutes: Math.min(90, tg.cpMin), timebox: 1, by: 'default', why: `${q.debt} overdue upsolves — clear them first` }, ...specs.filter(s => s.mode !== 'drill' && s.mode !== 'mixed')]
-  // the season's target is the day's budget: a coach design or the debt session never stretch an exam day back to 4.5 h
+  // the season's target is the day's budget: a coach design never stretches an exam day back to 4.5 h
   specs = fitTo(specs, tg.cpMin)
   const light = lightDay(k)
   if (light) specs = lighten(specs)

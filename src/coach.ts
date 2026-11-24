@@ -177,7 +177,7 @@ export function buildCoachData(kind: CoachKind, extra: Record<string, unknown> =
     topics_columns: ['tag', 'rating', 'attempts', 'solved', 'failed', 'lifecycle'],
     gates: { next_tier: g.tier, passed: g.passed, missing: g.tags.filter(t => !g.passed.includes(t)) },
     mock_syllabus: syllabus(sk, cp),
-    queues: { upsolve: q.upsolve.map(x => ({ id: x.pid, overdue: x.overdue })), resolve_due: q.resolve, upsolve_debt: q.debt },
+    queues: { upsolve: q.upsolve.map(x => ({ id: x.pid })), resolve_due: q.resolve },
     recurring_errors_14d: recurringErrors(byPid, Date.now() - 14 * 864e5),
     // 90 days of history once per session; later turns get the last 14 (the trend the coach needs now)
     discipline: full ? dis : { ...dis, history: dis.history.slice(-14) }, progress: rates,

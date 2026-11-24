@@ -15,7 +15,7 @@ import { Btn, Chips, IconBtn, Sheet, Switch, spring } from './common'
 import { Seg } from './Seg'
 import { Icon } from './fx'
 import { ProbLink, Rating, fmtClock } from './cpui'
-import { queues, startPractice, skillNow } from '../train'
+import { startPractice, skillNow } from '../train'
 import { useStore } from '../store'
 import { Md } from './CoachPanel'
 import { Statement, withMath } from './MathText'
@@ -240,10 +240,7 @@ const WHY: Record<UpWhy, { label: string; long: string }> = {
 const UP_KINDS: { v: Kind; label: string; icon: string }[] = KINDS.filter(k => k.v !== 'free')
 function Upsolve({ ix, onOpen }: { ix: ArchiveIndex; onOpen: (pid: string) => void }) {
   const busy = useStore(s => !!s.cp.active)
-  const tests = useStore(s => s.cp.tests), atts = useStore(s => s.cp.attempts)
   const ups = useMemo(() => upsolveList(ix), [ix])
-  // the 72-hour deadlines come from the app's own queue (overdue ones hold back new practice)
-  const due = useMemo(() => { const m = new Map<string, { due: number; overdue: boolean }>(); try { for (const x of queues(skillNow()).upsolve) if (!m.has(x.pid)) m.set(x.pid, x) } catch { /* no data yet */ } return m }, [ix, tests, atts]) // eslint-disable-line react-hooks/exhaustive-deps
   const [kinds, setKinds] = useState<Kind[]>([])
   const [whys, setWhys] = useState<UpWhy[]>([])
   const [q, setQ] = useState('')
@@ -266,14 +263,11 @@ function Upsolve({ ix, onOpen }: { ix: ArchiveIndex; onOpen: (pid: string) => vo
     return [...m.values()]
   }, [shown, sort, n])
   const totals = useMemo(() => { const t = new Map<string, number>(); for (const u of shown) t.set(u.act, (t.get(u.act) || 0) + 1); return t }, [shown])
-  const overdue = ups.filter(u => due.get(u.pid)?.overdue).length
-  const now = Date.now()
   if (!ups.length) return <Empty icon="task_alt" title="Nothing left to upsolve" text="Every problem from your rounds, mocks and practice is solved. New ones land here the moment a round ends." />
   return (
     <div className="arc-layout">
       <aside className="card arc-aside">
         <div className="arc-deck-big"><b>{ups.length}</b><span>to upsolve</span></div>
-        {overdue > 0 && <p className="small arc-err"><Icon n="schedule" /> {overdue} past the 72-hour upsolve window</p>}
         <Search value={q} onChange={setQ} placeholder="Search problems, rounds, tags" />
         <div className="field-label">From</div>
         <Chips multi value={kinds} onChange={k => setKinds(ks => ks.includes(k) ? ks.filter(x => x !== k) : [...ks, k])}
@@ -296,12 +290,12 @@ function Upsolve({ ix, onOpen }: { ix: ArchiveIndex; onOpen: (pid: string) => vo
             </div>}
             <div className="arc-act-b">
               {g.items.map(u => {
-                const m = ix.problems[u.pid], d = due.get(u.pid)
+                const m = ix.problems[u.pid]
                 return (
-                  <div key={u.pid} className={'arc-up-row' + (d?.overdue ? ' overdue' : '')}>
+                  <div key={u.pid} className="arc-up-row">
                     <button type="button" className="grow arc-up-main" onClick={() => onOpen(u.pid)}>
                       <span className="arc-pname">{m?.name || u.pid} <span className="prob-id">{u.pid}</span></span>
-                      <span className="small muted">{WHY[u.why].long}{d ? (d.overdue ? ' · overdue' : ` · due in ${Math.max(1, Math.round((d.due - now) / 36e5))}h`) : ''}{!g.title ? ` · ${u.title}` : ''}</span>
+                      <span className="small muted">{WHY[u.why].long}{!g.title ? ` · ${u.title}` : ''}</span>
                     </button>
                     <Rating r={m?.rating} />
                     <ProbLink pid={u.pid} className="arc-up-go"><Icon n="open_in_new" /></ProbLink>

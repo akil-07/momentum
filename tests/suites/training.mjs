@@ -118,7 +118,7 @@ const voided = Tr.voidPhantomMocks()
 check(`migration voids exactly the phantom (${voided.join(',')})`, voided.length === 1 && voided[0] === y)
 check('migration is idempotent', Tr.voidPhantomMocks().length === 0 && Cf.isVoidTest(cp().tests[y]))
 check('phantom no longer feeds the skill model (its 5 "failures" and perf 728 gone)', failedBefore === 5 && Tr.skillNow().failed.filter(p => six.includes(p)).length === 0)
-check('phantom leaves no upsolve debt', !Tr.queues().upsolve.some(x => six.includes(x.pid) && cp().tests[y].pids.includes(x.pid) && x.due === at(5, 32) + 72 * 36e5))
+check('phantom leaves nothing to upsolve', !Tr.queues().upsolve.some(x => x.tid === y))
 check('the record itself is kept (never drop data)', cp().tests[y].perf === 728)
 
 /* ── 4. season targets ── */

@@ -164,9 +164,9 @@ function Queues({ sk }: { sk: Skill }) {
   const q = queues(sk)
   if (!q.upsolve.length && !q.resolve.length) return null
   return (
-    <section className={'card queues' + (q.debt ? ' debt' : '')}>
-      <div className="card-head"><h3 className="title"><Icon n="replay" fill /> Upsolve &amp; re-solve</h3>{q.debt > 0 && <span className="tlabel weak">{q.debt} overdue</span>}</div>
-      {q.upsolve.length > 0 && <div className="small">Mandatory upsolves (72h): {q.upsolve.map(x => <ProbLink key={x.pid} pid={x.pid} className="pid-chip"><Rating r={getProb(x.pid)?.r} /> {x.pid}{x.overdue ? ' ⚠' : ''}</ProbLink>)}</div>}
+    <section className="card queues">
+      <div className="card-head"><h3 className="title"><Icon n="replay" fill /> Upsolve &amp; re-solve</h3></div>
+      {q.upsolve.length > 0 && <div className="small">To upsolve: {q.upsolve.map(x => <ProbLink key={x.pid} pid={x.pid} className="pid-chip"><Rating r={getProb(x.pid)?.r} /> {x.pid}</ProbLink>)}</div>}
       {q.resolve.length > 0 && <div className="small">Spaced re-solves due: {q.resolve.map(p => <ProbLink key={p} pid={p} className="pid-chip"><Rating r={getProb(p)?.r} /> {p}</ProbLink>)}</div>}
       <div className="row wrap">
         {q.upsolve.length > 0 && <Btn size="sm" icon="replay" disabled={busy} onClick={() => startPractice({ mode: 'upsolve', tags: [], lo: sk.level - 300, hi: sk.level + 500, minutes: 60, timebox: 1.25, by: 'user' })}>Upsolve session</Btn>}
@@ -222,7 +222,7 @@ function MockRound({ plan, sk }: { plan: CpPlan; sk: Skill }) {
         <ul className="probs">{t.pids.map((pid, i) => {
           const p = getProb(pid), s = t.solved[pid], up = s === undefined && isSolved(pid)
           return <li key={pid} className={'prob ' + (s !== undefined ? 'solved' : up ? 'upsolved' : 'failed')}><ProbLink pid={pid}>
-            <div className="prob-top"><b>{LETTERS[i]}</b><Rating r={p?.r} /><span className="prob-id">{pid}</span>{s !== undefined ? <span className="small">{Math.round(s / 60)} min</span> : up ? <span className="small ok-t">upsolved</span> : <span className="small err">unsolved — upsolve within 72h</span>}</div>
+            <div className="prob-top"><b>{LETTERS[i]}</b><Rating r={p?.r} /><span className="prob-id">{pid}</span>{s !== undefined ? <span className="small">{Math.round(s / 60)} min</span> : up ? <span className="small ok-t">upsolved</span> : <span className="small err">unsolved — upsolve anytime</span>}</div>
             <div className="prob-name">{p?.n}</div></ProbLink></li>
         })}</ul>
       </>}
