@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react'
 import { Sheet } from './common'
 
-/* ═════════ laptop keyboard shortcuts: 1-5 tabs · n add task · space start/pause · m minimise · / coach chat · ? this list ═════════ */
+/* ═════════ laptop keyboard shortcuts: 1-6 tabs · n add task · space start/pause · m minimise · / coach chat · ? this list ═════════ */
 export interface ShortcutActions { tab: (i: number) => void; add: () => void; space: () => void; minimise: () => void; chat: () => void; help: () => void }
 
 export const SHORTCUTS: [string[], string][] = [
-  [['1', '–', '5'], 'Switch tab (Today, Train, Coach, Plan, Progress)'],
+  [['1', '–', '6'], 'Switch tab (Today, Train, Coach, Plan, Progress, Archive)'],
   [['N'], 'Add a task'],
   [['Space'], 'Start the current block / pause or resume the running timer'],
   [['M'], 'Minimise the running timer'],
@@ -33,9 +33,11 @@ export function Shortcuts({ open, onClose, actions }: { open: boolean; onClose: 
       // an idea review owns Space and 1-4 (reveal / grade) while focus is on the page or inside its card
       const t = (e.target as HTMLElement | null), inIdeas = !t || t === document.body || document.activeElement === document.body || !!t.closest?.('.card.ideas')
       if ((key === ' ' || key === 'Spacebar' || (key >= '1' && key <= '4')) && inIdeas && document.querySelector('.card.ideas .idea-review, .card.ideas .idea-done')) return
+      // an Archive flashcard review owns Space and 1-4 too (unless a full-screen timer is open over it)
+      if ((key === ' ' || key === 'Spacebar' || (key >= '1' && key <= '4')) && document.querySelector('.arc-deck.reviewing') && !document.querySelector('.focus')) return
       if (key === '?') { e.preventDefault(); a.help(); return }
       if (e.shiftKey) return
-      if (key >= '1' && key <= '5') { e.preventDefault(); a.tab(+key - 1); return }
+      if (key >= '1' && key <= '6') { e.preventDefault(); a.tab(+key - 1); return }
       if (key === ' ' || key === 'Spacebar') {
         // a keyboard-focused button keeps its own Space (activate); a mouse-clicked one doesn't steal it
         const f = document.activeElement as HTMLElement | null

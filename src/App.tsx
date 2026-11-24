@@ -25,11 +25,12 @@ import { Plan } from './components/Plan'
 import { Train } from './components/Train'
 import { Stats } from './components/Stats'
 import { Settings } from './components/Settings'
+import { Archive } from './components/Archive'
 import { StorageBanner } from './components/ErrorBoundary'
 import { sfx } from './sound'
 import { firstSync, useSync } from './sync'
 
-type Tab = 'today' | 'train' | 'coach' | 'plan' | 'progress'
+type Tab = 'today' | 'train' | 'coach' | 'plan' | 'progress' | 'archive'
 type ProgView = 'ladder' | 'stats' | 'timeline'
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'today', label: 'Today', icon: 'today' },
@@ -37,6 +38,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'coach', label: 'Coach', icon: 'forum' },
   { id: 'plan', label: 'Plan', icon: 'edit_calendar' },
   { id: 'progress', label: 'Progress', icon: 'insights' },
+  { id: 'archive', label: 'Archive', icon: 'history_edu' },
 ]
 const isTab = (t: unknown): t is Tab => TABS.some(x => x.id === t)
 
@@ -217,6 +219,7 @@ export default function App() {
             {tab === 'coach' && <Coach onPomodoro={() => setPomo({ label: 'Focus session' })} />}
             {tab === 'plan' && <Plan />}
             {tab === 'progress' && <Stats view={progView} onView={setProgView} />}
+            {tab === 'archive' && <Archive />}
           </motion.main>
         </AnimatePresence>
       </div>

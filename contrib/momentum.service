@@ -10,6 +10,8 @@ After=network-online.target
 WorkingDirectory=/path/to/momentum
 ExecStart=/usr/bin/python3 /path/to/momentum/server.py --port 8787
 Restart=on-failure
+# Optional: your solutions folder for the Archive tab and the coach (can also be set in the app)
+#Environment=MOMENTUM_CODE=/path/to/your/solutions
 
 [Install]
 WantedBy=default.target

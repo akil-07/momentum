@@ -97,6 +97,8 @@ input { font: inherit; color: inherit; }
 .nav-item.on { color: var(--on-surface); }
 .nav-item.on .msr { color: var(--on-secondary-container); }
 .rail .nav-item { margin-bottom: 12px; flex: none; min-width: 64px; max-width: none; }
+/* six tabs on a 360 px phone: tighter items so every label still fits */
+@media (max-width: 440px) { .navbar { padding-left: 4px; padding-right: 4px; } .navbar .nav-item { padding: 0 1px 4px; } .navbar .nav-l { font-size: 11px; letter-spacing: -0.01em; } }
 
 /* ── FAB ── */
 .fab { display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--primary-container); color: var(--on-primary-container); border-radius: var(--r-li); box-shadow: 0 3px 10px rgb(0 0 0 / .15), 0 1px 3px rgb(0 0 0 / .1); }

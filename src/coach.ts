@@ -11,6 +11,7 @@ import { RESOURCES, RES_BY_ID } from './resources'
 import { dayPractice, discipline, progressRates } from './discipline'
 import { firstSync, getSyncCfg, syncNow, syncStatusRef } from './sync'
 import { seasonOn, seasonOut, targetFor, targetsAhead } from './season'
+import { archiveForCoach } from './archive'
 const getSyncStatus = () => syncStatusRef()
 
 /* ═════════ the one-to-one coach: maximal data in, structured coaching out, applied safely ═════════ */
@@ -211,7 +212,9 @@ export function buildCoachData(kind: CoachKind, extra: Record<string, unknown> =
     ...(full ? {
       resources: RESOURCES.map(r => [r.id, r.tag, r.title, r.tier[0], r.tier[1], r.minutes]),
       notebook: cp.coachNotes.text,
-    } : { static: 'unchanged since earlier in this conversation (resources list, snapshot.curriculum, notebook, tricks, full discipline history, all ideas): use those; this turn sends deltas only' }),
+      // long-term memory: one row per month for the last 24 (older detail: grep data/archive on the laptop)
+      archive: archiveForCoach(),
+    } : { static: 'unchanged since earlier in this conversation (resources list, snapshot.curriculum, notebook, tricks, full discipline history, all ideas, archive months): use those; this turn sends deltas only' }),
   }
   // size guard (~60 KB): fold older detail into compact rows, shrinking until it fits
   for (let keep = 40; JSON.stringify(data).length > 60000 && keep >= 0; keep = keep ? Math.floor(keep / 2) : -1) {

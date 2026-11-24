@@ -37,6 +37,14 @@ JSON file on your disk. No accounts, no cloud, no telemetry.
 - It answers in chat, sets a "Do this now" instruction, adds concrete to-dos to Today, keeps a weakness board and a
   notebook, reviews pasted code (hints first), and designs your practice sessions within fixed bounds.
 
+**Archive**
+- A permanent record of every mock, rated round, virtual and practice session you have ever done, with every problem
+  and its full attempt history, kept on the server in `data/archive/` and never pruned (built to stay useful for years).
+- Flashcards per problem: the statement in brief, how it should be solved, how you solved it (read from your own
+  code) and what differed, reviewed with spaced repetition. Cards are written one at a time by a one-shot `claude -p`.
+- Point it at your solutions folder and each file is linked to its problem (you can fix any link by hand). The coach
+  can read that folder and the archive (read-only), and a restarted coach gets a month-by-month digest of the whole history.
+
 **Progress**
 - Rating vs. practice level, work hours, discipline score, habits, a topic ladder and more, all with table views.
 
@@ -46,7 +54,7 @@ JSON file on your disk. No accounts, no cloud, no telemetry.
 | ![Timeline](docs/screenshots/timeline.png) | ![Stats](docs/screenshots/stats.png) |
 | ![Plan](docs/screenshots/plan.png) | ![Ladder](docs/screenshots/ladder.png) |
 
-Keyboard shortcuts: `1`–`5` switch tabs, `n` adds a task, `Space` starts or pauses the timer, `m` minimises it,
+Keyboard shortcuts: `1`–`6` switch tabs, `n` adds a task, `Space` starts or pauses the timer, `m` minimises it,
 `/` focuses the coach chat, `?` lists them all.
 
 ## Requirements
@@ -93,8 +101,13 @@ systemctl --user enable --now momentum
 | `MOMENTUM_CLAUDE_BUDGET` | unset | Passed to `claude -p --max-budget-usd` |
 | `MOMENTUM_CLAUDE_BIN` | `claude` | Path to the Claude Code binary (point at a stub for testing) |
 | `MOMENTUM_DIST` | `./dist` | Built front end to serve |
+| `MOMENTUM_CODE` | unset | Your solutions folder, read by the Archive and the coach (the path set in the Archive tab wins) |
+| `MOMENTUM_CARD_MODEL` | `sonnet` | Model used to write flashcards |
+| `MOMENTUM_CARD_MAX_DAY` | `60` | Flashcards written per day at most (the rest wait for the next day) |
 
-Data lives in `data/state.json`, with a daily backup in `data/backups/` (the last 14 days). Claude sessions live in
+Data lives in `data/state.json`, with a daily backup in `data/backups/` (the last 14 days). The archive lives in
+`data/archive/` (plain JSON and text, append-only, never pruned) with its own daily snapshot
+`data/backups/archive-YYYY-MM-DD.tar.gz`; copy `data/archive/` somewhere safe now and then to keep it for good. Claude sessions live in
 `data/claude/`. If a conversation is ever lost, the server starts a new one and re-seeds it from the coach's notebook.
 
 ## Development
@@ -112,6 +125,7 @@ The first test run downloads the public Codeforces problem set into `tests/fixtu
 ```
 server.py         HTTP server: static files, state API, backups, Claude session endpoints
 sessions.py       long-lived claude -p sessions (coach and planner)
+archive.py        permanent archive (activities, problems, statements, code links, flashcards, SM-2) and the card worker
 prompts.py        system prompts and output schemas
 src/              React app (store.ts = state and merge rules, train.ts = trainer, coach.ts, planner.ts, season.ts …)
 curriculum/       topic curriculum with curated problems and reading
@@ -123,7 +137,8 @@ contrib/          systemd unit template
 
 Everything stays on your machine. The browser talks only to your local server, Codeforces' public API (for your
 handle's submissions and the problem set) and Google Fonts. The coach and planner send your training data to Claude
-through your own Claude Code login.
+through your own Claude Code login; the coach and the flashcard writer can also read the solutions you linked
+(the coach only inside your solutions folder and `data/archive/`, read-only).
 
 ## License
 

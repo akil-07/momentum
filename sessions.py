@@ -10,7 +10,7 @@ id and re-seeded with the model's own notebook plus the last few exchanges, so m
 """
 import glob, json, os, queue, re, shutil, signal, subprocess, tempfile, threading, time, uuid
 
-import prompts
+import archive, prompts
 
 TURN_ID_RE = re.compile(r'^[A-Za-z0-9-]{8,64}$')
 
@@ -64,6 +64,7 @@ class Job:
 
 class Sessions:
     def __init__(self, data_dir, model_default='opus'):
+        self.data = data_dir
         self.root = os.path.join(data_dir, 'claude')
         self.reg_path = os.path.join(self.root, 'sessions.json')
         self.jobs_dir = os.path.join(self.root, 'jobs')
@@ -386,22 +387,54 @@ class Sessions:
             reply = (out.get('message') or out.get('summary') or '')[:500]
             digest.append(f'- [{time.strftime("%Y-%m-%d %H:%M", time.localtime(e.get("at", 0) / 1000))}] {e.get("kind")}: student/app: {said!r} -> you: {reply!r}')
         role = 'coach' if name == 'coach' else 'day planner'
+        long_term = ''
+        if prompts.SPECS[name].get('long_term'):
+            try:
+                arc = archive.digest(self.data)
+            except Exception as ex:  # a damaged archive must never block a restart
+                arc = f'(archive digest unavailable: {ex})'
+            if arc:
+                long_term = ('<long_term>\nThe whole training history by month from the archive (older years folded into one row each); '
+                             'grep the archive folder for details.\n' + arc + '\n</long_term>\n')
         return (f'[SESSION RESTARTED: generation {gen}, reason: {reason}] You are continuing as this student\'s {role}. '
                 f'Your memory of earlier conversations is gone except for your own notebook and a digest of the latest exchanges below. '
-                f'Continue seamlessly.\n<notebook>\n{nb or "(empty)"}\n</notebook>\n<recent>\n' + ('\n'.join(digest) or '(none)') + '\n</recent>\n\n')
+                f'Continue seamlessly.\n<notebook>\n{nb or "(empty)"}\n</notebook>\n<recent>\n' + ('\n'.join(digest) or '(none)') + '\n</recent>\n'
+                + long_term + '\n')
 
-    def _invoke(self, name, sid, resume, prompt):
+    def long_term_dirs(self):
+        """(code folder, archive folder) the coach may read; '' for one that doesn't exist"""
+        arc = archive.archive_dir(self.data)
+        return archive.code_dir(self.data), (os.path.abspath(arc) if os.path.isdir(arc) else '')
+
+    def _cmd(self, name, sid, resume):
         spec = prompts.SPECS[name]
-        # tools per session: the coach may read allow-listed sites (WebFetch); in -p mode every other domain/tool is denied
-        cmd = [self.cli(), '-p', '--output-format', 'json', '--model', self.model[name], '--tools', spec.get('tools', '')]
-        if spec.get('allowed'):
-            cmd += ['--allowedTools', *spec['allowed']]
+        # tools per session: the coach may read allow-listed sites (WebFetch) and, read-only, the student's code folder
+        # and the archive (Read/Grep/Glob limited to those dirs); in -p mode every other domain/tool/path is denied
+        tools, allowed, dirs, sys_prompt = spec.get('tools', ''), list(spec.get('allowed') or []), [], spec['sys']
+        if spec.get('long_term'):
+            code, arc = self.long_term_dirs()
+            dirs = [d for d in (code, arc) if d]
+            if dirs:
+                tools = ','.join([t for t in tools.split(',') if t] + ['Read', 'Grep', 'Glob'])
+                for d in dirs:  # '//' = an absolute path in permission rules
+                    allowed += [f'{t}(/{d}/**)' for t in ('Read', 'Grep', 'Glob')]
+            sys_prompt += ('\n\nLONG-TERM MEMORY paths: code folder = ' + (code or '(unavailable)') +
+                           '; archive folder = ' + (arc or '(unavailable)') + '.')
+        cmd = [self.cli(), '-p', '--output-format', 'json', '--model', self.model[name], '--tools', tools]
+        if allowed:
+            cmd += ['--allowedTools', *allowed]
+        if dirs:
+            cmd += ['--add-dir', *dirs]
         cmd += ['--strict-mcp-config', '--setting-sources', 'user', '--disable-slash-commands',
-               '--system-prompt', spec['sys'], '--json-schema', json.dumps(spec['schema']),
+               '--system-prompt', sys_prompt, '--json-schema', json.dumps(spec['schema']),
                '--autocompact', str(spec['autocompact'])]
         cmd += ['--resume', sid] if resume else ['--session-id', sid]
         if os.environ.get('MOMENTUM_CLAUDE_BUDGET'):
             cmd += ['--max-budget-usd', os.environ['MOMENTUM_CLAUDE_BUDGET']]
+        return cmd
+
+    def _invoke(self, name, sid, resume, prompt):
+        cmd = self._cmd(name, sid, resume)
         if self.closing:
             raise Shutdown()
         p = subprocess.Popen(cmd, cwd=self.ws(name), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,

@@ -11,6 +11,7 @@ import { startCoach } from './coach'
 import { startPlanner } from './planner'
 import { startCoachData } from './coachdata'
 import { retireOldGoals } from './store'
+import { startArchive } from './archive'
 import './styles.css'
 
 ensureToday()
@@ -23,5 +24,6 @@ startCoach()
 startPlanner()
 startCoachData()
 retireOldGoals()
+startArchive()
 if ('serviceWorker' in navigator && import.meta.env.PROD) addEventListener('load', () => navigator.serviceWorker.register('/sw.js'))
 createRoot(document.getElementById('root')!).render(<StrictMode><ErrorBoundary><App /></ErrorBoundary></StrictMode>)

@@ -16,6 +16,14 @@ Claude sessions (run on the local Claude Code CLI, i.e. your Claude subscription
   GET  /api/session/<coach|planner>[/log?after=ms]             -> info / transcript
   POST /api/session/<coach|planner>/reset {keep_notebook}
 
+Archive (archive.py: permanent record in data/archive/, never pruned; flashcards via one-shot claude -p):
+  GET  /api/archive                 everything (activities, problems, card index, srs, links, cardJobs)
+  GET  /api/archive/problem/<pid>   {meta, statement, card, srs, code:[{path, text, mtime}]}
+  GET  /api/archive/code            scan of the code folder
+  POST /api/archive/ingest {activities, problems, attempts}   idempotent upsert
+  POST /api/archive/config {codeDir}   POST /api/archive/link {links:[{path, pid, by}]}
+  POST /api/archive/cards {pids, force?}   POST /api/archive/review {pid, grade, today}
+
 Usage:  python3 server.py [--port 8787]
 Listens on 127.0.0.1 only; open http://localhost:8787 in a browser on the same machine.
 The sync key is read from $MOMENTUM_KEY or ./data/sync_key.txt (generated on first run and printed).
@@ -23,7 +31,7 @@ The sync key is read from $MOMENTUM_KEY or ./data/sync_key.txt (generated on fir
 import shutil
 import signal, argparse, hmac, html, json, mimetypes, os, re, secrets, sys, tempfile, threading, time, urllib.request
 from html.parser import HTMLParser
-import prompts
+import archive, prompts
 from sessions import Sessions
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
@@ -306,6 +314,14 @@ class Handler(SimpleHTTPRequestHandler):
     def body(self, limit=1024 * 1024):
         n = int(self.headers.get('Content-Length') or 0)
         if n <= 0 or n > limit:
+            left = n if 0 < n <= 4 * limit else 0  # drain (bounded) so the client sees the 413, not a reset
+            while left > 0:
+                chunk = self.rfile.read(min(left, 1 << 20))
+                if not chunk:
+                    break
+                left -= len(chunk)
+            if n > 4 * limit:
+                self.close_connection = True
             self.json(413, {'error': 'body size'})
             return None
         try:
@@ -373,6 +389,8 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.json(413, {'error': 'planner payload too large'})
             code, obj = S.submit('planner', str(b.get('turn_id') or ''), 'plan', prompt, {'message': req})
             return self.json(code, obj)
+        if path.startswith('/api/archive/'):
+            return self.archive_post(path)
         m = re.fullmatch(r'/api/session/(coach|planner)/reset', path)
         if m:
             b = self.body(64 * 1024)
@@ -380,6 +398,60 @@ class Handler(SimpleHTTPRequestHandler):
                 return
             gen = S.reset(m.group(1), bool(b.get('keep_notebook', True)))
             return self.json(200, {'gen': gen})
+        return self.json(404, {'error': 'not found'})
+
+    def archive_post(self, path):
+        try:
+            return self._archive_post(path)
+        except archive.StoreError as e:  # an archive file could not be read back: refuse rather than overwrite it
+            print('archive:', e, flush=True)
+            return self.json(500, {'error': f'archive storage error: {e}'})
+
+    def _archive_post(self, path):
+        A = self.server.archive
+        if path == '/api/archive/ingest':
+            b = self.body(4 * 1024 * 1024)
+            if b is None:
+                return
+            return self.json(200, A.ingest(b))
+        if path == '/api/archive/config':
+            b = self.body(64 * 1024)
+            if b is None:
+                return
+            ok, res = A.set_code_dir(b.get('codeDir'))
+            return self.json(200 if ok else 400, {'ok': True, 'codeDir': res} if ok else {'error': res})
+        if path == '/api/archive/link':
+            b = self.body(4 * 1024 * 1024)
+            if b is None:
+                return
+            if not A.code_dir():
+                return self.json(400, {'error': 'no code folder configured'})
+            ok, err, n, skipped = A.link(b.get('links'))
+            return self.json(200 if ok else 400, {'ok': True, 'changed': n, 'skipped': skipped} if ok else {'error': err})
+        if path == '/api/archive/cards':
+            b = self.body(256 * 1024)
+            if b is None:
+                return
+            if not isinstance(b.get('pids'), list) or not isinstance(b.get('force', False), bool):
+                return self.json(400, {'error': 'pids must be a list'})
+            if not self.server.sessions.cli():
+                return self.json(503, {'error': 'Claude Code is not installed on the server machine (needs the `claude` command).'})
+            return self.json(200, {'queued': A.queue_cards(b['pids'], b.get('force', False)), 'cardJobs': A.jobs()})
+        if path == '/api/archive/review':
+            b = self.body(64 * 1024)
+            if b is None:
+                return
+            pid, g, today = b.get('pid'), b.get('grade'), b.get('today')
+            if not isinstance(pid, str) or not PID_RE.match(pid):
+                return self.json(400, {'error': 'bad pid'})
+            if not isinstance(g, int) or isinstance(g, bool) or not 0 <= g <= 3:
+                return self.json(400, {'error': 'bad grade'})
+            if not isinstance(today, str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}', today):
+                return self.json(400, {'error': 'bad today'})
+            try:
+                return self.json(200, {'srs': A.review(pid, g, today)})
+            except ValueError:
+                return self.json(400, {'error': 'bad today'})
         return self.json(404, {'error': 'not found'})
 
     def do_PUT(self):
@@ -453,6 +525,18 @@ class Handler(SimpleHTTPRequestHandler):
                 else:
                     self.json(200, self.server.sessions.info(m.group(1)))
             return
+        if path == '/api/archive' or path.startswith('/api/archive/'):
+            if not self.authed():
+                return
+            A = self.server.archive
+            if path == '/api/archive':
+                return self.json(200, A.summary())
+            if path == '/api/archive/code':
+                return self.json(200, A.scan_code())
+            m = re.fullmatch(r'/api/archive/problem/([0-9A-Z]{2,6})', path)
+            if m and PID_RE.match(m.group(1)):
+                return self.json(200, A.problem(m.group(1)))
+            return self.json(404 if not m else 400, {'error': 'not found' if not m else 'bad pid'})
         if path.startswith('/api/'):
             return self.json(404, {'error': 'not found'})
         # static app with SPA fallback
@@ -480,6 +564,8 @@ def main():
     srv = ThreadingHTTPServer(('127.0.0.1', a.port), Handler)
     srv.key = load_key()
     srv.sessions = Sessions(DATA)
+    srv.archive = archive.Archive(DATA, fetch_statement=fetch_statement, stmt_cache_dir=STMT_DIR, cli=srv.sessions.cli)
+    srv.archive.start()  # resumes a flashcard queue left by the last run
 
     def housekeeping():  # the server runs for weeks: prune the refetchable caches daily, not only at start
         while True:
@@ -501,6 +587,7 @@ def main():
     finally:
         print('Stopping running Claude turns…', flush=True)
         srv.sessions.shutdown()
+        srv.archive.shutdown()
         srv.server_close()
 
 

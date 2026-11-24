@@ -95,7 +95,8 @@ export const CF_RETRIES = 3
 export const cfBackoff = (n: number) => 2000 * 2 ** (n - 1) + Math.floor(Math.random() * 1000)
 export async function call<T>(method: string, params: Record<string, string | number> = {}): Promise<T> {
   const run = gate.then(async () => {
-    const q = new URLSearchParams(Object.entries(params).map(([k, v]) => [k, String(v)]))
+    // lang=en: without it Codeforces answers in the browser's language (old rounds come back with Russian names)
+    const q = new URLSearchParams(Object.entries({ lang: 'en', ...params }).map(([k, v]) => [k, String(v)]))
     // rate limit (429, or CF's "Call limit exceeded"), 5xx and network errors are transient: retry inside the gate,
     // so the backoff also holds back every queued call. Other failures (bad handle…) throw at once.
     for (let n = 0; ; n++) {
@@ -164,7 +165,9 @@ const goodDiv = (c: number) => { const d = divKnown(c); return d === undefined |
 
 export async function loadProblems(force = false) {
   await cacheReady // the IndexedDB copy may be fresh enough to skip the 1.5 MB download
-  if (!force && problems.length && Date.now() - probAt < 3 * 864e5) return
+  // a copy fetched before lang=en may hold Russian names (they break matching your code files by name): refetch it
+  const ru = problems.slice(0, 2000).some(p => /[а-яё]/i.test(p.n))
+  if (!force && !ru && problems.length && Date.now() - probAt < 3 * 864e5) return
   type Raw = { problems: { contestId?: number; index: string; name: string; rating?: number; tags: string[] }[]; problemStatistics: { contestId?: number; index: string; solvedCount: number }[] }
   const res = await call<Raw>('problemset.problems')
   const sc = new Map(res.problemStatistics.map(s => [`${s.contestId}${s.index}`, s.solvedCount]))
