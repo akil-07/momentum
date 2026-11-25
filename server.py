@@ -30,7 +30,7 @@ Listens on 127.0.0.1 only; open http://localhost:8787 in a browser on the same m
 The sync key is read from $MOMENTUM_KEY or ./data/sync_key.txt (generated on first run and printed).
 """
 import shutil
-import signal, argparse, hmac, html, json, mimetypes, os, re, secrets, sys, tempfile, threading, time, urllib.request
+import signal, argparse, hmac, html, json, mimetypes, os, re, secrets, socket, sys, tempfile, threading, time, urllib.request
 from html.parser import HTMLParser
 import archive, prompts
 from sessions import Sessions
@@ -69,6 +69,14 @@ def read_state():
 
 
 _rev_cache = [None, 0]  # (mtime_ns, size) -> rev: the revision poll must not parse the ~1 MB document every 30 s
+
+
+def get_network_ips():
+    try:
+        ips = socket.gethostbyname_ex(socket.gethostname())[2]
+        return [ip for ip in ips if not ip.startswith('127.') and not ip.startswith('169.254.')]
+    except Exception:
+        return []
 
 
 def current_rev():
@@ -558,10 +566,34 @@ class Handler(SimpleHTTPRequestHandler):
             if m and PID_RE.match(m.group(1)):
                 return self.json(200, A.problem(m.group(1)))
             return self.json(404 if not m else 400, {'error': 'not found' if not m else 'bad pid'})
+        if path == '/api/info':
+            return self.json(200, {'ips': get_network_ips(), 'port': self.server.server_address[1], 'key': self.server.key})
         if path.startswith('/api/'):
             return self.json(404, {'error': 'not found'})
-        # static app with SPA fallback
-        if not os.path.exists(os.path.join(DIST, path.lstrip('/'))) or path == '/':
+        # static app with SPA fallback and sync bootstrap injection
+        clean_p = path.lstrip('/')
+        if not os.path.exists(os.path.join(DIST, clean_p)) or path == '/' or clean_p == 'index.html':
+            index_path = os.path.join(DIST, 'index.html')
+            if os.path.exists(index_path):
+                try:
+                    with open(index_path, 'r', encoding='utf-8') as f:
+                        html_text = f.read()
+                    ips = get_network_ips()
+                    bootstrap = f'<script>window.__MOMENTUM_SYNC__={{url:location.origin,token:{json.dumps(self.server.key)}}};window.__MOMENTUM_NET__={{ips:{json.dumps(ips)},port:{self.server.server_address[1]}}};</script>'
+                    if '</head>' in html_text:
+                        html_text = html_text.replace('</head>', bootstrap + '</head>', 1)
+                    else:
+                        html_text = bootstrap + html_text
+                    data = html_text.encode('utf-8')
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/html; charset=utf-8')
+                    self.send_header('Content-Length', str(len(data)))
+                    self.send_header('Cache-Control', 'no-cache')
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
+                except Exception:
+                    pass
             self.path = '/index.html'
         return super().do_GET()
 

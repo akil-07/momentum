@@ -18,6 +18,13 @@ function SyncSection() {
   const cfg = getSyncCfg()
   const [url, setUrl] = useState(cfg?.url || (import.meta.env.PROD ? location.origin : ''))
   const [key, setKey] = useState(cfg?.token || '')
+  const [showQR, setShowQR] = useState(false)
+
+  const netIps = (typeof window !== 'undefined' ? (window as unknown as { __MOMENTUM_NET__?: { ips?: string[]; port?: number } }).__MOMENTUM_NET__?.ips : []) || []
+  const netPort = (typeof window !== 'undefined' ? (window as unknown as { __MOMENTUM_NET__?: { ips?: string[]; port?: number } }).__MOMENTUM_NET__?.port : null) || 8787
+  const bestHost = netIps[0] ? `http://${netIps[0]}:${netPort}` : (cfg?.url || (typeof window !== 'undefined' ? window.location.origin : ''))
+  const mobilePairUrl = cfg ? `${bestHost}/?key=${encodeURIComponent(cfg.token)}` : ''
+
   if (!cfg) return (
     <div className="sync-box">
       <p className="small muted">The coach, planner and backups talk to the local server. Run <code>python3 server.py</code> and paste its URL and the key it prints here.</p>
@@ -36,6 +43,33 @@ function SyncSection() {
         </div>
         <Btn kind="tonal" size="sm" icon="sync" onClick={() => syncNow(true)}>Now</Btn>
         <Btn kind="text" size="sm" className="danger" icon="link_off" onClick={() => configureSync(null)}>Disconnect</Btn>
+      </div>
+
+      <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--outline-variant, rgba(255,255,255,0.1))' }}>
+        <div className="small muted" style={{ marginBottom: 8 }}>
+          <b>Pair Mobile / Other Devices:</b>
+        </div>
+        <div className="row wrap" style={{ gap: 8 }}>
+          <Btn kind="tonal" size="sm" icon="content_copy" onClick={() => {
+            navigator.clipboard.writeText(mobilePairUrl)
+            toast('Mobile pairing link copied!', 'content_copy')
+          }}>Copy Pairing Link</Btn>
+          <Btn kind="tonal" size="sm" icon="qr_code_2" onClick={() => setShowQR(v => !v)}>
+            {showQR ? 'Hide QR' : 'Show Pairing QR'}
+          </Btn>
+        </div>
+        {showQR && (
+          <div style={{ marginTop: 12, display: 'inline-flex', flexDirection: 'column', alignItems: 'center', background: '#ffffff', padding: '12px', borderRadius: 12 }}>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(mobilePairUrl)}`}
+              alt="Scan to pair phone"
+              width={160}
+              height={160}
+              style={{ display: 'block' }}
+            />
+            <span style={{ color: '#111', fontSize: 11, fontWeight: 700, marginTop: 6 }}>Scan with Phone Camera</span>
+          </div>
+        )}
       </div>
     </div>
   )

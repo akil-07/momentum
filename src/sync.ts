@@ -9,7 +9,40 @@ export interface SyncCfg { url: string; token: string }
 type Status = { state: 'off' | 'idle' | 'syncing' | 'ok' | 'error'; at?: number; msg?: string }
 
 const CFG_KEY = 'momentum.sync'
-let cfg: SyncCfg | null = (() => { try { return JSON.parse(localStorage.getItem(CFG_KEY) || 'null') } catch { return null } })()
+
+function initCfg(): SyncCfg | null {
+  try {
+    if (typeof window !== 'undefined' && window.location) {
+      const params = new URLSearchParams(window.location.search)
+      const token = params.get('sync_token') || params.get('sync_key') || params.get('key')
+      const url = params.get('sync_url') || (token ? window.location.origin : null)
+      if (url && token) {
+        const c = { url: url.replace(/\/+$/, ''), token: token.trim() }
+        localStorage.setItem(CFG_KEY, JSON.stringify(c))
+        try {
+          const clean = window.location.pathname + window.location.hash
+          window.history.replaceState({}, '', clean)
+        } catch { /* ignore */ }
+        return c
+      }
+    }
+    if (typeof window !== 'undefined') {
+      const injected = (window as unknown as { __MOMENTUM_SYNC__?: SyncCfg }).__MOMENTUM_SYNC__
+      if (injected?.url && injected?.token) {
+        const existing = localStorage.getItem(CFG_KEY)
+        if (!existing) {
+          localStorage.setItem(CFG_KEY, JSON.stringify(injected))
+          return injected
+        }
+      }
+    }
+    return JSON.parse(localStorage.getItem(CFG_KEY) || 'null')
+  } catch {
+    return null
+  }
+}
+
+let cfg: SyncCfg | null = initCfg()
 let status: Status = { state: cfg ? 'idle' : 'off' }
 const subs = new Set<() => void>()
 const setStatus = (s: Status) => { status = s; subs.forEach(f => f()) }
@@ -127,12 +160,13 @@ export function syncNow(loud = false): Promise<void> {
   return running
 }
 
-/** wire up automatic syncing: on start, after local edits (debounced), on focus, when back online, and a cheap revision poll every 30s */
+/** wire up automatic syncing: on start, after local edits (debounced), on focus, when back online, and a fast 4s poll while active */
 export function startSync() {
   let t: number | undefined
-  onLocalChange(() => { clearTimeout(t); t = window.setTimeout(() => void syncNow(), 2500) })
+  onLocalChange(() => { clearTimeout(t); t = window.setTimeout(() => void syncNow(), 600) })
   addEventListener('online', () => { retryAt = 0; void syncNow() }) // back online: don't wait out the backoff
+  window.addEventListener('focus', () => { if (document.visibilityState === 'visible') void syncNow() })
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void syncNow() })
-  setInterval(() => { if (document.visibilityState === 'visible') void syncNow() }, 30000)
+  setInterval(() => { if (document.visibilityState === 'visible') void syncNow() }, 4000)
   void syncNow().finally(() => resolveFirst())
 }
