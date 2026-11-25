@@ -96,17 +96,25 @@ class Sessions:
 
     @staticmethod
     def _killgroup(pgid):
-        for sig in (signal.SIGTERM, signal.SIGKILL):
-            try:
-                os.killpg(pgid, sig)
-            except (ProcessLookupError, PermissionError):
-                return
-            for _ in range(30):  # up to 3 s for a clean exit
-                time.sleep(0.1)
+        if hasattr(os, 'killpg'):
+            for sig in (getattr(signal, 'SIGTERM', None), getattr(signal, 'SIGKILL', None)):
+                if sig is None:
+                    continue
                 try:
-                    os.killpg(pgid, 0)
+                    os.killpg(pgid, sig)
                 except (ProcessLookupError, PermissionError):
                     return
+                for _ in range(30):  # up to 3 s for a clean exit
+                    time.sleep(0.1)
+                    try:
+                        os.killpg(pgid, 0)
+                    except (ProcessLookupError, PermissionError):
+                        return
+        else:
+            try:
+                subprocess.run(['taskkill', '/F', '/T', '/PID', str(pgid)], capture_output=True)
+            except Exception:
+                pass
 
     def _kill_orphans(self):
         """a previous server that was killed hard (SIGKILL, crash, power loss) may have left turns running"""
@@ -447,16 +455,25 @@ class Sessions:
         except subprocess.TimeoutExpired:
             if self.closing:
                 raise Shutdown()
-            for sig in (signal.SIGTERM, signal.SIGKILL):
+            if hasattr(os, 'killpg'):
+                for sig in (getattr(signal, 'SIGTERM', None), getattr(signal, 'SIGKILL', None)):
+                    if sig is None:
+                        continue
+                    try:
+                        os.killpg(p.pid, sig)
+                    except ProcessLookupError:
+                        break
+                    try:
+                        p.wait(5)
+                        break
+                    except subprocess.TimeoutExpired:
+                        continue
+            else:
                 try:
-                    os.killpg(p.pid, sig)
-                except ProcessLookupError:
-                    break
-                try:
+                    p.kill()
                     p.wait(5)
-                    break
-                except subprocess.TimeoutExpired:
-                    continue
+                except Exception:
+                    pass
             return {'ok': False, 'err': f'timed out after {self._timeout(name)}s', 'text': ''}
         finally:
             with self.procs_lock:

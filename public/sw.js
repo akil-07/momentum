@@ -1,9 +1,9 @@
 // Momentum service worker — makes the app open instantly and work fully offline.
 const VERSION = '__BUILD__' // replaced with the build id by vite.config.ts (dev keeps the placeholder)
-const SHELL = `shell-${VERSION}`, ASSETS = 'assets-v1', FONTS = 'fonts-v1'
+const SHELL = `shell-${VERSION}`, ASSETS = 'assets-v2', FONTS = 'fonts-v2'
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(SHELL).then(c => c.addAll(['/', '/manifest.webmanifest', '/icons/icon-192.png'])).then(() => self.skipWaiting()))
+  e.waitUntil(caches.open(SHELL).then(c => c.addAll(['/', '/manifest.webmanifest', '/icons/icon-192.png', '/fonts/material-symbols-rounded.woff2'])).then(() => self.skipWaiting()))
 })
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('shell-') && k !== SHELL).map(k => caches.delete(k))))

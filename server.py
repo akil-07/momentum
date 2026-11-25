@@ -45,6 +45,7 @@ MAX_BODY = 8 * 1024 * 1024
 LOCK = threading.Lock()
 mimetypes.add_type('application/manifest+json', '.webmanifest')
 mimetypes.add_type('text/javascript', '.js')
+mimetypes.add_type('font/woff2', '.woff2')
 
 
 def load_key():
@@ -567,7 +568,7 @@ class Handler(SimpleHTTPRequestHandler):
     def end_headers(self):
         p = self.path.split('?')[0]
         if not p.startswith('/api/'):
-            if p.startswith('/assets/'):
+            if p.startswith('/assets/') or p.startswith('/fonts/'):
                 self.send_header('Cache-Control', 'public, max-age=31536000, immutable')
             else:
                 self.send_header('Cache-Control', 'no-cache')
@@ -578,10 +579,11 @@ class Handler(SimpleHTTPRequestHandler):
 def main():
     ap = argparse.ArgumentParser(description='Momentum sync server')
     ap.add_argument('--port', type=int, default=8787)
+    ap.add_argument('--host', type=str, default='0.0.0.0')
     a = ap.parse_args()
     if not os.path.isdir(DIST):
         sys.exit('dist/ not found — run `npm run build` first')
-    srv = ThreadingHTTPServer(('127.0.0.1', a.port), Handler)
+    srv = ThreadingHTTPServer((a.host, a.port), Handler)
     srv.key = load_key()
     srv.sessions = Sessions(DATA)
     srv.archive = archive.Archive(DATA, fetch_statement=fetch_statement, stmt_cache_dir=STMT_DIR, cli=srv.sessions.cli)
@@ -593,13 +595,17 @@ def main():
             srv.sessions._prune_jobs()
             time.sleep(86400)
     threading.Thread(target=housekeeping, daemon=True).start()
-    print(f'Momentum serving on http://127.0.0.1:{a.port}')
+    print(f'Momentum serving on http://{a.host}:{a.port}')
     print(f'Sync key: {srv.key}')
     def stop(*_):
         raise KeyboardInterrupt
     # closing the terminal (SIGHUP) or `kill` (SIGTERM) shuts down as cleanly as Ctrl+C
-    for sig in (signal.SIGTERM, signal.SIGHUP):
-        signal.signal(sig, stop)
+    for name in ('SIGTERM', 'SIGHUP'):
+        if hasattr(signal, name):
+            try:
+                signal.signal(getattr(signal, name), stop)
+            except (ValueError, OSError):
+                pass
     try:
         srv.serve_forever()
     except KeyboardInterrupt:

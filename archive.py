@@ -1100,17 +1100,25 @@ class Archive:
 
     @staticmethod
     def _killgroup(pgid):
-        for sig in (signal.SIGTERM, signal.SIGKILL):
-            try:
-                os.killpg(pgid, sig)
-            except (ProcessLookupError, PermissionError):
-                return
-            for _ in range(30):
-                time.sleep(0.1)
+        if hasattr(os, 'killpg'):
+            for sig in (getattr(signal, 'SIGTERM', None), getattr(signal, 'SIGKILL', None)):
+                if sig is None:
+                    continue
                 try:
-                    os.killpg(pgid, 0)
+                    os.killpg(pgid, sig)
                 except (ProcessLookupError, PermissionError):
                     return
+                for _ in range(30):
+                    time.sleep(0.1)
+                    try:
+                        os.killpg(pgid, 0)
+                    except (ProcessLookupError, PermissionError):
+                        return
+        else:
+            try:
+                subprocess.run(['taskkill', '/F', '/T', '/PID', str(pgid)], capture_output=True)
+            except Exception:
+                pass
 
     def _card_files(self, pid):
         """the linked code a card is written from: (path, text), at most 4 files within the size budget"""
