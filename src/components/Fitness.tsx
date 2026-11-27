@@ -42,50 +42,6 @@ export function Fitness() {
 
       <div className="cols">
         <div className="col-main">
-          <BodyMetrics />
-          {/* Macro Breakdown Card */}
-          <section className="card" aria-label="Macronutrients">
-            <div className="card-head">
-              <h2 className="title"><Icon n="pie_chart" fill /> Macros — {selDate === today ? 'Today' : selDate}</h2>
-              <span className="small muted">{totalKcal.toLocaleString()} / {calTarget.toLocaleString()} kcal</span>
-            </div>
-            <div className="grid-2" style={{ gap: 12, marginTop: 8 }}>
-              <div className="sync-box" style={{ padding: 12 }}>
-                <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontWeight: 700 }}>Protein</span>
-                  <span className="small"><b>{totalP}g</b> <span className="muted">/ {pTarget}g</span></span>
-                </div>
-                <WavyBar value={pTarget > 0 ? Math.min(1, totalP / pTarget) : 0} height={8} color="var(--primary)" />
-              </div>
-
-              <div className="sync-box" style={{ padding: 12 }}>
-                <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontWeight: 700 }}>Carbs</span>
-                  <span className="small"><b>{totalC}g</b> <span className="muted">/ {cTarget}g</span></span>
-                </div>
-                <WavyBar value={cTarget > 0 ? Math.min(1, totalC / cTarget) : 0} height={8} color="var(--tertiary)" />
-              </div>
-
-              <div className="sync-box" style={{ padding: 12 }}>
-                <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontWeight: 700 }}>Fat</span>
-                  <span className="small"><b>{totalF}g</b> <span className="muted">/ {fTarget}g</span></span>
-                </div>
-                <WavyBar value={fTarget > 0 ? Math.min(1, totalF / fTarget) : 0} height={8} color="var(--secondary)" />
-              </div>
-
-              <div className="sync-box" style={{ padding: 12 }}>
-                <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontWeight: 700 }}>Active Burn</span>
-                  <span className="small"><b>{(d?.activeKcal || 0).toLocaleString()}</b> <span className="muted">kcal</span></span>
-                </div>
-                <div className="small muted">
-                  Net: <b>{Math.max(0, totalKcal - (d?.activeKcal || 0)).toLocaleString()} kcal</b> · {(d?.steps || 0).toLocaleString()} steps
-                </div>
-              </div>
-            </div>
-          </section>
-
           {/* Calories & Macros Table */}
           <section className="card" aria-label="Calories and Macros Table">
             <div className="card-head" style={{ flexWrap: 'wrap', gap: 8 }}>
@@ -157,6 +113,51 @@ export function Fitness() {
               </div>
             )}
           </section>
+
+          {/* Macro Breakdown Card */}
+          <section className="card" aria-label="Macronutrients">
+            <div className="card-head">
+              <h2 className="title"><Icon n="pie_chart" fill /> Macros — {selDate === today ? 'Today' : selDate}</h2>
+              <span className="small muted">{totalKcal.toLocaleString()} / {calTarget.toLocaleString()} kcal</span>
+            </div>
+            <div className="grid-2" style={{ gap: 12, marginTop: 8 }}>
+              <div className="sync-box" style={{ padding: 12 }}>
+                <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontWeight: 700 }}>Protein</span>
+                  <span className="small"><b>{totalP}g</b> <span className="muted">/ {pTarget}g</span></span>
+                </div>
+                <WavyBar value={pTarget > 0 ? Math.min(1, totalP / pTarget) : 0} height={8} color="var(--primary)" />
+              </div>
+
+              <div className="sync-box" style={{ padding: 12 }}>
+                <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontWeight: 700 }}>Carbs</span>
+                  <span className="small"><b>{totalC}g</b> <span className="muted">/ {cTarget}g</span></span>
+                </div>
+                <WavyBar value={cTarget > 0 ? Math.min(1, totalC / cTarget) : 0} height={8} color="var(--tertiary)" />
+              </div>
+
+              <div className="sync-box" style={{ padding: 12 }}>
+                <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontWeight: 700 }}>Fat</span>
+                  <span className="small"><b>{totalF}g</b> <span className="muted">/ {fTarget}g</span></span>
+                </div>
+                <WavyBar value={fTarget > 0 ? Math.min(1, totalF / fTarget) : 0} height={8} color="var(--secondary)" />
+              </div>
+
+              <div className="sync-box" style={{ padding: 12 }}>
+                <div className="row" style={{ justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontWeight: 700 }}>Active Burn</span>
+                  <span className="small"><b>{(d?.activeKcal || 0).toLocaleString()}</b> <span className="muted">kcal</span></span>
+                </div>
+                <div className="small muted">
+                  Net: <b>{Math.max(0, totalKcal - (d?.activeKcal || 0)).toLocaleString()} kcal</b> · {(d?.steps || 0).toLocaleString()} steps
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <BodyMetrics />
 
           {/* 7-Day Fitness & Nutrition History Table */}
           <section className="card" aria-label="7-day fitness history">
