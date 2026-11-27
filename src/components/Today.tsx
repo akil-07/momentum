@@ -10,6 +10,7 @@ import { Icon } from './fx'
 import { DoNowCard } from './CoachPanel'
 import { ContestBanner } from './ContestMode'
 import { EnergyCheck } from './Energy'
+import { CalorieTracker } from './CalorieTracker'
 import { CardsDueCard } from './Archive'
 import { Shape, WavyBar, WavyRing, type ShapeName } from './shapes'
 import { Btn, IconBtn, bouncy, spring, useNow } from './common'
@@ -102,6 +103,7 @@ export function Today({ onEdit, onFocus, onPomodoro, onTimeline }: { onEdit: (t?
           </AnimatePresence>
           <DoNowCard onPomodoro={onPomodoro} />
           <WorkMeter />
+          <CalorieTracker />
           {goals.length > 0 && (
             <section className={'card goals' + (goals.length === 1 ? ' single' : '')}>
               {goals.length > 1 && <div className="card-head"><h3 className="title"><Icon n="flag" fill /> Daily goals</h3><span className="muted small">{goals.filter(g => (d.goals[g.id] || 0) >= g.target).length}/{goals.length} hit</span></div>}

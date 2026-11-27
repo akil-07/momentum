@@ -45,6 +45,21 @@ export interface Span {
   dev?: string; u: number; del?: boolean
   /** logged from the Done sheet (undoing the task removes it) */ ask?: boolean
 }
+export interface MealEntry {
+  id: string; name: string; kcal: number
+  protein?: number; carbs?: number; fat?: number
+  at: number; u: number; del?: boolean
+}
+export interface MealEntry {
+  id: string; name: string; kcal: number
+  protein?: number; carbs?: number; fat?: number
+  at: number; u: number; del?: boolean
+}
+export interface MealEntry {
+  id: string; name: string; kcal: number
+  protein?: number; carbs?: number; fat?: number
+  at: number; u: number; del?: boolean
+}
 export interface Day {
   date: string; tasks: Task[]; del: Record<string, number>
   goals: Record<string, number>; goalsU: Record<string, number>; goalsHit: string[]
@@ -55,12 +70,13 @@ export interface Day {
   quests: { id: QuestId; claimed: boolean }[]
   focusBy: Record<string, number>; bonus: Record<string, number>
   /** the work log of this day (keyed by span id; a span belongs to the day it started) */ spans?: Record<string, Span>
+  /** logged meals/calories for this day (keyed by entry id, merged by u) */ calories?: Record<string, MealEntry>
   combo: number; maxCombo: number; lastDoneAt?: number
   /** derived */ xp: number; focusMin: number
 }
 export interface Settings {
   name: string; seed: string; mode: 'system' | 'light' | 'dark'; style: SchemeStyle
-  sound: boolean; haptics: boolean; threshold: number; workTarget: number
+  sound: boolean; haptics: boolean; threshold: number; workTarget: number; calorieTarget?: number
   coachAutoAdd?: boolean; pomoWork?: number; pomoBreak?: number; pomoLong?: number; disciplineBar?: number
   /** 0 standard · 0.5 medium · 1 high */
   contrast?: 0 | 0.5 | 1; amoled?: boolean; preset?: string; tierTheme?: boolean
@@ -479,6 +495,7 @@ function mergeDay(a?: Day, b?: Day): Day {
     focusBy: maxMap(a.focusBy, b.focusBy), bonus: maxMap(a.bonus, b.bonus),
     // a span tombstone folded into del (pruneState) still beats a stale live copy
     spans: (() => { const o: Record<string, Span> = { ...(a.spans || {}) }; for (const [k, y] of Object.entries(b.spans || {})) o[k] = o[k] ? mergeSpan(o[k], y) : y; for (const k in o) if (del[k] >= o[k].u) delete o[k]; return o })(),
+    calories: (() => { const o: Record<string, MealEntry> = { ...(a.calories || {}) }; for (const [k, y] of Object.entries(b.calories || {})) { const x = o[k]; o[k] = !x ? y : (!x.del !== !y.del && y.u >= x.u) ? y : y.u > x.u ? y : x } for (const k in o) if (del[k] >= o[k].u) delete o[k]; return o })(),
     combo: later.combo, lastDoneAt: later.lastDoneAt, maxCombo: Math.max(a.maxCombo, b.maxCombo),
   }
 }
@@ -1289,4 +1306,34 @@ export function redeemTreat(what: string) {
   const now = Date.now(), id = 'treat-' + uid()
   set(s => ({ ...s, treats: { ...(s.treats || {}), [id]: { id, kind: 'treat', at: now, xp0: s.xp, what: what.trim().slice(0, 80), u: now } } }))
   return true
+}
+
+/* ───────────────────────── calorie tracker ───────────────────────── */
+export const liveMeals = (d?: Day) => Object.values(d?.calories || {}).filter(m => !m.del).sort((a, b) => b.at - a.at)
+export const dayCalories = (d?: Day) => liveMeals(d).reduce((t, m) => t + m.kcal, 0)
+
+export function addMeal(name: string, kcal: number, macros?: { protein?: number; carbs?: number; fat?: number }) {
+  ensureToday()
+  const id = 'm-' + uid(), now = Date.now()
+  const entry: MealEntry = {
+    id,
+    name: name.trim() || 'Meal / Snack',
+    kcal: Math.max(0, Math.round(kcal)),
+    ...(macros?.protein ? { protein: Math.max(0, Math.round(macros.protein)) } : {}),
+    ...(macros?.carbs ? { carbs: Math.max(0, Math.round(macros.carbs)) } : {}),
+    ...(macros?.fat ? { fat: Math.max(0, Math.round(macros.fat)) } : {}),
+    at: now,
+    u: now,
+  }
+  patchDay(d => ({ ...d, calories: { ...(d.calories || {}), [id]: entry } }))
+  emit({ type: 'toast', text: `+${entry.kcal} kcal (${entry.name})`, icon: 'restaurant' })
+}
+
+export function removeMeal(id: string) {
+  ensureToday()
+  const now = Date.now()
+  patchDay(d => {
+    if (!d.calories?.[id]) return d
+    return { ...d, calories: { ...d.calories, [id]: { ...d.calories[id], del: true, u: now } } }
+  })
 }
