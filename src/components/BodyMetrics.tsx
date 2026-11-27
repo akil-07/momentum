@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { dateKey, latestWeight, setSettings, setWeight, toast, useStore } from '../store'
+import { dateKey, getState, latestWeight, setSettings, setWeight, toast, useStore } from '../store'
 import { Btn, Chips, Field, IconBtn, spring } from './common'
 import { Icon } from './fx'
 
@@ -14,8 +14,9 @@ const ACTIVITY_MULT = {
 export function BodyMetrics() {
   const today = dateKey()
   const st = useStore(s => s.settings)
-  const todayWeight = useStore(s => s.days[today]?.weightKg)
-  const lastW = useStore(s => latestWeight(s))
+  const days = useStore(s => s.days)
+  const todayWeight = days[today]?.weightKg
+  const lastW = useMemo(() => latestWeight(getState()), [days])
 
   const heightCm = st.heightCm || 0
   const age = st.age || 22
