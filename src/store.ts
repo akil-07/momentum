@@ -71,12 +71,14 @@ export interface Day {
   focusBy: Record<string, number>; bonus: Record<string, number>
   /** the work log of this day (keyed by span id; a span belongs to the day it started) */ spans?: Record<string, Span>
   /** logged meals/calories for this day (keyed by entry id, merged by u) */ calories?: Record<string, MealEntry>
+  steps?: number; stepsU?: number
+  activeKcal?: number; activeKcalU?: number
   combo: number; maxCombo: number; lastDoneAt?: number
   /** derived */ xp: number; focusMin: number
 }
 export interface Settings {
   name: string; seed: string; mode: 'system' | 'light' | 'dark'; style: SchemeStyle
-  sound: boolean; haptics: boolean; threshold: number; workTarget: number; calorieTarget?: number
+  sound: boolean; haptics: boolean; threshold: number; workTarget: number; calorieTarget?: number; stepsTarget?: number
   visionProvider?: 'gemini' | 'openai'; visionKey?: string
   coachAutoAdd?: boolean; pomoWork?: number; pomoBreak?: number; pomoLong?: number; disciplineBar?: number
   /** 0 standard · 0.5 medium · 1 high */
@@ -497,6 +499,10 @@ function mergeDay(a?: Day, b?: Day): Day {
     // a span tombstone folded into del (pruneState) still beats a stale live copy
     spans: (() => { const o: Record<string, Span> = { ...(a.spans || {}) }; for (const [k, y] of Object.entries(b.spans || {})) o[k] = o[k] ? mergeSpan(o[k], y) : y; for (const k in o) if (del[k] >= o[k].u) delete o[k]; return o })(),
     calories: (() => { const o: Record<string, MealEntry> = { ...(a.calories || {}) }; for (const [k, y] of Object.entries(b.calories || {})) { const x = o[k]; o[k] = !x ? y : (!x.del !== !y.del && y.u >= x.u) ? y : y.u > x.u ? y : x } for (const k in o) if (del[k] >= o[k].u) delete o[k]; return o })(),
+    steps: (b.stepsU || 0) > (a.stepsU || 0) ? b.steps : a.steps,
+    stepsU: Math.max(a.stepsU || 0, b.stepsU || 0),
+    activeKcal: (b.activeKcalU || 0) > (a.activeKcalU || 0) ? b.activeKcal : a.activeKcal,
+    activeKcalU: Math.max(a.activeKcalU || 0, b.activeKcalU || 0),
     combo: later.combo, lastDoneAt: later.lastDoneAt, maxCombo: Math.max(a.maxCombo, b.maxCombo),
   }
 }
@@ -1337,4 +1343,15 @@ export function removeMeal(id: string) {
     if (!d.calories?.[id]) return d
     return { ...d, calories: { ...d.calories, [id]: { ...d.calories[id], del: true, u: now } } }
   })
+}
+
+export function setSteps(steps: number, activeKcal?: number) {
+  ensureToday()
+  const now = Date.now()
+  patchDay(d => ({
+    ...d,
+    steps: Math.max(0, Math.round(steps)),
+    stepsU: now,
+    ...(activeKcal !== undefined ? { activeKcal: Math.max(0, Math.round(activeKcal)), activeKcalU: now } : {}),
+  }))
 }

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { addMeal, dateKey, dayCalories, liveMeals, removeMeal, setSettings, toast, useStore } from '../store'
+import { addMeal, dateKey, dayCalories, liveMeals, removeMeal, setSettings, setSteps, toast, useStore } from '../store'
+import { getSyncCfg } from '../sync'
 import { analyzeFoodPhoto, compressFoodImage, type DetectedFood } from '../foodVision'
 import { Btn, Chips, Field, IconBtn, Sheet, spring } from './common'
 import { Icon } from './fx'
@@ -12,9 +13,16 @@ export function CalorieTracker() {
   const k = dateKey()
   const d = useStore(s => s.days[k])
   const target = useStore(s => s.settings.calorieTarget || 2000)
+  const stepsTarget = useStore(s => s.settings.stepsTarget || 10000)
   const visionProvider = useStore(s => s.settings.visionProvider || 'gemini')
   const visionKey = useStore(s => s.settings.visionKey || '')
 
+  const steps = d?.steps || 0
+  const activeKcal = d?.activeKcal || 0
+
+  const [watchOpen, setWatchOpen] = useState(false)
+  const [editingSteps, setEditingSteps] = useState(false)
+  const [stepsInput, setStepsInput] = useState('')
   const [adding, setAdding] = useState(false)
   const [editingTarget, setEditingTarget] = useState(false)
   const [showList, setShowList] = useState(false)
@@ -343,6 +351,97 @@ export function CalorieTracker() {
           </motion.ul>
         )}
       </AnimatePresence>
+
+      {/* Steps & Apple Watch Active Burn */}
+      <div style={{ marginTop: 14, paddingTop: 12, borderTop: '1px solid var(--outline-variant, rgba(255,255,255,0.08))' }}>
+        <div className="row" style={{ gap: 8, marginBottom: 6 }}>
+          <Icon n="directions_walk" style={{ color: 'var(--primary)' }} />
+          <div className="grow" style={{ fontSize: 13 }}>
+            <b>{steps.toLocaleString()}</b>
+            <span className="muted"> / {stepsTarget.toLocaleString()} steps</span>
+            {activeKcal > 0 && <span className="muted"> · <b>{activeKcal} kcal</b> burned</span>}
+          </div>
+          <IconBtn
+            icon="edit"
+            title="Update steps manually"
+            onClick={() => { setStepsInput(String(steps || '')); setEditingSteps(v => !v) }}
+          />
+          <Btn size="sm" kind="tonal" icon="watch" onClick={() => setWatchOpen(true)}>
+            Apple Watch
+          </Btn>
+        </div>
+        <WavyBar
+          value={stepsTarget > 0 ? Math.min(1, steps / stepsTarget) : 0}
+          height={8}
+          color={steps >= stepsTarget ? 'var(--tertiary)' : 'var(--secondary)'}
+        />
+
+        <AnimatePresence>
+          {editingSteps && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={spring}
+              style={{ overflow: 'hidden', marginTop: 8 }}
+            >
+              <div className="row" style={{ gap: 8 }}>
+                <input
+                  type="number"
+                  min={0}
+                  value={stepsInput}
+                  onChange={e => setStepsInput(e.target.value)}
+                  placeholder="Today's steps"
+                  style={{ flex: 1, minWidth: 0, padding: '6px 10px', borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--outline-variant)', color: 'inherit' }}
+                />
+                <Btn size="sm" onClick={() => { setSteps(Number(stepsInput) || 0); setEditingSteps(false) }}>Save</Btn>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Apple Watch / Health Auto-Sync Setup Sheet */}
+      <Sheet open={watchOpen} onClose={() => setWatchOpen(false)} title="Apple Watch Steps Sync">
+        {(() => {
+          const cfg = getSyncCfg()
+          const netIps = (typeof window !== 'undefined' ? (window as unknown as { __MOMENTUM_NET__?: { ips?: string[]; port?: number } }).__MOMENTUM_NET__?.ips : []) || []
+          const netPort = (typeof window !== 'undefined' ? (window as unknown as { __MOMENTUM_NET__?: { ips?: string[]; port?: number } }).__MOMENTUM_NET__?.port : null) || 8787
+          const base = netIps[0] ? `http://${netIps[0]}:${netPort}` : (cfg?.url || (typeof window !== 'undefined' ? window.location.origin : 'http://100.94.1.89:8787'))
+          const webhookUrl = cfg ? `${base}/api/health/sync?key=${encodeURIComponent(cfg.token)}` : `${base}/api/health/sync?key=YOUR_SYNC_KEY`
+          return (
+            <div className="form">
+              <p className="small muted" style={{ marginTop: 0 }}>
+                Apple Watch automatically saves your Steps and Active Energy to <b>Apple Health</b>. Use iPhone&apos;s built-in <b>Shortcuts</b> app to push them straight into Momentum automatically.
+              </p>
+
+              <div className="sync-box" style={{ padding: 12 }}>
+                <div className="field-label" style={{ marginTop: 0 }}>1. Copy your Webhook URL</div>
+                <div className="row" style={{ gap: 8 }}>
+                  <input readOnly value={webhookUrl} style={{ flex: 1, minWidth: 0, fontSize: 12, padding: '6px 8px', borderRadius: 8, background: 'var(--surface)', border: '1px solid var(--outline-variant)', color: 'inherit' }} />
+                  <Btn size="sm" icon="content_copy" onClick={() => { navigator.clipboard.writeText(webhookUrl); toast('Webhook URL copied!', 'check') }}>Copy</Btn>
+                </div>
+              </div>
+
+              <div className="sync-box" style={{ padding: 12 }}>
+                <div className="field-label" style={{ marginTop: 0 }}>2. Create this 3-action Shortcut on iPhone</div>
+                <ol className="small" style={{ margin: '6px 0 0', paddingLeft: 18, lineHeight: 1.6 }}>
+                  <li>Open <b>Shortcuts</b> app → tap <b>+</b> → add <b>Find Health Samples</b>: Type = <b>Steps</b>, Start Date = <b>is today</b>.</li>
+                  <li>Add <b>Calculate Statistics</b> (<b>Sum</b> of Health Samples). <i>(Optional: repeat for <b>Active Energy</b>).</i></li>
+                  <li>Add <b>Get Contents of URL</b> → paste the URL above, Method = <b>POST</b>, Request Body = <b>JSON</b>, add field <code>steps</code> (Number) = <i>Sum</i> (and optional <code>activeKcal</code>).</li>
+                </ol>
+              </div>
+
+              <div className="sync-box" style={{ padding: 12 }}>
+                <div className="field-label" style={{ marginTop: 0 }}>3. Make it automatic</div>
+                <p className="small muted" style={{ margin: '4px 0 0' }}>
+                  In Shortcuts → <b>Automation</b> tab → <b>+</b> → pick <b>Time of Day</b> (e.g. every evening) or <b>App</b> (whenever you open Safari / Momentum), choose <b>Run Immediately</b>, and select your Shortcut.
+                </p>
+              </div>
+            </div>
+          )
+        })()}
+      </Sheet>
 
       {/* HealthifyMe-style Snap Scanner Review Sheet */}
       <Sheet

@@ -30,7 +30,7 @@ Listens on 127.0.0.1 only; open http://localhost:8787 in a browser on the same m
 The sync key is read from $MOMENTUM_KEY or ./data/sync_key.txt (generated on first run and printed).
 """
 import shutil
-import signal, argparse, hmac, html, json, mimetypes, os, re, secrets, socket, sys, tempfile, threading, time, urllib.request
+import signal, argparse, hmac, html, json, mimetypes, os, re, secrets, socket, sys, tempfile, threading, time, urllib.parse, urllib.request
 from html.parser import HTMLParser
 import archive, prompts
 from sessions import Sessions
@@ -313,6 +313,10 @@ class Handler(SimpleHTTPRequestHandler):
     def authed(self):
         got = self.headers.get('Authorization', '')
         ok = got.startswith('Bearer ') and hmac.compare_digest(got[7:].encode(), self.server.key.encode())
+        if not ok and '?' in self.path:
+            q = dict(p.split('=', 1) for p in self.path.split('?', 1)[1].split('&') if '=' in p)
+            qk = urllib.parse.unquote(q.get('key', '')) if hasattr(urllib, 'parse') else q.get('key', '')
+            ok = bool(qk) and hmac.compare_digest(qk.encode(), self.server.key.encode())
         if not ok:
             self.json(401, {'error': 'bad key'})
         return ok
@@ -481,6 +485,43 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.json(200, {'srs': A.review(pid, g, today)})
             except ValueError:
                 return self.json(400, {'error': 'bad today'})
+        if path == '/api/health/sync':
+            b = self.body(64 * 1024)
+            if b is None:
+                return
+            import datetime
+            day_k = str(b.get('date') or datetime.date.today().isoformat())[:10]
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', day_k):
+                return self.json(400, {'error': 'bad date'})
+            try:
+                steps_val = int(round(float(b['steps']))) if b.get('steps') not in (None, '') else None
+                kcal_val = int(round(float(b['activeKcal']))) if b.get('activeKcal') not in (None, '') else None
+            except (TypeError, ValueError):
+                return self.json(400, {'error': 'bad steps or activeKcal'})
+            now_ms = int(time.time() * 1000)
+            with LOCK:
+                cur = read_state()
+                doc = cur.get('doc')
+                if not isinstance(doc, dict):
+                    return self.json(409, {'error': 'no state initialized yet — open the app once first'})
+                days = doc.setdefault('days', {})
+                d = days.get(day_k)
+                if not isinstance(d, dict):
+                    d = {
+                        'date': day_k, 'tasks': [], 'del': {}, 'goals': {}, 'goalsU': {},
+                        'goalsHit': [], 'locked': False, 'perfect': False, 'quests': [],
+                        'focusBy': {}, 'bonus': {}, 'combo': 0, 'maxCombo': 0, 'xp': 0, 'focusMin': 0,
+                    }
+                    days[day_k] = d
+                if steps_val is not None:
+                    d['steps'] = max(0, steps_val)
+                    d['stepsU'] = now_ms
+                if kcal_val is not None:
+                    d['activeKcal'] = max(0, kcal_val)
+                    d['activeKcalU'] = now_ms
+                new_rev = int(cur.get('rev') or 0) + 1
+                write_state({'rev': new_rev, 'doc': doc})
+            return self.json(200, {'ok': True, 'date': day_k, 'steps': d.get('steps'), 'activeKcal': d.get('activeKcal'), 'rev': new_rev})
         return self.json(404, {'error': 'not found'})
 
     def do_PUT(self):
