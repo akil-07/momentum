@@ -350,6 +350,63 @@ class Handler(SimpleHTTPRequestHandler):
         path = self.path.split('?')[0]
         if not path.startswith('/api/'):
             return self.json(404, {'error': 'not found'})
+        if path == '/api/vision':
+            b = self.body(4 * 1024 * 1024)
+            if b is None:
+                return
+            key = re.sub(r'\s+', '', str(b.get('apiKey') or ''))
+            base64_data = str(b.get('base64') or '')
+            mime = str(b.get('mime') or 'image/jpeg')
+            provider = str(b.get('provider') or 'gemini')
+            prompt = str(b.get('prompt') or '')
+            if not key or not base64_data:
+                return self.json(400, {'error': 'Missing API key or image'})
+            if provider == 'openai':
+                req = urllib.request.Request(
+                    'https://api.openai.com/v1/chat/completions',
+                    data=json.dumps({
+                        'model': 'gpt-4o-mini',
+                        'temperature': 0.2,
+                        'response_format': {'type': 'json_object'},
+                        'messages': [{'role': 'user', 'content': [{'type': 'text', 'text': prompt}, {'type': 'image_url', 'image_url': {'url': f'data:{mime};base64,{base64_data}'}}]}],
+                    }).encode('utf-8'),
+                    headers={'Content-Type': 'application/json', 'Authorization': f'Bearer {key}'},
+                )
+                try:
+                    with urllib.request.urlopen(req, timeout=30) as r:
+                        data = json.loads(r.read().decode('utf-8'))
+                        return self.json(200, {'text': data['choices'][0]['message']['content']})
+                except urllib.error.HTTPError as e:
+                    err_body = e.read().decode('utf-8', 'ignore')
+                    return self.json(e.code, {'error': err_body[:200] or f'OpenAI error {e.code}'})
+                except Exception as e:
+                    return self.json(500, {'error': str(e)})
+            for model in ('gemini-2.5-flash', 'gemini-2.0-flash'):
+                url = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={urllib.parse.quote(key)}'
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps({
+                        'contents': [{'parts': [{'text': prompt}, {'inline_data': {'mime_type': mime, 'data': base64_data}}]}],
+                        'generationConfig': {'temperature': 0.2, 'responseMimeType': 'application/json'},
+                    }).encode('utf-8'),
+                    headers={'Content-Type': 'application/json'},
+                )
+                try:
+                    with urllib.request.urlopen(req, timeout=30) as r:
+                        data = json.loads(r.read().decode('utf-8'))
+                        return self.json(200, {'text': data['candidates'][0]['content']['parts'][0]['text']})
+                except urllib.error.HTTPError as e:
+                    err_body = e.read().decode('utf-8', 'ignore')
+                    if e.code == 404 and model == 'gemini-2.5-flash':
+                        continue
+                    try:
+                        msg = json.loads(err_body).get('error', {}).get('message') or err_body[:200]
+                    except Exception:
+                        msg = err_body[:200]
+                    return self.json(e.code, {'error': msg or f'Gemini error {e.code}'})
+                except Exception as e:
+                    return self.json(500, {'error': str(e)})
+            return self.json(500, {'error': 'Gemini request failed'})
         if not self.authed():
             return
         S = self.server.sessions

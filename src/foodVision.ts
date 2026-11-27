@@ -100,9 +100,30 @@ export async function analyzeFoodPhoto(
   provider: 'gemini' | 'openai',
   apiKey: string
 ): Promise<FoodAnalysis> {
-  const key = apiKey.trim()
+  const key = apiKey.replace(/\s+/g, '')
   if (!key) throw new Error('Please add your free Gemini API key first')
 
+  // 1. Try same-origin /api/vision proxy first (avoids iOS Safari CORS / "Load failed" issues on Vercel & local server)
+  try {
+    const proxyRes = await fetch('/api/vision', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base64, mime, provider, apiKey: key, prompt: NUTRITION_PROMPT }),
+    })
+    const ct = proxyRes.headers.get('content-type') || ''
+    if (ct.includes('application/json')) {
+      const pData = await proxyRes.json() as { text?: string; error?: string }
+      if (proxyRes.ok && pData.text) return parseResult(pData.text)
+      if (!proxyRes.ok && pData.error && proxyRes.status !== 404) throw new Error(pData.error)
+    }
+  } catch (e) {
+    // Only rethrow real API errors returned from the proxy; network/404 falls through to direct fetch
+    if (e instanceof Error && !e.message.includes('Load failed') && !e.message.includes('Failed to fetch')) {
+      throw e
+    }
+  }
+
+  // 2. Direct browser fallback
   if (provider === 'openai') {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -134,31 +155,35 @@ export async function analyzeFoodPhoto(
     return parseResult(text)
   }
 
-  // Default: Google Gemini 2.5 Flash (free tier available)
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`
-  const res = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            { text: NUTRITION_PROMPT },
-            { inline_data: { mime_type: mime, data: base64 } },
-          ],
+  // Default: Google Gemini (try 2.5-flash, fallback to 2.0-flash)
+  for (const model of ['gemini-2.5-flash', 'gemini-2.0-flash']) {
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              { text: NUTRITION_PROMPT },
+              { inline_data: { mime_type: mime, data: base64 } },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.2,
+          responseMimeType: 'application/json',
         },
-      ],
-      generationConfig: {
-        temperature: 0.2,
-        responseMimeType: 'application/json',
-      },
-    }),
-  })
-  if (!res.ok) {
+      }),
+    })
+    if (res.ok) {
+      const data = await res.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+      return parseResult(text)
+    }
+    if (res.status === 404 && model === 'gemini-2.5-flash') continue
     const err = await res.json().catch(() => ({})) as { error?: { message?: string } }
     throw new Error(err?.error?.message || `Gemini API error (${res.status})`)
   }
-  const data = await res.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || ''
-  return parseResult(text)
+  throw new Error('Gemini API request failed')
 }
