@@ -1,7 +1,7 @@
 const DEFAULT_FB_URL = 'https://momentum-cf6fa-default-rtdb.asia-southeast1.firebasedatabase.app'
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
   try {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const fbUrl = String(req.query?.fb || DEFAULT_FB_URL).replace(/\/+$/, '')
     const endpoint = `${fbUrl}/momentum/${encodeURIComponent(key)}.json`
 
-    const b = req.body || {}
+    const b = { ...(req.query || {}), ...(req.body && typeof req.body === 'object' ? req.body : {}) }
     const now = new Date()
     // Default to IST (+05:30) or provided YYYY-MM-DD date
     const istDate = new Date(now.getTime() + 5.5 * 3600 * 1000).toISOString().slice(0, 10)
