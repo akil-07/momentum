@@ -40,7 +40,7 @@ export function Fitness() {
         </div>
       </header>
 
-      <div className="cols">
+      <div className="cols side-first">
         <div className="col-main">
           {/* Calories & Macros Table */}
           <section className="card" aria-label="Calories and Macros Table">
