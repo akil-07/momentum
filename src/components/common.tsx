@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
+import { createPortal } from 'react-dom'
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { Icon } from './fx'
 import { sfx } from '../sound'
@@ -85,7 +86,7 @@ export function Sheet({ open, onClose, title, children, actions, className = '' 
     if (e.shiftKey && (a === first || a === e.currentTarget)) { e.preventDefault(); last.focus() }
     else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus() }
   }
-  return (
+  const content = (
     <AnimatePresence>
       {open && (
         <motion.div className="scrim sheet-scrim" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
@@ -100,6 +101,7 @@ export function Sheet({ open, onClose, title, children, actions, className = '' 
       )}
     </AnimatePresence>
   )
+  return typeof document !== 'undefined' ? createPortal(content, document.body) : content
 }
 
 /** the Material host behind ui.ts confirmAsk / promptAsk — mounted once in App */
