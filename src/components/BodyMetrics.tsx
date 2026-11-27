@@ -23,6 +23,7 @@ export function BodyMetrics() {
   const sex = st.sex || 'male'
   const activity = st.activityLevel || 'light'
   const goalKg = st.goalWeightKg
+  const weeklyLoss = st.weeklyLossKg || 0.5
 
   const currentKg = todayWeight ?? lastW?.kg ?? 0
 
@@ -89,17 +90,39 @@ export function BodyMetrics() {
   const maintenance = bmr > 0 ? Math.round(bmr * ACTIVITY_MULT[activity]) : 0
   const floorKcal = sex === 'male' ? 1500 : 1200
 
+  // 1 kg body fat ≈ 7,700 kcal -> 1,100 kcal/day per 1 kg/week
+  const dailyDeficit = Math.round(weeklyLoss * 1100)
+  const isLosing = diffKg > 0.2 || bmi >= 25
+  const isGaining = !isLosing && (diffKg < -0.2 || bmi < 18.5)
+
+  // Calories burned per 1,000 steps scales with body weight (~0.57 kcal/kg per 1,000 steps)
+  const kcalPer1kSteps = currentKg > 0 ? Math.round(currentKg * 0.57) : 45
+  const baseSteps = activity === 'sedentary' ? 4000 : activity === 'light' ? 6000 : activity === 'moderate' ? 8000 : 10000
+
   let recKcal = maintenance
+  let foodCut = 0
+  let burnExtra = 0
+  let recSteps = baseSteps
   let recMode = 'Maintenance'
+
   if (maintenance > 0) {
-    if (diffKg > 0.5 || bmi >= 25) {
-      recKcal = Math.max(floorKcal, maintenance - 500)
-      recMode = 'Fat loss (−500 kcal/day · ~0.5 kg/wk)'
-    } else if (diffKg < -0.5 || bmi < 18.5) {
+    if (isLosing) {
+      // Split ~70% from food, ~30% from extra walking/exercise (respecting safe calorie floor)
+      const idealFoodCut = Math.round(dailyDeficit * 0.7)
+      recKcal = Math.max(floorKcal, maintenance - idealFoodCut)
+      foodCut = Math.max(0, maintenance - recKcal)
+      burnExtra = Math.max(0, dailyDeficit - foodCut)
+      const extraSteps = Math.round((burnExtra / kcalPer1kSteps) * 1000 / 500) * 500
+      recSteps = Math.min(20000, baseSteps + extraSteps)
+      recMode = `Lose ${weeklyLoss} kg/wk (−${dailyDeficit} kcal/day total deficit)`
+    } else if (isGaining) {
       recKcal = maintenance + 300
       recMode = 'Healthy gain (+300 kcal/day)'
     }
   }
+
+  const kgToLose = goalKg ? Math.max(0, diffKg) : Math.max(0, healthyDiffKg)
+  const weeksToGoal = isLosing && kgToLose > 0 ? Math.max(1, Math.ceil(kgToLose / weeklyLoss)) : 0
 
   return (
     <section className="card" aria-label="Body profile, daily weight, and BMI">
@@ -251,25 +274,65 @@ export function BodyMetrics() {
             </div>
           </div>
 
+          {isLosing && (
+            <div className="sync-box" style={{ padding: 12 }}>
+              <div className="row wrap" style={{ justifyContent: 'space-between', gap: 6, marginBottom: 8 }}>
+                <div className="field-label" style={{ margin: 0 }}>Weekly loss pace</div>
+                {weeksToGoal > 0 && (
+                  <span className="small muted">~<b>{weeksToGoal} weeks</b> to lose {kgToLose} kg</span>
+                )}
+              </div>
+              <Chips
+                value={weeklyLoss}
+                onChange={v => setSettings({ weeklyLossKg: v })}
+                options={[
+                  { v: 0.25, label: '0.25 kg/wk' },
+                  { v: 0.5, label: '0.5 kg/wk' },
+                  { v: 0.75, label: '0.75 kg/wk' },
+                  { v: 1.0, label: '1.0 kg/wk' },
+                ]}
+              />
+              <div className="grid-2" style={{ gap: 8, marginTop: 10 }}>
+                <div style={{ padding: '8px 10px', borderRadius: 10, background: 'var(--surface)' }}>
+                  <div className="small muted">Daily deficit needed</div>
+                  <div style={{ fontWeight: 700, fontSize: 15 }}>−{dailyDeficit.toLocaleString()} kcal/day</div>
+                  <div className="small muted" style={{ fontSize: 11 }}>Food: −{foodCut} · Burn: −{burnExtra}</div>
+                </div>
+                <div style={{ padding: '8px 10px', borderRadius: 10, background: 'var(--surface)' }}>
+                  <div className="small muted">Extra burn &amp; steps</div>
+                  <div style={{ fontWeight: 700, fontSize: 15 }}>{burnExtra} kcal · {recSteps.toLocaleString()} steps</div>
+                  <div className="small muted" style={{ fontSize: 11 }}>~{kcalPer1kSteps} kcal per 1,000 steps</div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="sync-box" style={{ padding: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
             <div>
-              <div className="overline">RECOMMENDED CALORIES</div>
-              <div className="headline" style={{ marginTop: 2 }}>{recKcal.toLocaleString()} kcal / day</div>
+              <div className="overline">RECOMMENDED DAILY PLAN</div>
+              <div className="headline" style={{ marginTop: 2 }}>
+                Eat {recKcal.toLocaleString()} kcal{isLosing ? ` · Walk ${recSteps.toLocaleString()} steps` : ''}
+              </div>
               <div className="small muted">
                 {recMode} · Maintenance: {maintenance.toLocaleString()} kcal ({activity} ×{ACTIVITY_MULT[activity]})
               </div>
             </div>
-            {st.calorieTarget !== recKcal && (
+            {(st.calorieTarget !== recKcal || (isLosing && st.stepsTarget !== recSteps)) && (
               <Btn
                 size="sm"
                 kind="tonal"
                 icon="auto_awesome"
                 onClick={() => {
-                  setSettings({ calorieTarget: recKcal })
-                  toast(`Daily calorie target set to ${recKcal.toLocaleString()} kcal`, 'check')
+                  setSettings({ calorieTarget: recKcal, ...(isLosing ? { stepsTarget: recSteps } : {}) })
+                  toast(
+                    isLosing
+                      ? `Targets set: ${recKcal.toLocaleString()} kcal & ${recSteps.toLocaleString()} steps`
+                      : `Daily calorie target set to ${recKcal.toLocaleString()} kcal`,
+                    'check'
+                  )
                 }}
               >
-                Use {recKcal.toLocaleString()} kcal
+                {isLosing ? 'Apply Both Targets' : `Use ${recKcal.toLocaleString()} kcal`}
               </Btn>
             )}
           </div>

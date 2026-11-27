@@ -80,7 +80,7 @@ export interface Day {
 export interface Settings {
   name: string; seed: string; mode: 'system' | 'light' | 'dark'; style: SchemeStyle
   sound: boolean; haptics: boolean; threshold: number; workTarget: number; calorieTarget?: number; stepsTarget?: number
-  heightCm?: number; age?: number; sex?: 'male' | 'female'; activityLevel?: 'sedentary' | 'light' | 'moderate' | 'active'; goalWeightKg?: number
+  heightCm?: number; age?: number; sex?: 'male' | 'female'; activityLevel?: 'sedentary' | 'light' | 'moderate' | 'active'; goalWeightKg?: number; weeklyLossKg?: number
   visionProvider?: 'gemini' | 'openai'; visionKey?: string
   coachAutoAdd?: boolean; pomoWork?: number; pomoBreak?: number; pomoLong?: number; disciplineBar?: number
   /** 0 standard · 0.5 medium · 1 high */
