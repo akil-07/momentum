@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { addDays, dateKey, deleteSeason, exportData, fmtDur, importData, keyToDate, setSeason, setSettings, toast, useStore } from '../store'
 import { EXAM_DEFAULTS, makeSeason, seasonLabel, upcomingSeasons, type Season } from '../season'
 import { resetEverything } from '../reset'
-import { configureSync, getSyncCfg, syncNow, useSync } from '../sync'
+import { configureSync, DEFAULT_FIREBASE_CFG, getSyncCfg, isFirebaseUrl, syncNow, useSync } from '../sync'
 import { install, isIOS, isStandalone, useCanInstall } from '../pwa'
 import { PRESETS, SEEDS, STYLES, previewColors, tierSeed, type Preset } from '../theme'
 import { useCf } from '../cf'
@@ -38,12 +38,20 @@ function SyncSection() {
       <div className="sync-line">
         <Icon n={sync.state === 'error' ? 'sync_problem' : 'cloud_done'} fill />
         <div className="grow">
-          <b>{sync.state === 'error' ? 'Not reachable right now' : 'Connected'}</b>
-          <div className="small muted">{cfg.url}{sync.at ? ` · last synced ${new Date(sync.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}{sync.msg ? ` · ${sync.msg}` : ''}</div>
+          <b>{sync.state === 'error' ? 'Not reachable right now' : isFirebaseUrl(cfg.url) ? 'Firebase Cloud Synced' : 'Connected'}</b>
+          <div className="small muted">{isFirebaseUrl(cfg.url) ? 'Firebase Realtime DB' : cfg.url}{sync.at ? ` · last synced ${new Date(sync.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` : ''}{sync.msg ? ` · ${sync.msg}` : ''}</div>
         </div>
         <Btn kind="tonal" size="sm" icon="sync" onClick={() => syncNow(true)}>Now</Btn>
         <Btn kind="text" size="sm" className="danger" icon="link_off" onClick={() => configureSync(null)}>Disconnect</Btn>
       </div>
+      {!isFirebaseUrl(cfg.url) && (
+        <div style={{ marginTop: 10 }}>
+          <Btn kind="tonal" size="sm" icon="cloud" onClick={() => {
+            configureSync(DEFAULT_FIREBASE_CFG)
+            toast('Switched to Firebase Cloud Sync!', 'cloud_done')
+          }}>Switch to Firebase Cloud Sync (Recommended)</Btn>
+        </div>
+      )}
 
       <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1px solid var(--outline-variant, rgba(255,255,255,0.1))' }}>
         <div className="small muted" style={{ marginBottom: 8 }}>

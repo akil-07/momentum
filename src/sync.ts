@@ -9,6 +9,11 @@ export interface SyncCfg { url: string; token: string }
 type Status = { state: 'off' | 'idle' | 'syncing' | 'ok' | 'error'; at?: number; msg?: string }
 
 const CFG_KEY = 'momentum.sync'
+export const DEFAULT_FIREBASE_CFG: SyncCfg = {
+  url: 'https://momentum-cf6fa-default-rtdb.asia-southeast1.firebasedatabase.app',
+  token: 'vTMQ69URm7gRsZNKRVzy1ynNxrcdYUsK',
+}
+export const isFirebaseUrl = (u?: string) => !!u && (u.includes('firebasedatabase.app') || u.includes('firebaseio.com'))
 
 function initCfg(): SyncCfg | null {
   try {
@@ -26,17 +31,24 @@ function initCfg(): SyncCfg | null {
         return c
       }
     }
+    const existing = localStorage.getItem(CFG_KEY)
+    if (existing) {
+      const parsed = JSON.parse(existing) as SyncCfg | null
+      if (parsed?.url && parsed?.token) return parsed
+    }
     if (typeof window !== 'undefined') {
       const injected = (window as unknown as { __MOMENTUM_SYNC__?: SyncCfg }).__MOMENTUM_SYNC__
       if (injected?.url && injected?.token) {
-        const existing = localStorage.getItem(CFG_KEY)
-        if (!existing) {
-          localStorage.setItem(CFG_KEY, JSON.stringify(injected))
-          return injected
-        }
+        localStorage.setItem(CFG_KEY, JSON.stringify(injected))
+        return injected
+      }
+      // On Vercel or hosted HTTPS, automatically connect to Firebase Cloud Sync
+      if (window.location.protocol === 'https:' || window.location.hostname.includes('vercel.app')) {
+        localStorage.setItem(CFG_KEY, JSON.stringify(DEFAULT_FIREBASE_CFG))
+        return DEFAULT_FIREBASE_CFG
       }
     }
-    return JSON.parse(localStorage.getItem(CFG_KEY) || 'null')
+    return null
   } catch {
     return null
   }
@@ -59,6 +71,38 @@ export function configureSync(c: SyncCfg | null) {
 }
 
 async function api(method: 'GET' | 'PUT', body?: string, since?: number) {
+  if (isFirebaseUrl(cfg!.url)) {
+    const fbBase = `${cfg!.url.replace(/\/+$/, '')}/momentum/${encodeURIComponent(cfg!.token)}`
+    if (method === 'GET') {
+      if (since != null) {
+        const rr = await fetch(`${fbBase}/rev.json`, { cache: 'no-store' })
+        if (rr.ok) {
+          const curRev = Number(await rr.json()) || 0
+          if (curRev === since) return new Response(null, { status: 304 })
+        }
+      }
+      const r = await fetch(`${fbBase}.json`, { cache: 'no-store' })
+      if (!r.ok) return r
+      const data = await r.json() as { rev?: number; doc?: State | string | null } | null
+      return new Response(JSON.stringify({ rev: data?.rev || 0, doc: data?.doc || null }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+    const parsed = JSON.parse(body!) as { rev: number; doc: State }
+    const nextRev = (Number(parsed.rev) || 0) + 1
+    // Store doc as JSON string so Firebase RTDB never strips empty arrays [] or objects {}
+    const r = await fetch(`${fbBase}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rev: nextRev, doc: JSON.stringify(parsed.doc) }),
+    })
+    if (!r.ok) return r
+    return new Response(JSON.stringify({ rev: nextRev }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
   const r = await fetch(cfg!.url + '/api/state' + (since != null ? '?since=' + since : ''), {
     method, headers: { Authorization: 'Bearer ' + cfg!.token, ...(body ? { 'Content-Type': 'application/json' } : {}) },
     body, cache: 'no-store',

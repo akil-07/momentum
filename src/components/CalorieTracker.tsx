@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { addMeal, dateKey, dayCalories, liveMeals, removeMeal, setSettings, setSteps, toast, useStore } from '../store'
-import { getSyncCfg } from '../sync'
+import { getSyncCfg, isFirebaseUrl } from '../sync'
 import { analyzeFoodPhoto, compressFoodImage, type DetectedFood } from '../foodVision'
 import { Btn, Chips, Field, IconBtn, Sheet, spring } from './common'
 import { Icon } from './fx'
@@ -405,9 +405,12 @@ export function CalorieTracker() {
       <Sheet open={watchOpen} onClose={() => setWatchOpen(false)} title="Apple Watch Steps Sync">
         {(() => {
           const cfg = getSyncCfg()
+          const useVercel = isFirebaseUrl(cfg?.url) || (typeof window !== 'undefined' && window.location.protocol === 'https:')
           const netIps = (typeof window !== 'undefined' ? (window as unknown as { __MOMENTUM_NET__?: { ips?: string[]; port?: number } }).__MOMENTUM_NET__?.ips : []) || []
           const netPort = (typeof window !== 'undefined' ? (window as unknown as { __MOMENTUM_NET__?: { ips?: string[]; port?: number } }).__MOMENTUM_NET__?.port : null) || 8787
-          const base = netIps[0] ? `http://${netIps[0]}:${netPort}` : (cfg?.url || (typeof window !== 'undefined' ? window.location.origin : 'http://100.94.1.89:8787'))
+          const base = useVercel
+            ? 'https://momentum-olive-delta.vercel.app'
+            : (netIps[0] ? `http://${netIps[0]}:${netPort}` : (cfg?.url || (typeof window !== 'undefined' ? window.location.origin : 'https://momentum-olive-delta.vercel.app')))
           const webhookUrl = cfg ? `${base}/api/health/sync?key=${encodeURIComponent(cfg.token)}` : `${base}/api/health/sync?key=YOUR_SYNC_KEY`
           return (
             <div className="form">
