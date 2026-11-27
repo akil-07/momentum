@@ -15,8 +15,8 @@ export interface FoodAnalysis {
   summary: string
 }
 
-/** Resize & compress an image file to a lightweight JPEG base64 string (max 1024px) */
-export function compressFoodImage(file: File, maxDim = 1024): Promise<{ base64: string; mime: string; dataUrl: string }> {
+/** Resize & compress an image file to a lightweight JPEG base64 string (max 1280px for crisp label text) */
+export function compressFoodImage(file: File, maxDim = 1280): Promise<{ base64: string; mime: string; dataUrl: string }> {
   return new Promise((resolve, reject) => {
     const img = new Image()
     const url = URL.createObjectURL(file)
@@ -34,7 +34,7 @@ export function compressFoodImage(file: File, maxDim = 1024): Promise<{ base64: 
       const ctx = canvas.getContext('2d')
       if (!ctx) return reject(new Error('Canvas not supported'))
       ctx.drawImage(img, 0, 0, width, height)
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.82)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.88)
       const base64 = dataUrl.split(',')[1]
       resolve({ base64, mime: 'image/jpeg', dataUrl })
     }
@@ -47,19 +47,31 @@ export function compressFoodImage(file: File, maxDim = 1024): Promise<{ base64: 
 }
 
 const NUTRITION_PROMPT = `You are a precision nutritionist AI (like HealthifyMe Snap).
-Analyze the food/meal in this photo carefully:
-1. Identify every distinct food item, side dish, gravy, beverage, or condiment visible on the plate/table.
-2. Estimate realistic portion sizes (e.g., "2 medium chapatis", "1 katori dal (150g)", "1 cup cooked rice (180g)", "1 masala dosa", "1 boiled egg").
-3. Be accurate with both Indian (South & North Indian home-cooked/restaurant meals) and global cuisines, accounting for typical cooking oil/ghee/butter.
-4. Calculate calories (kcal) and macronutrients (protein, carbs, fat in grams) for each individual item.
+Analyze the image carefully. It will be either:
+(A) A **Nutrition Facts / Nutritional Information label** on the back of a packaged food/drink, OR
+(B) A **packaged product** (brand/front visible), OR
+(C) A **cooked / plated meal**.
+
+Follow these exact rules:
+- **IF A NUTRITION LABEL IS VISIBLE (back of packet):**
+  - Read the **EXACT printed numbers** directly from the label (Energy/Calories in kcal, Protein in g, Carbohydrates in g, Total Fat in g). Do NOT guess or approximate when exact numbers are printed!
+  - If Energy is only given in kJ, convert kJ / 4.184 = kcal.
+  - Use the **per serving / per pack** column if shown (e.g., "1 serving (30g)" or "1 pack (50g)"); if only "Per 100g" / "Per 100ml" is printed, use that and clearly state "Per 100g" in \`portion\`.
+  - Include the product name if visible (else "Packaged Food (Label)") and mention "Exact values read from nutrition label" in \`summary\`.
+- **IF A PACKAGED PRODUCT FRONT IS VISIBLE (no label):**
+  - Identify the exact brand/product and pack size if readable, and provide its standard official nutrition values.
+- **IF A PLATED / COOKED MEAL:**
+  - Identify every distinct food item, side dish, gravy, or beverage visible.
+  - Estimate realistic portion sizes (e.g., "2 medium chapatis", "1 katori dal (150g)", "1 cup rice (180g)").
+  - Account accurately for Indian (South & North Indian) and global cuisines including cooking oil/ghee/butter.
 
 Return ONLY valid JSON matching this exact structure (no markdown, no extra text):
 {
-  "summary": "Brief 1-sentence description of the meal",
+  "summary": "Brief 1-sentence description (or note that exact nutrition label values were read)",
   "items": [
     {
-      "name": "Food item name",
-      "portion": "Estimated serving size",
+      "name": "Food or product name",
+      "portion": "Exact label serving size or estimated serving",
       "kcal": 250,
       "protein": 8,
       "carbs": 35,
