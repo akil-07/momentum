@@ -154,6 +154,17 @@ export function CalorieTracker() {
             {total.toLocaleString()}
             <span className="small muted" style={{ fontSize: '0.45em', fontWeight: 600 }}> / {target.toLocaleString()} kcal</span>
           </div>
+          <div className="row wrap" style={{ gap: 10, marginTop: 4, fontSize: 13 }}>
+            <span>
+              <Icon n="local_fire_department" style={{ fontSize: 15, color: 'var(--tertiary)', verticalAlign: '-2px' }} />{' '}
+              <b>{activeKcal.toLocaleString()} kcal</b> <span className="muted">burned today</span>
+            </span>
+            <span className="muted">·</span>
+            <span>
+              <Icon n="directions_walk" style={{ fontSize: 15, color: 'var(--primary)', verticalAlign: '-2px' }} />{' '}
+              <b>{steps.toLocaleString()}</b> <span className="muted">/ {stepsTarget.toLocaleString()} steps</span>
+            </span>
+          </div>
         </div>
         <div className="row" style={{ gap: 4 }}>
           <IconBtn
@@ -172,6 +183,50 @@ export function CalorieTracker() {
         </div>
       </div>
 
+      {/* Hidden inputs for Camera & Gallery */}
+      <input ref={cameraRef} type="file" accept="image/*" capture="environment" hidden onChange={onFilePicked} />
+      <input ref={fileRef} type="file" accept="image/*" hidden onChange={onFilePicked} />
+
+      <div className="row wrap" style={{ gap: 6, marginTop: 10, marginBottom: 12 }}>
+        <Btn
+          size="sm"
+          kind="filled"
+          icon="photo_camera"
+          onClick={() => cameraRef.current?.click()}
+        >
+          Scan food
+        </Btn>
+        <IconBtn
+          icon="photo_library"
+          kind="tonal"
+          title="Upload food photo from gallery"
+          onClick={() => fileRef.current?.click()}
+        />
+        <Btn
+          size="sm"
+          kind={adding ? 'filled' : 'tonal'}
+          icon={adding ? 'close' : 'add'}
+          onClick={() => { setAdding(v => !v); setEditingTarget(false) }}
+        >
+          {adding ? 'Cancel' : 'Manual'}
+        </Btn>
+        {[100, 250].map(amt => (
+          <button key={amt} type="button" className="chip mini" onClick={() => addMeal(`Quick +${amt}`, amt)}>
+            +{amt}
+          </button>
+        ))}
+        {meals.length > 0 && (
+          <Btn
+            size="sm"
+            kind="text"
+            icon={showList ? 'expand_less' : 'expand_more'}
+            onClick={() => setShowList(v => !v)}
+          >
+            {meals.length} {meals.length === 1 ? 'entry' : 'entries'}
+          </Btn>
+        )}
+      </div>
+
       <WavyBar
         value={Math.min(1, pct)}
         height={10}
@@ -181,9 +236,10 @@ export function CalorieTracker() {
 
       <div className="work-rows" style={{ marginTop: 8 }}>
         <div className={over ? 'behind' : ''}>
-          <Icon n={over ? 'warning' : 'local_fire_department'} />
+          <Icon n={over ? 'warning' : 'bolt'} />
           <span>
             <b>{diff.toLocaleString()} kcal</b> {over ? 'over target' : 'remaining'}
+            {activeKcal > 0 && <> · Net: <b>{Math.max(0, total - activeKcal).toLocaleString()} kcal</b></>}
           </span>
         </div>
         {hasMacros && (
@@ -228,50 +284,6 @@ export function CalorieTracker() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Hidden inputs for Camera & Gallery */}
-      <input ref={cameraRef} type="file" accept="image/*" capture="environment" hidden onChange={onFilePicked} />
-      <input ref={fileRef} type="file" accept="image/*" hidden onChange={onFilePicked} />
-
-      <div className="row wrap" style={{ gap: 6, marginTop: 12 }}>
-        <Btn
-          size="sm"
-          kind="filled"
-          icon="photo_camera"
-          onClick={() => cameraRef.current?.click()}
-        >
-          Snap meal
-        </Btn>
-        <IconBtn
-          icon="photo_library"
-          kind="tonal"
-          title="Upload food photo from gallery"
-          onClick={() => fileRef.current?.click()}
-        />
-        <Btn
-          size="sm"
-          kind={adding ? 'filled' : 'tonal'}
-          icon={adding ? 'close' : 'add'}
-          onClick={() => { setAdding(v => !v); setEditingTarget(false) }}
-        >
-          {adding ? 'Cancel' : 'Manual'}
-        </Btn>
-        {[100, 250].map(amt => (
-          <button key={amt} type="button" className="chip mini" onClick={() => addMeal(`Quick +${amt}`, amt)}>
-            +{amt}
-          </button>
-        ))}
-        {meals.length > 0 && (
-          <Btn
-            size="sm"
-            kind="text"
-            icon={showList ? 'expand_less' : 'expand_more'}
-            onClick={() => setShowList(v => !v)}
-          >
-            {meals.length} {meals.length === 1 ? 'entry' : 'entries'}
-          </Btn>
-        )}
-      </div>
 
       <AnimatePresence>
         {adding && (
