@@ -180,10 +180,10 @@ export function BodyMetrics() {
                   value={actInput}
                   onChange={v => setActInput(v)}
                   options={[
-                    { v: 'sedentary' as const, label: 'Sedentary' },
-                    { v: 'light' as const, label: 'Light' },
-                    { v: 'moderate' as const, label: 'Moderate' },
-                    { v: 'active' as const, label: 'Active' },
+                    { v: 'sedentary' as const, label: 'Sedentary (×1.2)' },
+                    { v: 'light' as const, label: 'Light · 1–3d/wk (×1.38)' },
+                    { v: 'moderate' as const, label: 'Moderate · 3–5d/wk (×1.55)' },
+                    { v: 'active' as const, label: 'Very Active · daily (×1.73)' },
                   ]}
                 />
               </div>
@@ -256,7 +256,7 @@ export function BodyMetrics() {
               <div className="overline">RECOMMENDED CALORIES</div>
               <div className="headline" style={{ marginTop: 2 }}>{recKcal.toLocaleString()} kcal / day</div>
               <div className="small muted">
-                {recMode} · Maintenance: {maintenance.toLocaleString()} kcal
+                {recMode} · Maintenance: {maintenance.toLocaleString()} kcal ({activity} ×{ACTIVITY_MULT[activity]})
               </div>
             </div>
             {st.calorieTarget !== recKcal && (

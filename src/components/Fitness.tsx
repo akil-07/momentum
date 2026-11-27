@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { addDays, dateKey, dayCalories, liveMeals, removeMeal, setSettings, useStore } from '../store'
+import { useMemo, useState } from 'react'
+import { addDays, dateKey, dayCalories, getState, latestWeight, liveMeals, removeMeal, setSettings, useStore } from '../store'
 import { BodyMetrics } from './BodyMetrics'
 import { CalorieTracker } from './CalorieTracker'
 import { IconBtn } from './common'
@@ -21,10 +21,13 @@ export function Fitness() {
   const totalC = meals.reduce((s, m) => s + (m.carbs || 0), 0)
   const totalF = meals.reduce((s, m) => s + (m.fat || 0), 0)
 
-  // Standard balanced macro targets scaled to calorieTarget (30% protein, 45% carbs, 25% fat)
-  const pTarget = Math.round((calTarget * 0.30) / 4)
-  const cTarget = Math.round((calTarget * 0.45) / 4)
+  const lastW = useMemo(() => latestWeight(getState()), [days])
+  const curKg = d?.weightKg ?? lastW?.kg ?? 0
+
+  // Weight-based protein target (~1.8 g/kg, the 1.6-2.2 g/kg fat-loss sweet spot) when weight is known
+  const pTarget = curKg > 0 ? Math.round(curKg * 1.8) : Math.round((calTarget * 0.25) / 4)
   const fTarget = Math.round((calTarget * 0.25) / 9)
+  const cTarget = Math.max(50, Math.round((calTarget - pTarget * 4 - fTarget * 9) / 4))
 
   const last7 = Array.from({ length: 7 }, (_, i) => addDays(today, -i))
 
