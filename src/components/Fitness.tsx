@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { addDays, dateKey, dayCalories, liveMeals, removeMeal, setSettings, useStore } from '../store'
+import { BodyMetrics } from './BodyMetrics'
 import { CalorieTracker } from './CalorieTracker'
 import { IconBtn } from './common'
 import { Icon } from './fx'
@@ -38,6 +39,7 @@ export function Fitness() {
 
       <div className="cols">
         <div className="col-main">
+          <BodyMetrics />
           {/* Macro Breakdown Card */}
           <section className="card" aria-label="Macronutrients">
             <div className="card-head">
@@ -169,6 +171,7 @@ export function Fitness() {
                     <th style={{ padding: '8px 6px', fontWeight: 600, textAlign: 'right' }}>Carbs</th>
                     <th style={{ padding: '8px 6px', fontWeight: 600, textAlign: 'right' }}>Fat</th>
                     <th style={{ padding: '8px 6px', fontWeight: 600, textAlign: 'right' }}>Steps</th>
+                    <th style={{ padding: '8px 6px', fontWeight: 600, textAlign: 'right' }}>Weight</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -180,6 +183,7 @@ export function Fitness() {
                     const c = ms.reduce((s, m) => s + (m.carbs || 0), 0)
                     const f = ms.reduce((s, m) => s + (m.fat || 0), 0)
                     const st = day?.steps || 0
+                    const wt = day?.weightKg
                     return (
                       <tr
                         key={k}
@@ -198,6 +202,7 @@ export function Fitness() {
                         <td style={{ padding: '8px 6px', textAlign: 'right' }}>{c ? `${c}g` : '—'}</td>
                         <td style={{ padding: '8px 6px', textAlign: 'right' }}>{f ? `${f}g` : '—'}</td>
                         <td style={{ padding: '8px 6px', textAlign: 'right' }}>{st ? st.toLocaleString() : '—'}</td>
+                        <td style={{ padding: '8px 6px', textAlign: 'right', fontWeight: 600 }}>{wt ? `${wt} kg` : '—'}</td>
                       </tr>
                     )
                   })}

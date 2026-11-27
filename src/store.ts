@@ -73,12 +73,14 @@ export interface Day {
   /** logged meals/calories for this day (keyed by entry id, merged by u) */ calories?: Record<string, MealEntry>
   steps?: number; stepsU?: number
   activeKcal?: number; activeKcalU?: number
+  weightKg?: number; weightU?: number
   combo: number; maxCombo: number; lastDoneAt?: number
   /** derived */ xp: number; focusMin: number
 }
 export interface Settings {
   name: string; seed: string; mode: 'system' | 'light' | 'dark'; style: SchemeStyle
   sound: boolean; haptics: boolean; threshold: number; workTarget: number; calorieTarget?: number; stepsTarget?: number
+  heightCm?: number; age?: number; sex?: 'male' | 'female'; activityLevel?: 'sedentary' | 'light' | 'moderate' | 'active'; goalWeightKg?: number
   visionProvider?: 'gemini' | 'openai'; visionKey?: string
   coachAutoAdd?: boolean; pomoWork?: number; pomoBreak?: number; pomoLong?: number; disciplineBar?: number
   /** 0 standard · 0.5 medium · 1 high */
@@ -503,6 +505,8 @@ function mergeDay(a?: Day, b?: Day): Day {
     stepsU: Math.max(a.stepsU || 0, b.stepsU || 0),
     activeKcal: (b.activeKcalU || 0) > (a.activeKcalU || 0) ? b.activeKcal : a.activeKcal,
     activeKcalU: Math.max(a.activeKcalU || 0, b.activeKcalU || 0),
+    weightKg: (b.weightU || 0) > (a.weightU || 0) ? b.weightKg : a.weightKg,
+    weightU: Math.max(a.weightU || 0, b.weightU || 0),
     combo: later.combo, lastDoneAt: later.lastDoneAt, maxCombo: Math.max(a.maxCombo, b.maxCombo),
   }
 }
@@ -1354,4 +1358,19 @@ export function setSteps(steps: number, activeKcal?: number) {
     stepsU: now,
     ...(activeKcal !== undefined ? { activeKcal: Math.max(0, Math.round(activeKcal)), activeKcalU: now } : {}),
   }))
+}
+
+export function setWeight(weightKg: number, date = dateKey()) {
+  const now = Date.now()
+  const val = Math.round(Math.max(20, Math.min(350, weightKg)) * 10) / 10
+  patchDayKey(date, d => ({ ...d, weightKg: val, weightU: now }))
+  emit({ type: 'toast', text: `Weight logged: ${val} kg`, icon: 'monitor_weight' })
+}
+
+export function latestWeight(s: State = state): { kg: number; date: string } | null {
+  for (const k of Object.keys(s.days).sort().reverse()) {
+    const w = s.days[k]?.weightKg
+    if (w && w > 0) return { kg: w, date: k }
+  }
+  return null
 }
