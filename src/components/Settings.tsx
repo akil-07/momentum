@@ -193,6 +193,14 @@ export function Settings({ open, onClose }: { open: boolean; onClose: () => void
         <Field label="Your name"><input value={st.name} onChange={e => setSettings({ name: e.target.value })} placeholder="What should I call you?" /></Field>
         <div className="field-label">Daily work target (deep work + study + admin)</div>
         <Chips value={st.workTarget} onChange={t => setSettings({ workTarget: t })} options={[3, 4, 5, 6, 7, 8, 10, 12].map(v => ({ v, label: v + 'h' }))} />
+        <div className="field-label">Calorie Scanner AI (Snap Meal)</div>
+        <div className="sync-box">
+          <p className="small muted" style={{ marginTop: 0 }}>Used by Snap Meal to detect dishes & calories from food photos. Get a free Gemini key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer" style={{ color: 'var(--primary)' }}>aistudio.google.com/apikey</a>.</p>
+          <Chips value={st.visionProvider || 'gemini'} onChange={v => setSettings({ visionProvider: v })} options={[{ v: 'gemini' as const, label: 'Gemini (Free)' }, { v: 'openai' as const, label: 'OpenAI' }]} />
+          <Field label={(st.visionProvider || 'gemini') === 'gemini' ? 'Gemini API key' : 'OpenAI API key'}>
+            <input type="password" value={st.visionKey || ''} onChange={e => setSettings({ visionKey: e.target.value })} placeholder={(st.visionProvider || 'gemini') === 'gemini' ? 'AIzaSy...' : 'sk-...'} />
+          </Field>
+        </div>
         <div className="field-label">Streak strictness — % of tasks needed to keep a day</div>
         <Chips value={st.threshold} onChange={t => setSettings({ threshold: t })} options={[60, 70, 80, 90, 100].map(v => ({ v, label: v + '%' }))} />
         <ThemeSection />
